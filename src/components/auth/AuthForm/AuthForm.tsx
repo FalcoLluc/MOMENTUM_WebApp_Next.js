@@ -65,7 +65,7 @@ export function AuthForm({ type }: AuthFormProps) {
     setLoading(true);
   
     try {
-      const { user } = await authService.login(loginCredentials);
+      const { user } = await authService.loginUser(loginCredentials);
       notifications.show({
         title: 'Login successful',
         message: `Welcome back, ${user.name}!`,
@@ -73,13 +73,14 @@ export function AuthForm({ type }: AuthFormProps) {
       });
       router.push('/users/dashboard');
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : 'Invalid credentials';
+      // This will now properly show server error messages
+      const errorMessage = error instanceof Error ? error.message : 'Login failed';
       notifications.show({
-        title: 'Login failed',
+        title: 'Login error',
         message: errorMessage,
         color: 'red',
       });
-    } finally {
+    }finally {
       setLoading(false);
     }
   };
@@ -87,22 +88,23 @@ export function AuthForm({ type }: AuthFormProps) {
   const handleRegisterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-
+  
     try {
-      const { success, message } = await authService.register(registerCredentials);
-      
+      const { success, message } = await authService.registerUser(registerCredentials);
+  
       if (success) {
         notifications.show({
-          title: 'Registration successful. Check Your email',
-          message,
+          title: 'Registration successful',
+          message: message,
           color: 'green',
         });
         router.push('/login?authType=user');
       }
     } catch (error: unknown) {
+      // Extract and display the error message
       const errorMessage = error instanceof Error ? error.message : 'Registration failed';
       notifications.show({
-        title: 'Registration failed',
+        title: 'Registration error',
         message: errorMessage,
         color: 'red',
       });
@@ -167,6 +169,7 @@ export function AuthForm({ type }: AuthFormProps) {
             mt="md"
             size="md"
             required
+            minLength={6}
           />
 
           <Button type="submit" fullWidth mt="xl" size="md" loading={loading}>
