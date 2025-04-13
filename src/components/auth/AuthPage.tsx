@@ -5,6 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { AuthTypeSelector } from './AuthTypeSelector';
 import { AuthForm } from './AuthForm/AuthForm';
 import { BusinessAuthForm } from './BusinessAuthForm/BusinessAuthForm';
+import classes from './AuthPage.module.css';
 
 export function AuthPage({ type }: { type: 'login' | 'register' }) {
   const searchParams = useSearchParams();
@@ -18,27 +19,20 @@ export function AuthPage({ type }: { type: 'login' | 'register' }) {
   };
 
   return (
-    <div style={{ minHeight: '100vh', position: 'relative' }}>
-      <div
-        style={{
-          position: 'absolute',
-          top: '40px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          zIndex: 100,
-          width: '100%',
-          maxWidth: '450px',
-          padding: '0 20px',
-        }}
-      >
-        <AuthTypeSelector value={authType} onChange={setAuthType} />
+    <div className={classes.container}>
+      <div className={classes.selectorContainer}>
+        <div className={classes.selectorInner}>
+          <AuthTypeSelector value={authType} onChange={setAuthType} />
+        </div>
       </div>
 
-      {authType === 'user' ? (
-        <AuthForm type={type} />
-      ) : (
-        <BusinessAuthForm type={type} />
-      )}
+      <div className={classes.formsContainer}>
+        {authType === 'user' ? (
+          <AuthForm type={type} />
+        ) : (
+          <BusinessAuthForm type={type} />
+        )}
+      </div>
     </div>
   );
 }

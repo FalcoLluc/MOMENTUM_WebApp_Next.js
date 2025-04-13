@@ -1,0 +1,29 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.selectorContainer {
+  position: absolute;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  width: 100%;
+  max-width: 450px;
+  display: flex;
+  justify-content: center;
+  padding: 0 20px;
+}
+
+.selectorInner {
+  width: 100%;
+  max-width: 280px;
+}
+
+.formsContainer {
+  width: 100%;
+  max-width: 450px;
+}

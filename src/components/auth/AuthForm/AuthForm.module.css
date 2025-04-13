@@ -10,6 +10,8 @@
   align-items: center;
   justify-content: flex-start; /* Align form to left */
   padding-top: 0; /* Space for the selector */
+  padding-left: 40px;
+  padding-right: 40px;
   box-sizing: border-box;
 }
 
