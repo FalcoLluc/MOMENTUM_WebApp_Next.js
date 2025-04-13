@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@auth/core": "^0.34.2",
     "@emotion/react": "^11.14.0",
     "@emotion/server": "^11.11.0",
     "@mantine/core": "^7.17.4",
@@ -17,7 +18,9 @@
     "@mantine/next": "^6.0.22",
     "@mantine/notifications": "^7.17.4",
     "@tabler/icons-react": "^3.31.0",
+    "axios": "^1.8.4",
     "next": "15.3.0",
+    "next-auth": "^4.24.11",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
@@ -31,6 +34,7 @@
     "postcss": "^8.5.3",
     "postcss-preset-mantine": "^1.17.0",
     "postcss-simple-vars": "^7.0.1",
+    "sass": "^1.86.3",
     "typescript": "^5"
   }
 }

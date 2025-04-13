@@ -3,6 +3,7 @@
 import '@mantine/core/styles.css';
 
 import { ColorSchemeScript, MantineProvider, mantineHtmlProps } from '@mantine/core';
+import { Notifications } from '@mantine/notifications';
 
 export const metadata = {
   title: 'My Mantine app',
@@ -20,7 +21,15 @@ export default function RootLayout({
         <ColorSchemeScript />
       </head>
       <body>
-        <MantineProvider>{children}</MantineProvider>
+        <MantineProvider>
+          <Notifications
+            position='top-right' 
+            autoClose={3000}
+            zIndex={1000}
+            containerWidth="fit-content"
+          />
+          {children}
+        </MantineProvider>
       </body>
     </html>
   );

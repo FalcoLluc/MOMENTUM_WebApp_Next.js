@@ -1,0 +1,47 @@
+/* components/auth/AuthForm/AuthForm.module.css */
+.wrapper {
+  min-height: 100vh;
+  width: 100vw;
+  background-size: cover;
+  background-position: center;
+  background-color: #1a1b1e;
+  background-image: url("/images/users_login.png");
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* Align form to left */
+  padding-top: 0; /* Space for the selector */
+  box-sizing: border-box;
+}
+
+.form {
+  border-right: 1px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-7));
+  min-height: calc(100vh - 80px); /* Account for selector space */
+  max-width: 450px;
+  width: 100%; /* 🔑 Ensure it fills its max-width */
+  padding: 40px 30px;
+  background-color: light-dark(var(--mantine-color-white), var(--mantine-color-dark-8));
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  margin-top: 20px; /* Space between selector and form */
+}
+
+.title {
+  color: light-dark(var(--mantine-color-black), var(--mantine-color-white));
+  font-family: Greycliff CF, var(--mantine-font-family);
+}
+
+@media (max-width: 48em) {
+  .wrapper {
+    padding-top: 60px;
+    justify-content: center;
+  }
+
+  .form {
+    min-height: calc(100vh - 60px);
+    max-width: 100%;
+    width: 100%;
+    border-right: none;
+    padding: 20px;
+    margin-top: 10px;
+  }
+}
