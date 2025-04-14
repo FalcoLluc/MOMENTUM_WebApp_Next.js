@@ -1,7 +1,9 @@
 // services/authService.ts
 import apiClient from '@/lib/apiClient';
+import { authClient } from '@/lib/apiClient';
 import { User } from '@/types';
 import axios from 'axios';
+import { useAuthStore } from '@/stores/authStore';
 
 interface LoginParams {
   name_or_mail: string;
@@ -11,20 +13,20 @@ interface LoginParams {
 interface LoginResponse {
   user: User;
   accessToken: string;
-  refreshToken: string;
 }
 
 class AuthService {
   async loginUser({ name_or_mail, password }: LoginParams): Promise<LoginResponse> {
     try {
-      const response = await apiClient.post<LoginResponse>('/auth/login', {
+      const { data } = await authClient.post<LoginResponse>('/auth/login', {
         name_or_mail,
         password,
       });
-  
-      // Only store token if we got a successful response
-      localStorage.setItem('accessToken', response.data.accessToken);
-      return response.data;
+      const { user, accessToken } = data;
+      // Update Zustand store (it internally stores the access token)
+      useAuthStore.getState().login(user, accessToken);
+
+      return data;
   
     } catch (error) {
       if (axios.isAxiosError(error)) {
