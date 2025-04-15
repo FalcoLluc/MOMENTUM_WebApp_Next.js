@@ -1,11 +1,12 @@
 'use client'
 
-import { calendarsService, ICalendar } from "@/services/calendarsService";
-import { useEffect, useState } from "react";
+import { calendarsService } from "@/services/calendarsService";
+import { useEffect, useState, useCallback } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
-import moment from 'moment'
+import moment from 'moment';
 import React from "react";
-import 'react-big-calendar/lib/css/react-big-calendar.css'
+import { ICalendar } from "@/types";
+import 'react-big-calendar/lib/css/react-big-calendar.css';
 
 interface CalendarEntry {
     id: string,
@@ -14,17 +15,17 @@ interface CalendarEntry {
     end: Date,
 }
 
-export function BigCalendar({calendars}: {calendars: ICalendar[]}){
+export function BigCalendar({ calendars }: { calendars: ICalendar[] }) {
     const [appointments, setAppointments] = useState<CalendarEntry[] | null>(null);
 
-    async function getAppointments(range: Date[] | {start: Date, end: Date}){
-        if(!('start' in range && 'end' in range)) return []; // TODO deal with the other case
+    const getAppointments = useCallback(async (range: Date[] | { start: Date, end: Date }) => {
+        if (!('start' in range && 'end' in range)) return []; // TODO deal with the other case
 
         const appointments: CalendarEntry[] = [];
-        for (const calendar of calendars){
+        for (const calendar of calendars) {
             const app = await calendarsService.getAppointmentsBetweenDates(calendar._id!, range.start, range.end);
             console.debug(app);
-            if(!app) continue;
+            if (!app) continue;
             app.forEach(a => appointments.push({
                 id: a._id!,
                 title: a.title,
@@ -33,22 +34,22 @@ export function BigCalendar({calendars}: {calendars: ICalendar[]}){
             }));
         }
         setAppointments(appointments);
-    }
+    }, [calendars]);
 
-    function onRangeChange(range: Date[] | {start: Date, end: Date}) {
+    function onRangeChange(range: Date[] | { start: Date, end: Date }) {
         console.debug("range changed");
         getAppointments(range);
     }
 
     useEffect(() => {
-        // assume a month view and fetch events with a 7 day margin of this month.
+        // Assume a month view and fetch events with a 7-day margin of this month.
         const start = new Date();
         start.setDate(-7);
         const end = new Date();
         end.setDate(37);
 
-        getAppointments({start, end});
-    }, [calendars]);
+        getAppointments({ start, end });
+    }, [calendars, getAppointments]);
 
     return (
         <Calendar
@@ -60,5 +61,5 @@ export function BigCalendar({calendars}: {calendars: ICalendar[]}){
             onRangeChange={onRangeChange}
             events={appointments ?? []}
         ></Calendar>
-    )
+    );
 }

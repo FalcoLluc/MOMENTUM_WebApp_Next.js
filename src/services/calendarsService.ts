@@ -1,24 +1,5 @@
 import apiClient from "@/lib/apiClient";
-
-export interface ICalendar {
-    owner: string;
-    calendarName: string;
-    appointments: string[];
-    invitees: string[];
-    isDeleted: boolean;
-    _id?: string;
-}
-
-export interface IAppointment {
-    _id?: string;
-    inTime: Date;
-    outTime: Date;
-    place: string;
-    title: string;
-    isDeleted: boolean;
-}
-
-
+import { ICalendar, IAppointment } from "@/types";
 class CalendarsService {
     async getUserCalendars(userId: string) {
         try {

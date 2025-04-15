@@ -6,9 +6,10 @@ import { useDisclosure } from "@mantine/hooks";
 import { useAuthStore } from "@/stores/authStore";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { calendarsService, ICalendar } from "@/services/calendarsService";
+import { calendarsService } from "@/services/calendarsService";
 import { BigCalendar } from "@/components/Calendar/BigCalendar";
 import { NewAppointmentOverlay } from "@/components/Calendar/newAppointmentOvelay";
+import { ICalendar } from "@/types";
 
 
 function CalendarList({ calendars }: { calendars: ICalendar[] | null }) {
@@ -52,7 +53,7 @@ function CalendarList({ calendars }: { calendars: ICalendar[] | null }) {
   }
 }
 
-export default function UserDashboardPage() {
+export default function UserCalendarPage() {
   const [newAppointmentOpened, newAppointmentHandlers] = useDisclosure();
   const router = useRouter();
 

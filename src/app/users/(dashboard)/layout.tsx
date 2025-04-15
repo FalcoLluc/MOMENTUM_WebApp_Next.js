@@ -56,8 +56,9 @@ export default function DashboardUsersLayout({
                 transform: 'translateX(-50%)',
                 height: '48px',
                 objectFit: 'contain',
+                pointerEvents: 'none',
               }}
-            />
+             />
           </Group>
         </Group>
       </AppShell.Header>

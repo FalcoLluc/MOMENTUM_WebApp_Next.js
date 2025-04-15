@@ -11,3 +11,22 @@ export interface User {
     password: string;
     isDeleted?: boolean;
   }
+
+
+export interface ICalendar {
+    owner: string;
+    calendarName: string;
+    appointments: string[];
+    invitees: string[];
+    isDeleted: boolean;
+    _id?: string;
+}
+
+export interface IAppointment {
+    _id?: string;
+    inTime: Date;
+    outTime: Date;
+    place: string;
+    title: string;
+    isDeleted: boolean;
+}
