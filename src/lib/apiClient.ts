@@ -1,5 +1,6 @@
 // lib/apiClient.ts
 import axios from 'axios';
+import { useAuthStore } from '@/stores/authStore';
 
 // Main API client (no cookies for regular requests)
 const apiClient = axios.create({
@@ -14,8 +15,16 @@ export const authClient = axios.create({
 
 // Interceptor to attach access token
 apiClient.interceptors.request.use((config) => {
-  const token = localStorage.getItem('accessToken');
-  if (token) config.headers.Authorization = `Bearer ${token}`;
+  //const token = localStorage.getItem('accessToken'); // com ho tenia abans
+  const token =
+    typeof window !== 'undefined'
+      ? useAuthStore.getState().accessToken
+      : null; // Evitar liades amb SSR
+
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+
   return config;
 });
 
@@ -24,7 +33,9 @@ async function refreshAccessToken() {
   try {
     const response = await authClient.post('/auth/refresh'); // Uses authClient!
     const { accessToken } = response.data;
-    localStorage.setItem('accessToken', accessToken);
+    //localStorage.setItem('accessToken', accessToken);
+    useAuthStore.getState().setAccessToken(accessToken); // Update Zustand store -> Guardem aquí el accessToken
+
     return accessToken;
   } catch (error) {
     console.error('Refresh failed:', error);
