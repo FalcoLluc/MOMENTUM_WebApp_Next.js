@@ -1,7 +1,7 @@
 'use client';
 
 import { UsersNavbar } from '@/components';
-import { AppShell, Burger, Group, Text, ActionIcon } from '@mantine/core';
+import { AppShell, Burger, Group, ActionIcon, Image } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IconMenu2, IconX } from '@tabler/icons-react';
 
@@ -47,7 +47,7 @@ export default function DashboardUsersLayout({
             >
               {desktopOpened ? <IconX size="1.5rem" /> : <IconMenu2 size="1.5rem" />}
             </ActionIcon>
-            <img
+            <Image
               src="/images/logo-no-background.png"
               alt="Logo"
               style={{
