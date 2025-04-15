@@ -7,8 +7,14 @@ import { useAuthStore } from "@/stores/authStore";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { calendarsService, ICalendar } from "@/services/calendarsService";
+import BigCalendar from "@/components/calendar/calendar";
+import NewAppointmentOverlay from "@/components/calendar/newAppointmentOvelay";
 
 function CalendarList({calendars}: {calendars: ICalendar[] | null}) {
+  function changeCalendarSelection(selected: boolean, calendarId: string) {
+    // TODO
+  }
+
   if(!calendars) {
     return Array(4).fill(true).map((_, i) => (
       <Skeleton
@@ -25,7 +31,10 @@ function CalendarList({calendars}: {calendars: ICalendar[] | null}) {
       key={calendar._id} 
       label={calendar.calendarName}
       leftSection={
-        <Checkbox size="sm"></Checkbox>
+        <Checkbox
+          size="sm"
+          onChange={(event) => changeCalendarSelection(event.currentTarget.checked, calendar._id!)}
+        ></Checkbox>
       }
       styles={{
         label: {
@@ -38,6 +47,7 @@ function CalendarList({calendars}: {calendars: ICalendar[] | null}) {
 
 export default function UserDashboardPage() {
   const [navbarOpened, navbarHandlers] = useDisclosure();
+  const [newAppointmentOpened, newAppointmentHandlers] = useDisclosure();
   const router = useRouter();
 
   const user = useAuthStore((state) => state.user);
@@ -49,7 +59,6 @@ export default function UserDashboardPage() {
   }, []);
   useEffect(() => {
     if (!hydrated) return;
-    console.log(user);
     if (!user) router.push("/login");
   }, [hydrated, user, router]);
 
@@ -61,6 +70,16 @@ export default function UserDashboardPage() {
         setCalendars(calendars);
       });
   }, [user]);
+
+  const [visibleCalendars, setVisibleCalendars] = useState<ICalendar[]>([]);
+  useEffect(() => {
+    if(!calendars) return;
+    setVisibleCalendars(calendars);
+  }, [calendars])
+
+  function onAppointmentSaved() {
+    setVisibleCalendars([...visibleCalendars]); // forma molt lletja de recarregar el component. Hauríem de trobar una manera millor.
+  }
 
   return (
     <AppShell
@@ -105,12 +124,18 @@ export default function UserDashboardPage() {
         </Group>
       </AppShell.Header>
       <AppShell.Navbar>
+        <NavLink active variant="filled" label="New Appointment" onClick={newAppointmentHandlers.open}></NavLink>
         <Text mt="sm" ml="sm" tt="uppercase" size="xs" c="dimmed">Your Calendars</Text>
         <CalendarList calendars={calendars}></CalendarList>
       </AppShell.Navbar>
       <AppShell.Main>
-
+        <BigCalendar calendars={visibleCalendars}></BigCalendar>
       </AppShell.Main>
+      <NewAppointmentOverlay
+        disclosure={[newAppointmentOpened, newAppointmentHandlers]}
+        calendars={calendars ?? []}
+        onAppointmentSaved={onAppointmentSaved}
+      ></NewAppointmentOverlay>
     </AppShell>
   );
 }
