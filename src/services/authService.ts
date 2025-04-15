@@ -71,6 +71,25 @@ class AuthService {
       throw new Error('Something went wrong. Please try again later.');
     }
   }
+
+  async logoutUser(): Promise<void> {
+    try {
+      // Clear the access token from Zustand store immediately
+      useAuthStore.getState().logout();
+      
+      // Make the API call to invalidate the refresh token
+      await authClient.post('/auth/logout');
+      
+      // Optional: Redirect could be handled here or in the component
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        // Even if the API call fails, we should clear local state
+        console.error('Logout API error:', error.response?.data?.message || 'Logout failed');
+      }
+      // Re-throw the error so components can handle it if needed
+      throw new Error('Logout failed - please try again');
+    }
+  }
 }
 
 export const authService = new AuthService();

@@ -71,7 +71,7 @@ export function AuthForm({ type }: AuthFormProps) {
         message: `Welcome back, ${user.name}!`,
         color: 'green',
       });
-      router.push('/users/dashboard');
+      router.push('/users/account');
     } catch (error: unknown) {
       // This will now properly show server error messages
       const errorMessage = error instanceof Error ? error.message : 'Login failed';

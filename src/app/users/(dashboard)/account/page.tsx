@@ -3,7 +3,7 @@
 
 import { useAuthStore } from "@/stores/authStore";
 
-export default function UserDashboardPage() {
+export default function UserAccountPage() {
   const user = useAuthStore((state) => state.user);
 
   if (!user) {
@@ -12,7 +12,7 @@ export default function UserDashboardPage() {
 
   return (
     <div>
-      <h1>User Dashboard</h1>
+      <h1>User Account</h1>
       <p>Welcome, <strong>{user.name}</strong>!</p>
       <p>Email: {user.mail}</p>
       <p>Age: {user.age}</p>

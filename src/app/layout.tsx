@@ -1,9 +1,7 @@
-// Import styles of packages that you've installed.
-// All packages except `@mantine/hooks` require styles imports
-import '@mantine/core/styles.css';
-
 import { ColorSchemeScript, MantineProvider, mantineHtmlProps } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
+import '@mantine/core/styles.css';
+import '@mantine/notifications/styles.css';
 
 export const metadata = {
   title: 'My Mantine app',
@@ -19,11 +17,12 @@ export default function RootLayout({
     <html lang="en" {...mantineHtmlProps}>
       <head>
         <ColorSchemeScript />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
-      <body>
+      <body style={{ overflowX: 'hidden' }}>
         <MantineProvider>
           <Notifications
-            position='top-right' 
+            position="top-right"
             autoClose={3000}
             zIndex={1000}
             containerWidth="fit-content"
