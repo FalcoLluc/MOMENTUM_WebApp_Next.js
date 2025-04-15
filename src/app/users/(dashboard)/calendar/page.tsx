@@ -56,25 +56,29 @@ function CalendarList({ calendars }: { calendars: ICalendar[] | null }) {
 export default function UserCalendarPage() {
   const [newAppointmentOpened, newAppointmentHandlers] = useDisclosure();
   const router = useRouter();
-
   const user = useAuthStore((state) => state.user);
+  const [key, setKey] = useState(0); // Add this line
 
   const [hydrated, setHydrated] = useState(false);
   useEffect(() => {
-    // Zustand store is hydrated on the first client render
     setHydrated(true);
   }, []);
+
   useEffect(() => {
     if (!hydrated) return;
-    if (!user) router.push("/login");
+    if (!user) {
+      router.push("/login");
+      return;
+    }
+    // Reset key when user changes to force full calendar remount
+    setKey(prev => prev + 1);
   }, [hydrated, user, router]);
 
   const [calendars, setCalendars] = useState<ICalendar[] | null>(null);
   useEffect(() => {
     if (!user || !user._id) return;
     calendarsService.getUserCalendars(user._id).then((calendars) => {
-      if (!calendars) return;
-      setCalendars(calendars);
+      setCalendars(calendars || null);
     });
   }, [user]);
 
@@ -85,27 +89,31 @@ export default function UserCalendarPage() {
   }, [calendars]);
 
   function onAppointmentSaved() {
-    setVisibleCalendars([...visibleCalendars]); // Temporary way to refresh the component
+    if (user?._id) {
+      calendarsService.getUserCalendars(user._id).then((calendars) => {
+        setCalendars(calendars || null);
+      });
+    }
   }
 
   return (
-    <>
+    <div key={key}> {/* Add this wrapper */}
       <NavLink
         active
         variant="filled"
         label="New Appointment"
         onClick={newAppointmentHandlers.open}
-      ></NavLink>
+      />
       <Text mt="sm" ml="sm" tt="uppercase" size="xs" c="dimmed">
         Your Calendars
       </Text>
-      <CalendarList calendars={calendars}></CalendarList>
-      <BigCalendar calendars={visibleCalendars}></BigCalendar>
+      <CalendarList calendars={calendars} />
+      <BigCalendar calendars={visibleCalendars} />
       <NewAppointmentOverlay
         disclosure={[newAppointmentOpened, newAppointmentHandlers]}
         calendars={calendars ?? []}
         onAppointmentSaved={onAppointmentSaved}
-      ></NewAppointmentOverlay>
-    </>
+      />
+    </div>
   );
 }
