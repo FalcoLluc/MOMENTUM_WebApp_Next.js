@@ -8,8 +8,8 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { calendarsService } from "@/services/calendarsService";
 import { BigCalendar } from "@/components/Calendar/BigCalendar";
-import { NewAppointmentOverlay } from "@/components/Calendar/newAppointmentOvelay";
 import { ICalendar } from "@/types";
+import NewAppointmentOverlay from "@/components/Calendar/newAppointmentOvelay";
 
 
 function CalendarList({ calendars }: { calendars: ICalendar[] | null }) {

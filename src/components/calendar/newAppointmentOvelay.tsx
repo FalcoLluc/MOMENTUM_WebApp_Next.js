@@ -2,11 +2,11 @@ import { Button, Drawer, Group, NativeSelect, TextInput } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { DateTimePicker } from "@mantine/dates";
 import { useForm } from "@mantine/form";
-import { calendarsService } from "@/services/calendarsService";
+import { calendarsService} from "@/services/calendarsService";
 import { IAppointment, ICalendar } from "@/types";
 import { useEffect, useState } from "react";
 
-export function NewAppointmentOverlay(
+export default function NewAppointmentOverlay(
     {
         disclosure: [open, handlers], 
         calendars,
