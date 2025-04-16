@@ -1,3 +1,6 @@
+// app/components/Calendar/NewAppointmentOverlay.tsx
+'use client'
+
 import { Button, Drawer, Group, NativeSelect, TextInput } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { DateTimePicker } from "@mantine/dates";
@@ -6,7 +9,7 @@ import { calendarsService} from "@/services/calendarsService";
 import { IAppointment, ICalendar } from "@/types";
 import { useEffect, useState } from "react";
 
-export default function NewAppointmentOverlay(
+export function NewAppointmentOverlay(
     {
         disclosure: [open, handlers], 
         calendars,

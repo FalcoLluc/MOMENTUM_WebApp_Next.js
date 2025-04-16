@@ -7,10 +7,8 @@ import { useAuthStore } from "@/stores/authStore";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { calendarsService } from "@/services/calendarsService";
-import { BigCalendar } from "@/components/Calendar/BigCalendar";
 import { ICalendar } from "@/types";
-import NewAppointmentOverlay from "@/components/Calendar/newAppointmentOvelay";
-
+import { BigCalendar, NewAppointmentOverlay } from "@/components";
 
 function CalendarList({ calendars }: { calendars: ICalendar[] | null }) {
   function changeCalendarSelection(selected: boolean, calendarId: string) {
