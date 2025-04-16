@@ -1,6 +1,14 @@
 import apiClient from "@/lib/apiClient";
 import { ICalendar, IAppointment } from "@/types";
 class CalendarsService {
+    async createCalendar(calendar: Partial<ICalendar>) {
+        try {
+            await apiClient.post(`/calendars`, calendar);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     async getUserCalendars(userId: string) {
         try {
             const { data } = await apiClient.get<{message: string, calendars: ICalendar[]}>("/calendars/" + userId);

@@ -19,6 +19,7 @@ export interface ICalendar {
     appointments: string[];
     invitees: string[];
     isDeleted: boolean;
+    defaultColour?: string;
     _id?: string;
 }
 
@@ -28,5 +29,6 @@ export interface IAppointment {
     outTime: Date;
     place: string;
     title: string;
+    colour?: string,
     isDeleted: boolean;
 }

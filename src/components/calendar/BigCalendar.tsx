@@ -2,20 +2,25 @@
 
 import { calendarsService } from "@/services/calendarsService";
 import { useEffect, useState, useCallback, useRef } from "react";
-import { Calendar, momentLocalizer, DateRange, Views, View } from "react-big-calendar";
+import { Calendar, Event, momentLocalizer, DateRange, Views, View } from "react-big-calendar";
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { ICalendar } from "@/types";
 
-interface CalendarEntry {
-    id: string;
-    title: string;
-    start: Date;
-    end: Date;
-}
+
+function eventStyleGetter(event: Event, start: Date, end: Date, isSelected: boolean) {
+    const style = {
+        backgroundColor: event.resource.colour ?? "var(--mantine-primary-color-filled)",
+        filter: isSelected ? "brightness(85%)" : undefined,
+    };
+
+    return {
+        style: style
+    };
+};
 
 export function BigCalendar({ calendars = [] }: { calendars: ICalendar[] }) {
-    const [appointments, setAppointments] = useState<CalendarEntry[]>([]);
+    const [appointments, setAppointments] = useState<Event[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [currentDate, setCurrentDate] = useState(new Date());
@@ -37,7 +42,7 @@ export function BigCalendar({ calendars = [] }: { calendars: ICalendar[] }) {
         setError(null);
 
         try {
-            const appointments: CalendarEntry[] = [];
+            const appointments: Event[] = [];
             
             for (const calendar of calendars) {
                 if (!calendar._id) continue;
@@ -53,10 +58,10 @@ export function BigCalendar({ calendars = [] }: { calendars: ICalendar[] }) {
                 app.forEach(a => {
                     if (a._id && a.inTime && a.outTime) {
                         appointments.push({
-                            id: a._id,
                             title: a.title || 'No title',
                             start: new Date(a.inTime),
                             end: new Date(a.outTime),
+                            resource: a,
                         });
                     }
                 });
@@ -163,6 +168,7 @@ export function BigCalendar({ calendars = [] }: { calendars: ICalendar[] }) {
                 endAccessor="end"
                 titleAccessor="title"
                 defaultView={Views.MONTH}
+                eventPropGetter={eventStyleGetter}
             />
         </div>
     );
