@@ -3,7 +3,7 @@ import { useAuthStore } from "@/stores/authStore";
 import { ICalendar } from "@/types";
 import { Button, ColorInput, Group, Modal, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { useDisclosure, useForceUpdate } from "@mantine/hooks";
+import { useDisclosure } from "@mantine/hooks";
 
 export default function NewCalendarOverlay(
     { disclosure: [open, handlers], onCalendarSaved }: 

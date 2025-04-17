@@ -1,7 +1,7 @@
 // app/users/(dashboard)/calendar/page.tsx
 'use client';
 
-import { Button, Checkbox, Flex, NavLink, Skeleton, Stack, Text } from "@mantine/core";
+import { Button, Checkbox, Flex, Skeleton, Stack, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useAuthStore } from "@/stores/authStore";
 import { useEffect, useState } from "react";
@@ -11,13 +11,22 @@ import { BigCalendar } from "@/components/calendar/BigCalendar";
 import { ICalendar } from "@/types";
 import NewAppointmentOverlay from "@/components/calendar/newAppointmentOvelay";
 import NewCalendarOverlay from "@/components/calendar/newCalendarOverlay";
+import { useCalendarStore } from "@/stores/calendarStore";
 
 
-function CalendarList({ calendars }: { calendars: ICalendar[] | null }) {
+function CalendarList(
+  { calendars }:
+  { calendars: ICalendar[] | null}
+) {
+  const calendarStore = useCalendarStore();
+
   function changeCalendarSelection(selected: boolean, calendarId: string) {
-    // TODO
+    if (selected) {
+      calendarStore.selectCalendar(calendarId);
+    } else {
+      calendarStore.unselectCalendar(calendarId);
+    }
   }
-
   if (!calendars) {
     return Array(4)
       .fill(true)
@@ -33,24 +42,16 @@ function CalendarList({ calendars }: { calendars: ICalendar[] | null }) {
       ));
   } else {
     return calendars.map((calendar) => (
-      <NavLink
+      <Checkbox
         key={calendar._id}
         label={calendar.calendarName}
-        leftSection={
-          <Checkbox
-            size="sm"
-            color={calendar.defaultColour ?? '#228be6'}
-            onChange={(event) =>
-              changeCalendarSelection(event.currentTarget.checked, calendar._id!)
-            }
-          ></Checkbox>
+        size="sm"
+        color={calendar.defaultColour ?? '#228be6'}
+        defaultChecked={calendarStore.selectedCalendars.has(calendar._id!)}
+        onChange={(event) =>
+          changeCalendarSelection(event.currentTarget.checked, calendar._id!)
         }
-        styles={{
-          label: {
-            fontSize: "var(--mantine-font-size-md)",
-          },
-        }}
-      ></NavLink>
+      ></Checkbox>
     ));
   }
 }
@@ -60,6 +61,7 @@ export default function UserCalendarPage() {
   const [newCalendarOverlay, newCalendarOverlayHandlers] = useDisclosure();
   const router = useRouter();
   const user = useAuthStore((state) => state.user);
+  const selectedCalendars = useCalendarStore((state) => state.selectedCalendars); 
   const [key, setKey] = useState(0); // Add this line
 
   const [hydrated, setHydrated] = useState(false);
@@ -86,15 +88,16 @@ export default function UserCalendarPage() {
   }, [user]);
 
   const [visibleCalendars, setVisibleCalendars] = useState<ICalendar[]>([]);
-  useEffect(() => {
-    if (!calendars) return;
-    setVisibleCalendars(calendars);
-  }, [calendars]);
+  useEffect( () => {
+    if(!calendars || !selectedCalendars) return;
+    setVisibleCalendars(calendars?.filter((calendar) => selectedCalendars.has(calendar._id!)));
+  }, [calendars, selectedCalendars]);
+
 
   function reloadAppointments() {
     if (user?._id) {
       calendarsService.getUserCalendars(user._id).then((calendars) => {
-        setCalendars(calendars || null);
+        setCalendars(calendars?.filter((calendar) => selectedCalendars.has(calendar._id!)) || null);
       });
     }
   }
@@ -119,7 +122,7 @@ export default function UserCalendarPage() {
         <Text mt="sm" ml="sm" tt="uppercase" size="xs" c="dimmed">
           Your Calendars
         </Text>
-        <CalendarList calendars={calendars} />
+        <CalendarList calendars={calendars}/>
         <Button
           variant="outline"
           color="teal"

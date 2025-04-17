@@ -2,7 +2,6 @@
 import { create } from 'zustand';
 import { User } from '@/types';
 import { persist, createJSONStorage } from 'zustand/middleware'
-import { useEffect, useState } from 'react';
 
 interface AuthState {
   user: User | null;

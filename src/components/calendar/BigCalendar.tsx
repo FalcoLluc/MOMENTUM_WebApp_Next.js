@@ -6,6 +6,7 @@ import { Calendar, Event, momentLocalizer, DateRange, Views, View } from "react-
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { ICalendar } from "@/types";
+import { Loader } from "@mantine/core";
 
 
 function eventStyleGetter(event: Event, start: Date, end: Date, isSelected: boolean) {
@@ -36,7 +37,12 @@ export function BigCalendar({ calendars = [] }: { calendars: ICalendar[] }) {
     }, []);
 
     const fetchAppointments = useCallback(async (start: Date, end: Date) => {
-        if (!mountedRef.current || calendars.length === 0) return;
+        if (!mountedRef.current) return;
+
+        if (calendars.length === 0) {
+            setAppointments([]);
+            return;
+        }
 
         setIsLoading(true);
         setError(null);
@@ -140,8 +146,21 @@ export function BigCalendar({ calendars = [] }: { calendars: ICalendar[] }) {
     return (
         <div style={{ position: 'relative' }}>
             {isLoading && (
-                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 1 }}>
-                    Loading...
+                <div
+                    style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    zIndex: 1,
+                    backgroundColor: 'rgba(255, 255, 255, 0)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    }}
+                >
+                    <Loader size="lg" />
                 </div>
             )}
             {error && (
