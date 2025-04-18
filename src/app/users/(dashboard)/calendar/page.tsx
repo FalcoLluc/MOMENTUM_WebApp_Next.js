@@ -7,12 +7,9 @@ import { useAuthStore } from "@/stores/authStore";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { calendarsService } from "@/services/calendarsService";
-import { BigCalendar } from "@/components/calendar/BigCalendar";
 import { ICalendar } from "@/types";
-import NewAppointmentOverlay from "@/components/calendar/newAppointmentOvelay";
-import NewCalendarOverlay from "@/components/calendar/newCalendarOverlay";
 import { useCalendarStore } from "@/stores/calendarStore";
-
+import { BigCalendar, NewAppointmentOverlay, NewCalendarOverlay } from "@/components";
 
 function CalendarList(
   { calendars }:

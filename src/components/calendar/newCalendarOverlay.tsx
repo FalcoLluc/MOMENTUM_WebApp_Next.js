@@ -5,7 +5,7 @@ import { Button, ColorInput, Group, Modal, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 
-export default function NewCalendarOverlay(
+export function NewCalendarOverlay(
     { disclosure: [open, handlers], onCalendarSaved }: 
     { disclosure: ReturnType<typeof useDisclosure>, onCalendarSaved: () => void}
 ) {

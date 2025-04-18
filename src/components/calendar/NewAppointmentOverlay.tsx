@@ -8,7 +8,7 @@ import { calendarsService} from "@/services/calendarsService";
 import { IAppointment, ICalendar } from "@/types";
 import { useEffect, useState } from "react";
 
-export default function NewAppointmentOverlay(
+export function NewAppointmentOverlay(
     {
         disclosure: [open, handlers], 
         calendars,
