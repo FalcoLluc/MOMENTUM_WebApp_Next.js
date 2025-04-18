@@ -1,20 +1,29 @@
 // app/users/(dashboard)/calendar/page.tsx
 'use client';
 
-import { Checkbox, NavLink, Skeleton, Text } from "@mantine/core";
+import { Button, Checkbox, Flex, Skeleton, Stack, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useAuthStore } from "@/stores/authStore";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { calendarsService } from "@/services/calendarsService";
 import { ICalendar } from "@/types";
-import { BigCalendar, NewAppointmentOverlay } from "@/components";
+import { useCalendarStore } from "@/stores/calendarStore";
+import { BigCalendar, NewAppointmentOverlay, NewCalendarOverlay } from "@/components";
 
-function CalendarList({ calendars }: { calendars: ICalendar[] | null }) {
+function CalendarList(
+  { calendars }:
+  { calendars: ICalendar[] | null}
+) {
+  const calendarStore = useCalendarStore();
+
   function changeCalendarSelection(selected: boolean, calendarId: string) {
-    // TODO
+    if (selected) {
+      calendarStore.selectCalendar(calendarId);
+    } else {
+      calendarStore.unselectCalendar(calendarId);
+    }
   }
-
   if (!calendars) {
     return Array(4)
       .fill(true)
@@ -30,31 +39,26 @@ function CalendarList({ calendars }: { calendars: ICalendar[] | null }) {
       ));
   } else {
     return calendars.map((calendar) => (
-      <NavLink
+      <Checkbox
         key={calendar._id}
         label={calendar.calendarName}
-        leftSection={
-          <Checkbox
-            size="sm"
-            onChange={(event) =>
-              changeCalendarSelection(event.currentTarget.checked, calendar._id!)
-            }
-          ></Checkbox>
+        size="sm"
+        color={calendar.defaultColour ?? '#228be6'}
+        defaultChecked={calendarStore.selectedCalendars.has(calendar._id!)}
+        onChange={(event) =>
+          changeCalendarSelection(event.currentTarget.checked, calendar._id!)
         }
-        styles={{
-          label: {
-            fontSize: "var(--mantine-font-size-md)",
-          },
-        }}
-      ></NavLink>
+      ></Checkbox>
     ));
   }
 }
 
 export default function UserCalendarPage() {
   const [newAppointmentOpened, newAppointmentHandlers] = useDisclosure();
+  const [newCalendarOverlay, newCalendarOverlayHandlers] = useDisclosure();
   const router = useRouter();
   const user = useAuthStore((state) => state.user);
+  const selectedCalendars = useCalendarStore((state) => state.selectedCalendars); 
   const [key, setKey] = useState(0); // Add this line
 
   const [hydrated, setHydrated] = useState(false);
@@ -81,37 +85,58 @@ export default function UserCalendarPage() {
   }, [user]);
 
   const [visibleCalendars, setVisibleCalendars] = useState<ICalendar[]>([]);
-  useEffect(() => {
-    if (!calendars) return;
-    setVisibleCalendars(calendars);
-  }, [calendars]);
+  useEffect( () => {
+    if(!calendars || !selectedCalendars) return;
+    setVisibleCalendars(calendars?.filter((calendar) => selectedCalendars.has(calendar._id!)));
+  }, [calendars, selectedCalendars]);
 
-  function onAppointmentSaved() {
+
+  function reloadAppointments() {
     if (user?._id) {
       calendarsService.getUserCalendars(user._id).then((calendars) => {
-        setCalendars(calendars || null);
+        setCalendars(calendars?.filter((calendar) => selectedCalendars.has(calendar._id!)) || null);
       });
     }
   }
 
   return (
-    <div key={key}> {/* Add this wrapper */}
-      <NavLink
-        active
-        variant="filled"
-        label="New Appointment"
-        onClick={newAppointmentHandlers.open}
-      />
-      <Text mt="sm" ml="sm" tt="uppercase" size="xs" c="dimmed">
-        Your Calendars
-      </Text>
-      <CalendarList calendars={calendars} />
-      <BigCalendar calendars={visibleCalendars} />
+    <Flex 
+      key={key}
+      direction={{ base: 'column', lg: 'row' }}
+      gap={{ base: 'sm', lg: 'lg' }}  
+    >
+      <div style={{flex: "1 0 auto"}}>
+        <BigCalendar calendars={visibleCalendars}/>
+      </div>
+      <Stack style={{flex: "0 1 200px"}}>
+        <Button
+          variant="filled"
+          color="teal"
+          onClick={newAppointmentHandlers.open}
+        >
+          New Appointment
+        </Button>
+        <Text mt="sm" ml="sm" tt="uppercase" size="xs" c="dimmed">
+          Your Calendars
+        </Text>
+        <CalendarList calendars={calendars}/>
+        <Button
+          variant="outline"
+          color="teal"
+          onClick={newCalendarOverlayHandlers.open}
+        >
+          New Calendar
+        </Button>
+      </Stack>
       <NewAppointmentOverlay
         disclosure={[newAppointmentOpened, newAppointmentHandlers]}
         calendars={calendars ?? []}
-        onAppointmentSaved={onAppointmentSaved}
+        onAppointmentSaved={reloadAppointments}
       />
-    </div>
+      <NewCalendarOverlay
+        disclosure={[newCalendarOverlay, newCalendarOverlayHandlers]}
+        onCalendarSaved={reloadAppointments}
+      ></NewCalendarOverlay>
+    </Flex>
   );
 }

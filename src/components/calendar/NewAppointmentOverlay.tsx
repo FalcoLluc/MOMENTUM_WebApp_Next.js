@@ -1,7 +1,6 @@
-// app/components/Calendar/NewAppointmentOverlay.tsx
 'use client'
 
-import { Button, Drawer, Group, NativeSelect, TextInput } from "@mantine/core";
+import { Button, ColorInput, Drawer, Group, NativeSelect, TextInput } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { DateTimePicker } from "@mantine/dates";
 import { useForm } from "@mantine/form";
@@ -34,6 +33,7 @@ export function NewAppointmentOverlay(
         location: string,
         startTime: Date,
         endTime: Date,
+        colour: string,
     }
 
     const form = useForm<FormValues>({
@@ -44,6 +44,15 @@ export function NewAppointmentOverlay(
             location: "",
             startTime: getDefaultEventTime("start"),
             endTime: getDefaultEventTime("end"),
+            colour: "#228be6"
+        },
+        onValuesChange: (values, previousValues) => {
+            // if we change calendar, set the colour picker to the default colour of the calendar
+            if(values.calendar != previousValues.calendar) {
+                const calendar = calendars.find((c) => c._id == values.calendar);
+                if(calendar) 
+                    form.setFieldValue('colour', calendar.defaultColour ?? "#228be6");
+            }
         }
     });
 
@@ -57,12 +66,12 @@ export function NewAppointmentOverlay(
     }, [calendars]);
 
     async function createEvent(values: FormValues) {
-        console.log(values);
         const appointment: IAppointment = {
             inTime: values.startTime,
             outTime: values.endTime,
             place: values.location,
             title: values.title,
+            colour: values.colour,
             isDeleted: false,
         }
 
@@ -87,6 +96,7 @@ export function NewAppointmentOverlay(
                 <TextInput key={form.key('title')} label="Title" {...form.getInputProps('title')}></TextInput>
                 <DateTimePicker key={form.key('startTime')} label="Start Time" {...form.getInputProps('startTime')}></DateTimePicker>
                 <DateTimePicker key={form.key('endTime')} label="End Time" placeholder="" {...form.getInputProps('endTime')}></DateTimePicker>
+                <ColorInput key={form.key('colour')} label="Colour" {...form.getInputProps('colour')}></ColorInput>
                 <Group justify="flex-end" mt="md">
                     <Button variant="outline" color="red" onClick={handlers.close}>Cancel</Button>
                     <Button type="submit">Create Appointment</Button>
