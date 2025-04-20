@@ -1,14 +1,9 @@
 // services/authService.ts
 import apiClient from '@/lib/apiClient';
 import { authClient } from '@/lib/apiClient';
-import { User } from '@/types';
+import { User, LoginRequestBody } from '@/types';
 import axios from 'axios';
 import { useAuthStore } from '@/stores/authStore';
-
-interface LoginParams {
-  name_or_mail: string;
-  password: string;
-}
 
 interface LoginResponse {
   user: User;
@@ -16,7 +11,7 @@ interface LoginResponse {
 }
 
 class AuthService {
-  async loginUser({ name_or_mail, password }: LoginParams): Promise<LoginResponse> {
+  async loginUser({ name_or_mail, password }: LoginRequestBody): Promise<LoginResponse> {
     try {
       const { data } = await authClient.post<LoginResponse>('/auth/login', {
         name_or_mail,
