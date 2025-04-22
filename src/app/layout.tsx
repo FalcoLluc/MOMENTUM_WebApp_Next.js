@@ -3,6 +3,7 @@ import { Notifications } from '@mantine/notifications';
 import '@mantine/notifications/styles.css';
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
+import '@/styles/globals.css'; 
 
 export const metadata = {
   title: 'My Mantine app',

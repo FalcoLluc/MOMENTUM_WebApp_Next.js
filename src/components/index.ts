@@ -2,5 +2,6 @@
 export { AuthPage } from './auth/AuthPage';
 export { UsersNavbar } from './shared/UsersNavbar/UsersNavbar';
 export { BigCalendar } from './calendar/BigCalendar'
-export { NewAppointmentOverlay} from './calendar/newAppointmentOverlay'
+export { NewAppointmentOverlay } from './calendar/NewAppointmentOverlay'
 export { NewCalendarOverlay} from './calendar/newCalendarOverlay'
+export { Map } from './shared/Map/Map';

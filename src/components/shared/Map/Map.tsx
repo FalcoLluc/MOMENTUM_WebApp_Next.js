@@ -1,0 +1,83 @@
+'use client';
+
+import dynamic from 'next/dynamic';
+import { useState, useEffect } from 'react';
+import L from 'leaflet';
+import { Button } from '@mantine/core';
+import { Location } from '@/types';
+import { useMap, Marker, Popup, TileLayer } from 'react-leaflet';
+
+// Fix for default marker icons
+const DefaultIcon = L.icon({
+  iconUrl: '/images/marker-icon.png',
+  iconRetinaUrl: '/images/marker-icon-2x.png',
+  shadowUrl: '/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41],
+});
+L.Marker.prototype.options.icon = DefaultIcon;
+
+// Dynamically import MapContainer only
+const MapContainer = dynamic(
+  () => import('react-leaflet').then((mod) => mod.MapContainer),
+  { ssr: false }
+);
+
+// Auto-center component
+function AutoCenter({ locations, trigger }: { locations: Location[]; trigger?: boolean }) {
+  const map = useMap();
+  useEffect(() => {
+    if (locations.length > 0) {
+      const bounds = L.latLngBounds(locations.map((loc) => loc.position));
+      map.flyToBounds(bounds, { padding: [50, 50], duration: 1 });
+    }
+  }, [locations, trigger, map]);
+  return null;
+}
+
+export function Map({
+  locations,
+  center = [51.505, -0.09],
+  zoom = 13,
+}: {
+  locations: Location[];
+  center?: L.LatLngExpression;
+  zoom?: number;
+}) {
+  const [centerTrigger, setCenterTrigger] = useState(false);
+
+  return (
+    <div style={{ position: 'relative', height: '400px', width: '100%' }}>
+      <MapContainer center={center} zoom={zoom} style={{ height: '100%', width: '100%' }}>
+        <TileLayer
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        />
+        <AutoCenter locations={locations} trigger={centerTrigger} />
+        {locations.map((location) => (
+          <Marker key={location.id} position={location.position}>
+            <Popup>
+              <div style={{ minWidth: '200px' }}>
+                <h3 style={{ fontWeight: 'bold' }}>{location.name}</h3>
+                {location.address && <p>{location.address}</p>}
+              </div>
+            </Popup>
+          </Marker>
+        ))}
+      </MapContainer>
+      <Button
+        style={{
+          position: 'absolute',
+          top: '10px',
+          right: '10px',
+          zIndex: 1000,
+        }}
+        onClick={() => setCenterTrigger((prev) => !prev)}
+      >
+        Center Map
+      </Button>
+    </div>
+  );
+}

@@ -1,3 +1,5 @@
+import { LatLngExpression } from 'leaflet';
+
 export interface LoginRequestBody {
     name_or_mail: string;
     password: string;
@@ -31,4 +33,11 @@ export interface IAppointment {
     title: string;
     colour?: string,
     isDeleted: boolean;
+}
+
+export interface Location {
+  id: string;
+  name: string;
+  position: LatLngExpression;
+  address?: string;
 }
