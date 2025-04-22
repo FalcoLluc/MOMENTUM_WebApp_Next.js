@@ -1,14 +1,9 @@
 // services/authService.ts
 import apiClient from '@/lib/apiClient';
 import { authClient } from '@/lib/apiClient';
-import { User } from '@/types';
+import { User, LoginRequestBody } from '@/types';
 import axios from 'axios';
 import { useAuthStore } from '@/stores/authStore';
-
-interface LoginParams {
-  name_or_mail: string;
-  password: string;
-}
 
 interface LoginResponse {
   user: User;
@@ -16,7 +11,7 @@ interface LoginResponse {
 }
 
 class AuthService {
-  async loginUser({ name_or_mail, password }: LoginParams): Promise<LoginResponse> {
+  async loginUser({ name_or_mail, password }: LoginRequestBody): Promise<LoginResponse> {
     try {
       const { data } = await authClient.post<LoginResponse>('/auth/login', {
         name_or_mail,
@@ -88,6 +83,37 @@ class AuthService {
       }
       // Re-throw the error so components can handle it if needed
       throw new Error('Logout failed - please try again');
+    }
+  }
+
+  async updateUserPassword(
+    userId: string, 
+    data: { currentPassword: string, newPassword: string }
+  ): Promise<{ message: string; user?: User }> {
+    try {
+      const response = await apiClient.put(`/users/${userId}/password`, data);
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        // Handle validation errors (422)
+        if (error.response?.status === 422) {
+          const validationErrors = error.response?.data?.errors || [];
+          const errorMessage = validationErrors.map((e: any) => `${e.field}: ${e.message}`).join(', ');
+          throw new Error(errorMessage || 'Validation failed');
+        }
+        // Handle user not found (404)
+        if (error.response?.status === 404) {
+          throw new Error('User not found');
+        }
+        // Handle incorrect current password (401)
+        if (error.response?.status === 401) {
+          throw new Error('Current password is incorrect');
+        }
+        // Handle other HTTP errors
+        throw new Error(error.response?.data?.error || 'Failed to update password');
+      }
+      // Handle non-Axios errors
+      throw new Error('Network error - please try again');
     }
   }
 }

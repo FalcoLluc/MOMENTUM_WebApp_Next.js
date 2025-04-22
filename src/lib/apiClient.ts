@@ -66,8 +66,3 @@ apiClient.interceptors.response.use(
 );
 
 export default apiClient;
-
-export async function updateUserPassword(userId: string, data: { currentPassword: string, newPassword: string }) {
-  const response = await apiClient.put(`/users/${userId}/password`, data);
-  return response.data;
-}

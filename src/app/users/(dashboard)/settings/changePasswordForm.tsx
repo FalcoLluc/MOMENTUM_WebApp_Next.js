@@ -11,7 +11,7 @@ import {
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { useAuthStore } from '@/stores/authStore';
-import { updateUserPassword } from '@/lib/apiClient';
+import { authService } from '@/services/authService';
 
 export function ChangePasswordForm() {
   const { user } = useAuthStore();
@@ -41,7 +41,7 @@ export function ChangePasswordForm() {
         return;
       }
 
-      await updateUserPassword(user._id, {
+      await authService.updateUserPassword(user._id, {
         currentPassword,
         newPassword,
       });
