@@ -1,6 +1,11 @@
 // app/register/page.tsx
 import { AuthPage } from '@/components/auth/AuthPage';
+import { Suspense } from 'react';
 
 export default function RegisterPage() {
-  return <AuthPage type="register" />;
+  return (
+    <Suspense>
+      <AuthPage type="register" />
+    </Suspense>
+  );
 }

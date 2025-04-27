@@ -1,3 +1,4 @@
+// components/user_settings/ChangePasswordForm.tsx
 'use client';
 
 import { useState } from 'react';
@@ -53,11 +54,12 @@ export function ChangePasswordForm() {
       setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to update password';
       notifications.show({
         color: 'red',
         title: 'Error',
-        message: error.response?.data?.error || 'Failed to update password',
+        message: errorMessage,
       });
     } finally {
       setLoading(false);
