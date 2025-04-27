@@ -2,35 +2,59 @@
 
 import dynamic from 'next/dynamic';
 import { useState, useEffect } from 'react';
-import L from 'leaflet';
 import { Button } from '@mantine/core';
 import { Location } from '@/types';
-import { useMap, Marker, Popup, TileLayer } from 'react-leaflet';
 
-// Fix for default marker icons
-const DefaultIcon = L.icon({
-  iconUrl: '/images/marker-icon.png',
-  iconRetinaUrl: '/images/marker-icon-2x.png',
-  shadowUrl: '/images/marker-shadow.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41],
-});
-L.Marker.prototype.options.icon = DefaultIcon;
-
-// Dynamically import MapContainer only
+// Dynamically import Leaflet and react-leaflet components
 const MapContainer = dynamic(
   () => import('react-leaflet').then((mod) => mod.MapContainer),
   { ssr: false }
 );
+const TileLayer = dynamic(
+  () => import('react-leaflet').then((mod) => mod.TileLayer),
+  { ssr: false }
+);
+const Marker = dynamic(
+  () => import('react-leaflet').then((mod) => mod.Marker),
+  { ssr: false }
+);
+const Popup = dynamic(
+  () => import('react-leaflet').then((mod) => mod.Popup),
+  { ssr: false }
+);
+
+// Ensure Leaflet is only imported on the client side
+let L: typeof import('leaflet') | undefined;
+if (typeof window !== 'undefined') {
+  import('leaflet').then((leaflet) => {
+    L = leaflet;
+
+    // Fix for default marker icons
+    const DefaultIcon = L.icon({
+      iconUrl: '/images/marker-icon.png',
+      iconRetinaUrl: '/images/marker-icon-2x.png',
+      shadowUrl: '/images/marker-shadow.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize: [41, 41],
+    });
+    L.Marker.prototype.options.icon = DefaultIcon;
+  });
+}
 
 // Auto-center component
 function AutoCenter({ locations, trigger }: { locations: Location[]; trigger?: boolean }) {
-  const map = useMap();
+  const [useMap, setUseMap] = useState<(() => import('leaflet').Map) | null>(null);
+
   useEffect(() => {
-    if (locations.length > 0) {
-      const bounds = L.latLngBounds(locations.map((loc) => loc.position));
+    import('react-leaflet').then((mod) => setUseMap(() => mod.useMap));
+  }, []);
+
+  const map = useMap?.();
+  useEffect(() => {
+    if (map && locations.length > 0) {
+      const bounds = L!.latLngBounds(locations.map((loc) => loc.position));
       map.flyToBounds(bounds, { padding: [50, 50], duration: 1 });
     }
   }, [locations, trigger, map]);
