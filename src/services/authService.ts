@@ -88,34 +88,28 @@ class AuthService {
 
   async updateUserPassword(
     userId: string, 
-    data: { currentPassword: string, newPassword: string }
+    data: { currentPassword: string; newPassword: string }
   ): Promise<{ message: string; user?: User }> {
     try {
       const response = await apiClient.put(`/users/${userId}/password`, data);
       return response.data;
-    } catch (error) {
+    } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
-        // Handle validation errors (422)
-        if (error.response?.status === 422) {
-          const validationErrors = error.response?.data?.errors || [];
-          const errorMessage = validationErrors.map((e: any) => `${e.field}: ${e.message}`).join(', ');
-          throw new Error(errorMessage || 'Validation failed');
-        }
-        // Handle user not found (404)
-        if (error.response?.status === 404) {
+        const status = error.response?.status;
+        const responseData = error.response?.data;
+        if (status === 404) {
           throw new Error('User not found');
         }
-        // Handle incorrect current password (401)
-        if (error.response?.status === 401) {
+        if (status === 401) {
           throw new Error('Current password is incorrect');
         }
-        // Handle other HTTP errors
-        throw new Error(error.response?.data?.error || 'Failed to update password');
+        throw new Error(responseData?.error || 'Failed to update password');
       }
-      // Handle non-Axios errors
       throw new Error('Network error - please try again');
     }
   }
+  
+  
 }
 
 export const authService = new AuthService();

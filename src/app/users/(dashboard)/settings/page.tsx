@@ -1,7 +1,7 @@
 'use client';
 
 import { Title, Container, Stack } from '@mantine/core';
-import { ChangePasswordForm } from './changePasswordForm';
+import { ChangePasswordForm } from '@/components';
 
 
 export default function SettingsPage() {
