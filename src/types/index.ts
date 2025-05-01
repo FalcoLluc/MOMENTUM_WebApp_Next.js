@@ -1,3 +1,8 @@
+import { appointmentServiceType, appointmentState, locationServiceType, locationSchedule } from '@/types/enums';
+import { LatLngExpression } from 'leaflet';
+
+// Els ObjectID de Mongo els posem com strings
+
 export interface LoginRequestBody {
     name_or_mail: string;
     password: string;
@@ -24,11 +29,46 @@ export interface ICalendar {
 }
 
 export interface IAppointment {
-    _id?: string;
-    inTime: Date;
-    outTime: Date;
-    place: string;
-    title: string;
-    colour?: string,
-    isDeleted: boolean;
+  _id?: string;
+  inTime: Date;
+  outTime: Date;
+  title: string;
+  description?: string;
+  location?: string;
+  serviceType: appointmentServiceType;
+  appointmentState?: appointmentState;
+  colour?: string;
+  isDeleted: boolean;
+}
+
+interface GeoJSONPoint {
+  type: 'Point';
+  coordinates: [number, number]; // [longitude, latitude]
+}
+
+// Tipus Location de Mongo
+export interface ILocation extends Document {
+  _id: string;
+  nombre: string;
+  address: string;
+  phone: string;
+  rating: number;
+  ubicacion: GeoJSONPoint;
+  serviceType: locationServiceType[];
+  schedule: {
+    day: locationSchedule;
+    open: string;  // HH:mm
+    close: string; // HH:mm
+  }[];
+  business: string
+  workers: string[];
+  isDeleted: boolean;
+}
+
+// Això és el tipus Location de leaflet (ho mapejem a aquí)
+export interface Location {
+  id: string;
+  name: string;
+  position: LatLngExpression;
+  address?: string;
 }

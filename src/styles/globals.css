@@ -1,23 +1,53 @@
-/* Keep only essential global styles */
+/* src/styles/globals.css */
+@import 'leaflet/dist/leaflet.css';
+
+/* Base reset - more comprehensive version */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-}
-
-* {
   box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
   padding: 0;
   margin: 0;
+}
+
+/* Leaflet-specific fixes */
+.leaflet-container {
+  height: 100%;
+  width: 100%;
+  font-family: inherit; /* Ensures font consistency with Mantine */
+}
+
+/* Fix for Leaflet marker icons in Next.js */
+.leaflet-div-icon {
+  background: transparent;
+  border: none;
+}
+
+/* Fix for popup close button */
+.leaflet-container a.leaflet-popup-close-button {
+  color: inherit;
+  font-size: inherit;
+  padding: 8px;
+}
+
+/* Better integration with Mantine's dark mode */
+.dark .leaflet-container {
+  background: #1a1b1e; /* Mantine's dark theme background */
+}
+
+.dark .leaflet-tile {
+  filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.7);
+}
+
+/* Fix for control buttons in dark mode */
+.dark .leaflet-control {
+  background: rgba(30, 31, 34, 0.8); /* Mantine's dark theme color */
+}
+
+.mantine-Button {
+  z-index: auto !important;
 }
