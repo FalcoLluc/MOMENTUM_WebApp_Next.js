@@ -6,3 +6,5 @@ export { NewAppointmentOverlay} from './calendar/NewAppointmentOverlay'
 export { NewCalendarOverlay } from './calendar/NewCalendarOverlay'
 export { ChangePasswordForm } from './user_settings/ChangePasswordForm';
 export { Map } from './shared/Map/Map';
+export { AddressForm } from './shared/AutoCompleteMapbox/AddressForm';
+export { SearchBoxForm } from './shared/AutoCompleteMapbox/SearchBoxForm';

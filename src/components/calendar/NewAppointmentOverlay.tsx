@@ -5,9 +5,10 @@ import { useDisclosure } from "@mantine/hooks";
 import { DateTimePicker } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import { calendarsService } from "@/services/calendarsService";
-import { IAppointment, ICalendar } from "@/types";
+import { IAppointment, ICalendar, GeoJSONPoint } from "@/types";
 import { appointmentServiceType, appointmentState } from "@/types/enums";
 import { useEffect, useState } from "react";
+import { SearchBoxForm  } from "@/components"
 
 export function NewAppointmentOverlay({
   disclosure: [open, handlers],
@@ -29,12 +30,14 @@ export function NewAppointmentOverlay({
   interface FormValues {
     calendar: string | undefined;
     title: string;
-    location: string;
+    location?: string;
     serviceType: appointmentServiceType;
     description?: string;
     startTime: Date;
     endTime: Date;
     colour: string;
+    customUbicacion?: GeoJSONPoint;
+    customAddress?: string;
   }
 
   const form = useForm<FormValues>({
@@ -42,12 +45,13 @@ export function NewAppointmentOverlay({
     initialValues: {
       calendar: "",
       title: "",
-      location: "",
       serviceType: appointmentServiceType.PERSONAL, // Default service type
       description: "",
       startTime: getDefaultEventTime("start"),
       endTime: getDefaultEventTime("end"),
       colour: "#228be6",
+      customUbicacion: undefined,
+      customAddress: undefined, 
     },
     onValuesChange: (values, previousValues) => {
       // If we change the calendar, set the colour picker to the default colour of the calendar
@@ -69,54 +73,89 @@ export function NewAppointmentOverlay({
   }, [calendars]);
 
   async function createEvent(values: FormValues) {
+    if (!values.calendar || !values.title) {
+      return;
+    }
+
     const appointment: IAppointment = {
       inTime: values.startTime,
       outTime: values.endTime,
-      location: values.location,
       title: values.title,
       serviceType: values.serviceType,
-      description: values.description,
+      description: values.description || undefined, // Convert empty string to undefined
       colour: values.colour,
-      appointmentState: appointmentState.REQUESTED, // Default state
+      appointmentState: appointmentState.ACCEPTED,
       isDeleted: false,
+      ...(values.customUbicacion && values.customAddress
+        ? {
+            customUbicacion: values.customUbicacion,
+            customAddress: values.customAddress
+          }
+        : {
+            customUbicacion: undefined,
+            customAddress: undefined
+          })
     };
 
-    if (!values.calendar) return;
-
-    await calendarsService.createEvent(values.calendar, appointment); // TODO: Validate data and handle errors
-    onAppointmentSaved(); // TODO: Only call this if the appointment was saved correctly
-    handlers.close();
+    try {
+      await calendarsService.createEvent(values.calendar, appointment);
+      onAppointmentSaved();
+      handlers.close();
+    } catch (error) {
+      console.error('Failed to create appointment:', error);
+      // Add error handling here
+    }
   }
 
   return (
-    <Drawer opened={open} onClose={handlers.close} title="New Appointment">
+    <Drawer opened={open} onClose={handlers.close} title="New Personal Appointment">
       <form onSubmit={form.onSubmit((values) => createEvent(values))}>
         <NativeSelect
           key={form.key("calendar")}
           label="Calendar"
           data={calendarOptions}
           {...form.getInputProps("calendar")}
+          required 
+          withAsterisk
         ></NativeSelect>
 
-        <TextInput key={form.key("location")} label="Location" {...form.getInputProps("location")}></TextInput>
-        <TextInput key={form.key("title")} label="Title" {...form.getInputProps("title")}></TextInput>
+        {/* Address Input */}
+        <SearchBoxForm
+          onSave={(address, location) => {
+            form.setFieldValue("customAddress", address);
+            form.setFieldValue("customUbicacion", location);
+            console.log("Address saved:", address, location);
+          }}
+        />
+
+        <TextInput 
+          key={form.key("title")} 
+          label="Title" {...form.getInputProps("title")} 
+          required
+          withAsterisk 
+        ></TextInput>
         <NativeSelect
           key={form.key("serviceType")}
           label="Service Type"
           data={Object.values(appointmentServiceType).map((type) => ({ label: type, value: type }))}
           {...form.getInputProps("serviceType")}
+          required
         ></NativeSelect>
         <TextInput key={form.key("description")} label="Description" {...form.getInputProps("description")}></TextInput>
         <DateTimePicker
           key={form.key("startTime")}
           label="Start Time"
           {...form.getInputProps("startTime")}
+          required
+          withAsterisk
         ></DateTimePicker>
         <DateTimePicker
           key={form.key("endTime")}
           label="End Time"
           placeholder=""
           {...form.getInputProps("endTime")}
+          required
+          withAsterisk
         ></DateTimePicker>
         <ColorInput key={form.key("colour")} label="Colour" {...form.getInputProps("colour")}></ColorInput>
         <Group justify="flex-end" mt="md">

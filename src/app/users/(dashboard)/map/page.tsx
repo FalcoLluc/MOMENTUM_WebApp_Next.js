@@ -54,29 +54,45 @@ export default function AppointmentsPage() {
 
         // Fetch locations for appointments
         const locationPromises = appointments
-          .filter((app) => app && app.location) // Ensure app and app.location are valid
+          .filter((app) => app && (app.location || app.customUbicacion)) // Ensure app and app.location are valid
           .map(async (app) => {
-            if (!app || !app.location) return null;
-            const location = await locationsService.getLocationById(app.location); // No non-null assertion
-            if (!location) return null;
+            if (app &&
+              app.customUbicacion &&
+              Array.isArray(app.customUbicacion.coordinates) &&
+              app.customUbicacion.coordinates.length === 2
+            ) {
+              return {
+                id: app._id || crypto.randomUUID(),
+                name: app.title,
+                position: [
+                  app.customUbicacion.coordinates[1], // latitude
+                  app.customUbicacion.coordinates[0], // longitude
+                ],
+                address: app.customAddress || 'Custom Location',
+                serviceType: app.serviceType || 'Unknown',
+              };
+            }
+            else if( app && app.location) {
+              const location = await locationsService.getLocationById(app.location); // No non-null assertion
+              if (!location || !Array.isArray(location.ubicacion.coordinates) || location.ubicacion.coordinates.length === 2) return null;
 
-            return {
-              id: app._id || crypto.randomUUID(),
-              name: location.nombre,
-              position: [
-                location.ubicacion.coordinates[1], // latitude
-                location.ubicacion.coordinates[0], // longitude
-              ],
-              address: location.address,
-              serviceType: app.serviceType || 'Unknown',
-            };
+              return {
+                id: app._id || crypto.randomUUID(),
+                name: location.nombre,
+                position: [
+                  location.ubicacion.coordinates[1], // latitude
+                  location.ubicacion.coordinates[0], // longitude
+                ],
+                address: location.address,
+                serviceType: app.serviceType || 'Unknown',
+              };
+            }
           });
-
         const validLocations = (await Promise.all(locationPromises)).filter(Boolean) as MapLocation[];
         setLocations(validLocations);
       } catch (err) {
-        console.error('Error fetching data:', err); // Log error for debugging
-        setError(err instanceof Error ? err.message : 'Failed to load appointments');
+        console.error('Error fetching data:', err);
+        setError(err instanceof Error ? err.message : JSON.stringify(err));
       } finally {
         setLoading(false);
       }

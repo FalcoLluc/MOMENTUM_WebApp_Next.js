@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
   images: {
     domains: ['tile.openstreetmap.org'],
   },
+  reactStrictMode: true,
 };
 
 export default nextConfig;

@@ -16,7 +16,10 @@ export interface User {
     password: string;
     isDeleted?: boolean;
   }
-
+export interface GeoJSONPoint {
+  type: 'Point';
+  coordinates: [number, number]; // [longitude, latitude]
+}
 
 export interface ICalendar {
     owner: string;
@@ -38,12 +41,9 @@ export interface IAppointment {
   serviceType: appointmentServiceType;
   appointmentState?: appointmentState;
   colour?: string;
+  customAddress?: string; // e.g. "123 Main St, Apt 4B, New York"
+  customUbicacion?: GeoJSONPoint
   isDeleted: boolean;
-}
-
-interface GeoJSONPoint {
-  type: 'Point';
-  coordinates: [number, number]; // [longitude, latitude]
 }
 
 // Tipus Location de Mongo

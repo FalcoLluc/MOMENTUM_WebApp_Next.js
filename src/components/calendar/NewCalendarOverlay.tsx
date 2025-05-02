@@ -46,7 +46,7 @@ export function NewCalendarOverlay(
             centered
         >
             <form onSubmit={form.onSubmit((values) => createCalendar(values))}>
-                <TextInput key={form.key('calendarName')} label="Calendar Name" {...form.getInputProps('calendarName')}></TextInput>
+                <TextInput key={form.key('calendarName')} label="Calendar Name" {...form.getInputProps('calendarName')} required></TextInput>
                 <ColorInput key={form.key('defaultColour')} label="Colour" {...form.getInputProps('defaultColour')}></ColorInput>
                 <Group justify="flex-end" mt="md">
                     <Button variant="outline" color="red" onClick={handlers.close}>Cancel</Button>
