@@ -71,6 +71,33 @@ export function Map({
   zoom?: number;
 }) {
   const [centerTrigger, setCenterTrigger] = useState(false);
+  const [userLocation, setUserLocation] = useState<L.LatLngExpression | null>(null);
+  const [userIcon, setUserIcon] = useState<L.Icon | null>(null);
+
+  // Fetch user's location
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setUserLocation([position.coords.latitude, position.coords.longitude]);
+        },
+        (error) => {
+          console.error('Error fetching user location:', error);
+        }
+      );
+    }
+  }, []);
+
+  useEffect(() => {
+    if (L) {
+      const customIcon = L.icon({
+        iconUrl: '/images/blue-dot.png', // Replace with your custom icon URL
+        iconSize: [30, 30],
+        iconAnchor: [10, 10],
+      });
+      setUserIcon(customIcon);
+    }
+  }, []);
 
   return (
     <div style={{ position: 'relative', height: '400px', width: '100%' }}>
@@ -90,6 +117,9 @@ export function Map({
             </Popup>
           </Marker>
         ))}
+        {userLocation && userIcon && (
+          <Marker position={userLocation} icon={userIcon}></Marker>
+        )}
       </MapContainer>
       <Button
         style={{
