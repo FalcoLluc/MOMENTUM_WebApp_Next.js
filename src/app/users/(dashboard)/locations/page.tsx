@@ -2,11 +2,23 @@
 
 import { useEffect, useState } from 'react';
 import { LocationsMap } from '@/components';
-import { NativeSelect } from '@mantine/core';
+import { 
+  NativeSelect, 
+  Paper, 
+  Title, 
+  Text, 
+  Stack, 
+  Alert, 
+  Container,
+  Card,
+  Loader
+} from '@mantine/core';
+import { IconAlertCircle, IconMapPin } from '@tabler/icons-react';
 import { locationsService } from '@/services/locationsService';
 import { useAuthStore } from '@/stores/authStore';
 import { LocationMarker } from '@/types';
 import { locationServiceType } from '@/types/enums';
+import classes from './LocationsPage.module.css';
 
 export default function LocationsPage() {
   const [loading, setLoading] = useState(true);
@@ -17,24 +29,27 @@ export default function LocationsPage() {
   const [serviceType, setServiceType] = useState<locationServiceType>(locationServiceType.COACHING);
 
   useEffect(() => {
-    const fetchServiceLocations = async () => { 
-      try{
+    const fetchServiceLocations = async () => {
+      try {
         setLoading(true);
         setError(null);
 
         if (!user?._id) {
           throw new Error('User not authenticated');
         }
+
         const serviceLocations = await locationsService.getAllLocationsByServiceType(serviceType);
+        
         if (!serviceLocations?.length) {
-          //throw new Error('No locations found');
-          return null
+          setServiceLocations([]);
+          return;
         }
 
         const serviceLocationMap = serviceLocations
-          .filter((loc) => loc && (loc.ubicacion)) // Ensure app and app.location are valid
-          .map( (loc) => {
-            if (loc &&
+          .filter((loc) => loc && loc.ubicacion)
+          .map((loc) => {
+            if (
+              loc &&
               loc.ubicacion &&
               Array.isArray(loc.ubicacion.coordinates) &&
               loc.ubicacion.coordinates.length === 2
@@ -49,30 +64,61 @@ export default function LocationsPage() {
                 address: loc.address,
                 serviceTypes: loc.serviceType.join(', '),
                 rating: loc.rating,
-                phone: loc.phone, // Add missing property
-                business: loc.business, // Add missing property
+                phone: loc.phone,
+                business: loc.business,
               };
             }
+            return null;
           });
+
         const validServiceLoc = serviceLocationMap.filter(Boolean) as LocationMarker[];
         setServiceLocations(validServiceLoc);
-      }catch (err) {
+      } catch (err) {
         console.error('Error fetching data:', err);
-        setError(err instanceof Error ? err.message : JSON.stringify(err));
+        setError(err instanceof Error ? err.message : 'An unexpected error occurred');
       } finally {
         setLoading(false);
       }
-    }
+    };
 
     fetchServiceLocations();
-  },[user?._id, serviceType]);
-  
+  }, [user?._id, serviceType]);
 
-  if (loading) return <div>Loading locations...</div>;
-  if (!loading && !serviceLocations.length) {
+  if (loading) {
     return (
-        <div>
-            <h1 className="text-2xl font-bold mb-4">No Locations Found for this type</h1>
+      <Container size="lg" py="xl" className={classes.container}>
+        <Stack align="center" justify="center" style={{ height: '600px' }}>
+          <Loader size="lg" variant="dots" />
+          <Text color="dimmed" size="sm">
+            Loading locations...
+          </Text>
+        </Stack>
+      </Container>
+    );
+  }
+
+  if (error) {
+    return (
+      <Container size="lg" py="xl">
+        <Alert icon={<IconAlertCircle size={16} />} title="Error" color="red">
+          {error}
+        </Alert>
+      </Container>
+    );
+  }
+
+  return (
+    <Container size="lg" py="xl" className={classes.container}>
+      <Stack gap="xl">
+        <Title order={2} className={classes.title}>
+          Service Locations
+        </Title>
+
+        <Paper withBorder shadow="sm" p="md" radius="md">
+          <Stack gap="sm">
+            <Text size="sm" color="dimmed">
+              Select a service type to view available locations on the map
+            </Text>
             <NativeSelect
                 label="Service Type"
                 data={Object.values(locationServiceType).map((type) => ({ label: type, value: type }))}
@@ -80,25 +126,27 @@ export default function LocationsPage() {
                 onChange={(e) => setServiceType(e.target.value as locationServiceType)}
                 required
             ></NativeSelect>
-        </div>
-        
-    );
-  }
-  if (error) return <div className="text-red-500">{error}</div>;
+          </Stack>
+        </Paper>
 
-  return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Search Locations</h1>
-      <NativeSelect
-        label="Service Type"
-        data={Object.values(locationServiceType).map((type) => ({ label: type, value: type }))}
-        value={serviceType}
-        onChange={(e) => setServiceType(e.target.value as locationServiceType)}
-        required
-      ></NativeSelect>
-      <div className="h-[600px]">
-        <LocationsMap locations={serviceLocations} />
-      </div>
-    </div>
+        {!serviceLocations.length ? (
+          <Card withBorder shadow="sm" radius="md" p="xl">
+            <Stack align="center" gap="xs">
+              <IconMapPin size={48} stroke={1.5} className={classes.emptyIcon} />
+              <Title order={4}>No Locations Found</Title>
+              <Text color="dimmed" style={{ textAlign: 'center' }}>
+                We couldn&apos;t find any locations for {serviceType.toLowerCase()} services.
+              </Text>
+            </Stack>
+          </Card>
+        ) : (
+          <Card withBorder shadow="sm" radius="md" p={0} className={classes.mapCard}>
+            <div className={classes.mapContainer}>
+              <LocationsMap locations={serviceLocations} />
+            </div>
+          </Card>
+        )}
+      </Stack>
+    </Container>
   );
 }
