@@ -1,24 +1,18 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Map } from '@/components';
+import { AppointmentsMap } from '@/components';
 import { calendarsService } from '@/services/calendarsService';
 import { locationsService } from '@/services/locationsService';
 import { useAuthStore } from '@/stores/authStore';
-
-interface MapLocation {
-  id: string;
-  name: string;
-  position: [number, number];
-  address: string;
-  serviceType: string;
-}
+import { AppointmentMarker } from '@/types';
 
 export default function AppointmentsPage() {
-  const [locations, setLocations] = useState<MapLocation[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const user = useAuthStore((state) => state.user);
+
+  const [appointments, setAppointments] = useState<AppointmentMarker[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -88,8 +82,8 @@ export default function AppointmentsPage() {
               };
             }
           });
-        const validLocations = (await Promise.all(locationPromises)).filter(Boolean) as MapLocation[];
-        setLocations(validLocations);
+        const validLocations = (await Promise.all(locationPromises)).filter(Boolean) as AppointmentMarker[];
+        setAppointments(validLocations);
       } catch (err) {
         console.error('Error fetching data:', err);
         setError(err instanceof Error ? err.message : JSON.stringify(err));
@@ -99,10 +93,10 @@ export default function AppointmentsPage() {
     };
 
     fetchData();
-  }, [user?._id]);
+  }, [user?._id]);  
 
   if (loading) return <div>Loading appointments...</div>;
-  if (!loading && !locations.length) {
+  if (!loading && !appointments.length) {
     return <div>No appointments found for today.</div>;
   }
   if (error) return <div className="text-red-500">{error}</div>;
@@ -111,7 +105,7 @@ export default function AppointmentsPage() {
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">Today&#39;s Appointments</h1>
       <div className="h-[600px]">
-        <Map locations={locations} />
+        <AppointmentsMap appointments={appointments} />
       </div>
     </div>
   );

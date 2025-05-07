@@ -1,22 +1,7 @@
 declare module '@mapbox/search-js-react' {
   import * as React from 'react';
   import mapboxgl from 'mapbox-gl';
-  
-  interface Feature {
-    geometry: {
-      coordinates: [number, number];
-    };
-    properties: {
-      full_address?: string;
-      name?: string;
-      place_name?: string;
-    };
-  }
-  
-  interface RetrieveResponse {
-    features: Feature[];
-  }
-  
+
   export const AddressAutofill: React.FC<{
     accessToken: string;
     children?: React.ReactNode;
@@ -31,6 +16,7 @@ declare module '@mapbox/search-js-react' {
   export const SearchBox: React.FC<{
     accessToken: string;
     onRetrieve?: (res: RetrieveResponse) => void;
+    onClear?: () => void;
     children?: React.ReactNode;
     options?: {
       country?: string;

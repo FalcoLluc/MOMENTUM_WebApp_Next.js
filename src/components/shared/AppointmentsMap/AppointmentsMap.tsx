@@ -3,7 +3,8 @@
 import dynamic from 'next/dynamic';
 import { useState, useEffect } from 'react';
 import { Button } from '@mantine/core';
-import { Location } from '@/types';
+import { AppointmentMarker } from '@/types';
+import { isValidCoordinate } from '@/utils/validation';
 
 // Dynamically import Leaflet and react-leaflet components
 const MapContainer = dynamic(
@@ -44,7 +45,7 @@ if (typeof window !== 'undefined') {
 }
 
 // Auto-center component
-function AutoCenter({ locations, trigger }: { locations: Location[]; trigger?: boolean }) {
+function AutoCenter({ appointments, trigger }: { appointments: AppointmentMarker[]; trigger?: boolean }) {
   const [useMap, setUseMap] = useState<(() => import('leaflet').Map) | null>(null);
 
   useEffect(() => {
@@ -53,20 +54,30 @@ function AutoCenter({ locations, trigger }: { locations: Location[]; trigger?: b
 
   const map = useMap?.();
   useEffect(() => {
-    if (map && locations.length > 0) {
-      const bounds = L!.latLngBounds(locations.map((loc) => loc.position));
-      map.flyToBounds(bounds, { padding: [50, 50], duration: 1 });
+    if (!map || !L) return;
+
+    try {
+      const allAppointments = [...appointments.map(loc => loc.position)];
+
+      const validLocations = allAppointments.filter(isValidCoordinate);
+      
+      if (validLocations.length > 0) {
+        const bounds = L.latLngBounds(validLocations);
+        map.flyToBounds(bounds, { padding: [50, 50], duration: 1 });
+      }
+    } catch (error) {
+      console.error('Error centering map:', error);
     }
-  }, [locations, trigger, map]);
+  }, [appointments, trigger, map]);
   return null;
 }
 
-export function Map({
-  locations,
+export function AppointmentsMap({
+  appointments,
   center = [51.505, -0.09],
   zoom = 13,
 }: {
-  locations: Location[];
+  appointments: AppointmentMarker[];
   center?: L.LatLngExpression;
   zoom?: number;
 }) {
@@ -106,13 +117,13 @@ export function Map({
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
-        <AutoCenter locations={locations} trigger={centerTrigger} />
-        {locations.map((location) => (
-          <Marker key={location.id} position={location.position}>
+        <AutoCenter appointments={appointments} trigger={centerTrigger} />
+        {appointments.map((app) => (
+          <Marker key={app.id} position={app.position}>
             <Popup>
               <div style={{ minWidth: '200px' }}>
-                <h3 style={{ fontWeight: 'bold' }}>{location.name}</h3>
-                {location.address && <p>{location.address}</p>}
+                <h3 style={{ fontWeight: 'bold' }}>{app.name}</h3>
+                {app.address && <p>{app.address}</p>}
               </div>
             </Popup>
           </Marker>

@@ -47,7 +47,7 @@ export interface IAppointment {
 }
 
 // Tipus Location de Mongo
-export interface ILocation extends Document {
+export interface ILocation {
   _id: string;
   nombre: string;
   address: string;
@@ -66,9 +66,22 @@ export interface ILocation extends Document {
 }
 
 // Això és el tipus Location de leaflet (ho mapejem a aquí)
-export interface Location {
+// INTERFIACES PER A MARKERS DE MAP
+export interface AppointmentMarker {
   id: string;
   name: string;
   position: LatLngExpression;
   address?: string;
+  serviceType: string;
+}
+
+export interface  LocationMarker{
+  id: string;
+  name: string;
+  position: LatLngExpression;
+  address: string;
+  serviceTypes: string;
+  rating: number;
+  phone: string;
+  business: string;
 }

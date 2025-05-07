@@ -13,10 +13,45 @@ const SearchBox = dynamic(
 );
 
 interface SearchBoxFormProps {
-  onSave: (address: string, location: GeoJSONPoint) => void;
+  onSave: (address: string, location: GeoJSONPoint | undefined) => void;
   required?: boolean;
   label?: string;
 }
+
+interface MapboxFeature {
+  geometry: {
+    coordinates: [number, number];
+  };
+  properties: {
+    name: string;
+    mapbox_id: string;
+    feature_type: string;
+    address: string;
+    full_address: string;
+    place_formatted: string;
+    context: {
+      country?: {
+        name: string;
+        country_code: string;
+        country_code_alpha_3: string;
+      };
+      region?: {
+        name: string;
+        region_code: string;
+        region_code_full: string;
+      };
+      postcode?: { name: string };
+      place?: { name: string };
+      neighborhood?: { name: string };
+      street?: { name: string };
+    };
+    language: string;
+    maki?: string;
+    poi_category?: string[];
+    poi_category_ids?: string[];
+  };
+}
+
 
 export function SearchBoxForm({ 
   onSave, 
@@ -48,14 +83,18 @@ export function SearchBoxForm({
     };
   }, [mapboxToken]);
 
-  const handleRetrieve = useCallback((res: { features?: Array<{
-    geometry: { coordinates: [number, number] };
-    properties: { full_address?: string; name?: string };
-  }>}) => {
+  const handleRetrieve = useCallback((res: { features?: MapboxFeature[] }) => {
     const feature = res.features?.[0];
     if (feature) {
       const coords: [number, number] = feature.geometry.coordinates;
-      const selectedAddress = feature.properties.full_address || feature.properties.name || '';
+      //console.log(feature.properties)
+      const formatedAddress = [
+        feature.properties.context.street?.name,
+        feature.properties.address.split(' ').at(-1),
+        feature.properties.context.postcode?.name + ' ' +feature.properties.context.place?.name,
+        feature.properties.context.region?.name,
+      ].filter(Boolean).join(', ');
+      const selectedAddress = formatedAddress || feature.properties.full_address ||  '';
 
       mapRef.current?.flyTo({ center: coords, zoom: 15 });
 
@@ -75,6 +114,15 @@ export function SearchBoxForm({
       });
     }
   }, [marker, onSave]);
+
+  const handleClear = () => {
+    setAddress('');
+    if (marker) {
+      marker.remove();
+      setMarker(null);
+    }
+    onSave('', undefined); // Notify parent that the location is cleared
+  };
 
   if (!mapboxToken) {
     return (
@@ -100,12 +148,13 @@ export function SearchBoxForm({
         value={address}
         onChange={(value) => setAddress(value)}
         onRetrieve={handleRetrieve}
+        onClear={handleClear}
         map={mapRef.current}
         mapboxgl={mapboxgl}
         marker={false}
         options={{ 
           country: 'ES', 
-          language: 'es', 
+          language: 'en', 
           types: 'address',
         }}
         placeholder="Search an address"

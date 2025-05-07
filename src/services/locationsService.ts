@@ -1,6 +1,7 @@
 // src/services/locationsService.ts
 import apiClient from "@/lib/apiClient";
 import { ILocation } from "@/types";
+import { locationServiceType } from "@/types/enums";
 
 class LocationsService {
   async getLocationById(id: string) {
@@ -8,20 +9,17 @@ class LocationsService {
       const { data } = await apiClient.get<ILocation>(`/location/${id}`);
       return data;
     } catch (error) {
-      console.error('Error fetching location:', error);
-      return null;
+      console.error(error);
     }
   }
 
-  async getLocationsByService(serviceType: string) {
+  async getAllLocationsByServiceType(serviceType: locationServiceType) {
     try {
-      const { data } = await apiClient.get<ILocation[]>(`/locations?service=${serviceType}`);
+      const { data } = await apiClient.get<ILocation[]>(`/location/serviceType/${serviceType}`);
       return data;
     } catch (error) {
-      console.error('Error fetching locations by service:', error);
-      return null;
+      console.error(error);
     }
   }
 }
-
 export const locationsService = new LocationsService();
