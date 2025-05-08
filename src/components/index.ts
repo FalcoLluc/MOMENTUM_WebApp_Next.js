@@ -9,3 +9,4 @@ export { AppointmentsMap } from './shared/AppointmentsMap/AppointmentsMap';
 export { LocationsMap } from './shared/LocationsMap/LocationsMap';
 export { AddressForm } from './shared/AutoCompleteMapbox/AddressForm';
 export { SearchBoxForm } from './shared/AutoCompleteMapbox/SearchBoxForm';
+export { SearchBoxOpenStreetForm } from './shared/AutoCompleteMapbox/SearchBoxOpenStreet';

@@ -8,7 +8,10 @@ import { calendarsService } from "@/services/calendarsService";
 import { IAppointment, ICalendar, GeoJSONPoint } from "@/types";
 import { appointmentServiceType, appointmentState } from "@/types/enums";
 import { useEffect, useState } from "react";
+
+// TRIEM QUIN VOLEM PER BUSCAR ADREÇA
 import { SearchBoxForm  } from "@/components"
+//import { SearchBoxOpenStreetForm } from "@/components";
 
 export function NewAppointmentOverlay({
   disclosure: [open, handlers],
