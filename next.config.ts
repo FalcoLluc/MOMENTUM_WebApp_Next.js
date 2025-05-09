@@ -5,6 +5,10 @@ const nextConfig: NextConfig = {
     optimizePackageImports: ['@mantine/core', '@mantine/hooks'],
   }, 
   output: "standalone",
+  images: {
+    domains: ['tile.openstreetmap.org'],
+  },
+  reactStrictMode: true,
 };
 
 export default nextConfig;

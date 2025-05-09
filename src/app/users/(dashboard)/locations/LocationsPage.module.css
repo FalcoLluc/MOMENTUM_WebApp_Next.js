@@ -1,0 +1,32 @@
+/* Container styles */
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Title styles */
+.title {
+  text-align: center;
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+/* Empty state icon */
+.emptyIcon {
+  color: #adb5bd;
+}
+
+/* Map card styles */
+.mapCard {
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+/* Map container styles */
+.mapContainer {
+  height: 600px;
+  width: 100%;
+  position: relative;
+}
