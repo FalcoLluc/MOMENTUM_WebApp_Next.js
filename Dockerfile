@@ -36,8 +36,8 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
 # Copy and set up entrypoint as root
-COPY entrypoint.sh /entrypoint.sh
-RUN chown nextjs:nodejs /entrypoint.sh && chmod +x /entrypoint.sh
+COPY entrypoint.sh /usr/bin/
+RUN chmod +x /usr/bin/entrypoint.sh
 
 # Switch to non-root user
 USER nextjs
@@ -46,5 +46,5 @@ EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/usr/bin/entrypoint.sh"]
 CMD ["node", "server.js"]

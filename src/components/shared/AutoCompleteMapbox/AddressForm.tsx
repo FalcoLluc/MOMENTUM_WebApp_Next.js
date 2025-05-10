@@ -46,7 +46,7 @@ export function AddressForm({ onSave, initialAddress = '' }: AddressFormProps) {
     setAddress(value);
   };
 
-  const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN_PLACEHOLDER || process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
+  const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
 
   if (!mapboxToken) {
     return <TextInput label="Address" placeholder="Mapbox service unavailable" disabled />;
