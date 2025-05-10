@@ -4,12 +4,12 @@ import { useAuthStore } from '@/stores/authStore';
 
 // Main API client (no cookies for regular requests)
 const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080',
+  baseURL: process.env.NEXT_PUBLIC_API_URL_PLACEHOLDER || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080',
 });
 
 // Auth-specific client (sends cookies for login/refresh/logout)
 export const authClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080',
+  baseURL: process.env.NEXT_PUBLIC_API_URL_PLACEHOLDER || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080',
   withCredentials: true, // Critical for cookies
 });
 

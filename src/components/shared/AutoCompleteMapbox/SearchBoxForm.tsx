@@ -58,7 +58,7 @@ export function SearchBoxForm({
   required = false,
   label = 'Address'
 }: SearchBoxFormProps) {
-  const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN!;
+  const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN_PLACEHOLDER || process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const [address, setAddress] = useState('');

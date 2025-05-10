@@ -3,7 +3,7 @@
 import { AppointmentMarker, IAppointment } from "@/types";
 import { Badge, Button, Drawer, Group, Menu, Text, useMantineTheme } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { AppointmentsMap } from "../shared/AppointmentsMap/AppointmentsMap";
+import { AppointmentsMap } from "@/components";
 import { calendarsService } from "@/services/calendarsService";
 import { AppointmentState } from "@/types/enums";
 import { useState } from "react";
