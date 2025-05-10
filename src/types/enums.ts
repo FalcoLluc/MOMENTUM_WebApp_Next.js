@@ -1,4 +1,4 @@
-export enum appointmentServiceType {
+export enum AppointmentServiceType {
     PERSONAL = 'personal',
     // Personal care
     HAIRCUT = 'haircut',
@@ -45,13 +45,13 @@ export enum appointmentServiceType {
 }
 
 
-export enum appointmentState {
+export enum AppointmentState {
     REQUESTED = 'requested',
     ACCEPTED = 'accepted',
     REJECTED = 'rejected',
 }
 
-export enum locationServiceType {
+export enum LocationServiceType {
     // Personal care
     HAIRCUT = 'haircut',
     HAIR_COLOR = 'hair coloring',
@@ -96,7 +96,7 @@ export enum locationServiceType {
     COACHING = 'coaching session',
 }
 
-export enum locationSchedule {
+export enum LocationSchedule {
     MONDAY = 'monday',
     TUESDAY = 'tuesday',
     WEDNESDAY = 'wednesday',

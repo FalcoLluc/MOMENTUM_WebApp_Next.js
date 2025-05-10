@@ -7,8 +7,6 @@ import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { IAppointment, ICalendar } from "@/types";
 import { Loader } from "@mantine/core";
-import { AppointmentOverlay } from "./appointmentOverlay";
-import { useDisclosure } from "@mantine/hooks";
 
 
 function eventStyleGetter(event: Event, start: Date, end: Date, isSelected: boolean) {
@@ -22,7 +20,10 @@ function eventStyleGetter(event: Event, start: Date, end: Date, isSelected: bool
     };
 };
 
-export function BigCalendar({ calendars = [] }: { calendars: ICalendar[] }) {
+export function BigCalendar(
+    { calendars = [], onSelectAppointment }:
+    { calendars: ICalendar[], onSelectAppointment: (appointment: IAppointment) => void }
+) {
     const [appointments, setAppointments] = useState<Event[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -31,9 +32,6 @@ export function BigCalendar({ calendars = [] }: { calendars: ICalendar[] }) {
     const mountedRef = useRef(true);
     
     const localizer = momentLocalizer(moment);
-
-    const [viewingAppointment, setViewingAppointment] = useState<IAppointment | null>(null)
-    const [appointmentOverlay, appointmentOverlayHandlers] = useDisclosure();
 
     useEffect(() => {
         return () => {
@@ -148,11 +146,6 @@ export function BigCalendar({ calendars = [] }: { calendars: ICalendar[] }) {
         };
     }, [currentDate, fetchAppointments, currentView]);
 
-    function onSelectEvent(event: Event) {
-        setViewingAppointment(event.resource);
-        appointmentOverlayHandlers.open();
-    }
-
     return (
         <div style={{ position: 'relative' }}>
             {isLoading && (
@@ -198,14 +191,8 @@ export function BigCalendar({ calendars = [] }: { calendars: ICalendar[] }) {
                 titleAccessor="title"
                 defaultView={Views.MONTH}
                 eventPropGetter={eventStyleGetter}
-                onSelectEvent={onSelectEvent}
+                onSelectEvent={(event) => onSelectAppointment(event.resource)}
             />
-
-            <AppointmentOverlay
-                disclosure={[appointmentOverlay, appointmentOverlayHandlers]}
-                appointment={viewingAppointment}
-                onAppointmentDeleted={() => {}} //TODO
-            ></AppointmentOverlay>
         </div>
     );
 }

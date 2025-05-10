@@ -6,7 +6,7 @@ import { DateTimePicker } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import { calendarsService } from "@/services/calendarsService";
 import { IAppointment, ICalendar, GeoJSONPoint } from "@/types";
-import { appointmentServiceType, appointmentState } from "@/types/enums";
+import { AppointmentServiceType, AppointmentState } from "@/types/enums";
 import { useEffect, useState } from "react";
 
 // TRIEM QUIN VOLEM PER BUSCAR ADREÇA
@@ -34,7 +34,7 @@ export function NewAppointmentOverlay({
     calendar: string | undefined;
     title: string;
     location?: string;
-    serviceType: appointmentServiceType;
+    serviceType: AppointmentServiceType;
     description?: string;
     startTime: Date;
     endTime: Date;
@@ -48,7 +48,7 @@ export function NewAppointmentOverlay({
     initialValues: {
       calendar: "",
       title: "",
-      serviceType: appointmentServiceType.PERSONAL, // Default service type
+      serviceType: AppointmentServiceType.PERSONAL, // Default service type
       description: "",
       startTime: getDefaultEventTime("start"),
       endTime: getDefaultEventTime("end"),
@@ -87,7 +87,7 @@ export function NewAppointmentOverlay({
       serviceType: values.serviceType,
       description: values.description || undefined, // Convert empty string to undefined
       colour: values.colour,
-      appointmentState: appointmentState.ACCEPTED,
+      appointmentState: AppointmentState.ACCEPTED,
       isDeleted: false,
       ...(values.customUbicacion && values.customAddress
         ? {
@@ -140,7 +140,7 @@ export function NewAppointmentOverlay({
         <NativeSelect
           key={form.key("serviceType")}
           label="Service Type"
-          data={Object.values(appointmentServiceType).map((type) => ({ label: type, value: type }))}
+          data={Object.values(AppointmentServiceType).map((type) => ({ label: type, value: type }))}
           {...form.getInputProps("serviceType")}
           required
         ></NativeSelect>

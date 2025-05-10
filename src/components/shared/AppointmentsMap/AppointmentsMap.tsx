@@ -60,10 +60,10 @@ function AutoCenter({ appointments, trigger }: { appointments: AppointmentMarker
       const allAppointments = [...appointments.map(loc => loc.position)];
 
       const validLocations = allAppointments.filter(isValidCoordinate);
-      
       if (validLocations.length > 0) {
         const bounds = L.latLngBounds(validLocations);
-        map.flyToBounds(bounds, { padding: [50, 50], duration: 1 });
+        console.debug(bounds);
+        map.fitBounds(bounds, {duration: 1});
       }
     } catch (error) {
       console.error('Error centering map:', error);
