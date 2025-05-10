@@ -35,6 +35,9 @@ COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
+# Ensure the nextjs user has write permissions to the /public directory
+RUN chown -R nextjs:nodejs /app/public
+
 # Copy and set up entrypoint as root
 COPY entrypoint.sh /usr/bin/
 RUN chmod +x /usr/bin/entrypoint.sh

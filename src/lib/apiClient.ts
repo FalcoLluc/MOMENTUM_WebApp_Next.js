@@ -3,16 +3,20 @@ import axios from 'axios';
 import { useAuthStore } from '@/stores/authStore';
 import { getRuntimeEnv } from '@/utils/getRuntimeEnv';
 
-const { NEXT_PUBLIC_API_URL } = getRuntimeEnv();
+function getApiBaseUrl() {
+  const { NEXT_PUBLIC_API_URL } = getRuntimeEnv();
+  console.log('Using API Base URL:', NEXT_PUBLIC_API_URL); // Debug log
+  return NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+}
 
 // Main API client (no cookies for regular requests)
 const apiClient = axios.create({
-  baseURL: NEXT_PUBLIC_API_URL || 'http://localhost:8080',
+  baseURL: getApiBaseUrl(),
 });
 
 // Auth-specific client (sends cookies for login/refresh/logout)
 export const authClient = axios.create({
-  baseURL: NEXT_PUBLIC_API_URL || 'http://localhost:8080',
+  baseURL: getApiBaseUrl(),
   withCredentials: true, // Critical for cookies
 });
 
