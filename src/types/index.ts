@@ -86,3 +86,16 @@ export interface  LocationMarker{
   phone: string;
   business: string;
 }
+
+export interface IMessage {
+  from: string;
+  text: string;
+  timestamp: Date;
+}
+
+export interface IChat{
+  user1: User;
+  user2: User;
+  messages: IMessage[];
+  _id?: string;
+}

@@ -11,3 +11,5 @@ export { AddressForm } from './shared/AutoCompleteMapbox/AddressForm';
 export { SearchBoxForm } from './shared/AutoCompleteMapbox/SearchBoxForm';
 export { SearchBoxOpenStreetForm } from './shared/AutoCompleteMapbox/SearchBoxOpenStreet';
 export { AppointmentOverlay} from './calendar/appointmentOverlay'
+export { ChatList } from './chat/ChatList'
+export { MessageWindow } from './chat/MessageWindow'
