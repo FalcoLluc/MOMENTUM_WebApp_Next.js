@@ -1,4 +1,4 @@
-import { appointmentServiceType, appointmentState, locationServiceType, locationSchedule } from '@/types/enums';
+import { AppointmentServiceType, AppointmentState, LocationServiceType, LocationSchedule } from '@/types/enums';
 import { LatLngExpression } from 'leaflet';
 
 // Els ObjectID de Mongo els posem com strings
@@ -33,13 +33,14 @@ export interface ICalendar {
 
 export interface IAppointment {
   _id?: string;
+  calendarId?: string;
   inTime: Date;
   outTime: Date;
   title: string;
   description?: string;
   location?: string;
-  serviceType: appointmentServiceType;
-  appointmentState?: appointmentState;
+  serviceType: AppointmentServiceType;
+  appointmentState?: AppointmentState;
   colour?: string;
   customAddress?: string; // e.g. "123 Main St, Apt 4B, New York"
   customUbicacion?: GeoJSONPoint
@@ -54,9 +55,9 @@ export interface ILocation {
   phone: string;
   rating: number;
   ubicacion: GeoJSONPoint;
-  serviceType: locationServiceType[];
+  serviceType: LocationServiceType[];
   schedule: {
-    day: locationSchedule;
+    day: LocationSchedule;
     open: string;  // HH:mm
     close: string; // HH:mm
   }[];

@@ -17,7 +17,7 @@ import { IconAlertCircle, IconMapPin } from '@tabler/icons-react';
 import { locationsService } from '@/services/locationsService';
 import { useAuthStore } from '@/stores/authStore';
 import { LocationMarker } from '@/types';
-import { locationServiceType } from '@/types/enums';
+import { LocationServiceType } from '@/types/enums';
 import classes from './LocationsPage.module.css';
 
 export default function LocationsPage() {
@@ -26,7 +26,7 @@ export default function LocationsPage() {
   const user = useAuthStore((state) => state.user);
 
   const [serviceLocations, setServiceLocations] = useState<LocationMarker[]>([]);
-  const [serviceType, setServiceType] = useState<locationServiceType>(locationServiceType.COACHING);
+  const [serviceType, setServiceType] = useState<LocationServiceType>(LocationServiceType.COACHING);
 
   useEffect(() => {
     const fetchServiceLocations = async () => {
@@ -121,9 +121,9 @@ export default function LocationsPage() {
             </Text>
             <NativeSelect
                 label="Service Type"
-                data={Object.values(locationServiceType).map((type) => ({ label: type, value: type }))}
+                data={Object.values(LocationServiceType).map((type) => ({ label: type, value: type }))}
                 value={serviceType}
-                onChange={(e) => setServiceType(e.target.value as locationServiceType)}
+                onChange={(e) => setServiceType(e.target.value as LocationServiceType)}
                 required
             ></NativeSelect>
           </Stack>
