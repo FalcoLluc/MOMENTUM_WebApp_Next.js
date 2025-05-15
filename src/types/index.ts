@@ -4,18 +4,18 @@ import { LatLngExpression } from 'leaflet';
 // Els ObjectID de Mongo els posem com strings
 
 export interface LoginRequestBody {
-    name_or_mail: string;
-    password: string;
-  }
+  name_or_mail: string;
+  password: string;
+}
 
 export interface User {
-    _id?: string;
-    name: string;
-    age: number;
-    mail: string;
-    password: string;
-    isDeleted?: boolean;
-  }
+  _id?: string;
+  name: string;
+  age: number;
+  mail: string;
+  password: string;
+  isDeleted?: boolean;
+}
 export interface GeoJSONPoint {
   type: 'Point';
   coordinates: [number, number]; // [longitude, latitude]
@@ -64,6 +64,14 @@ export interface ILocation {
   business: string
   workers: string[];
   isDeleted: boolean;
+}
+
+export interface NewBusinessRequestBody {
+  name: string;
+  age: number;
+  mail: string;
+  password: string;
+  businessName: string;
 }
 
 // Això és el tipus Location de leaflet (ho mapejem a aquí)
