@@ -1,30 +1,19 @@
 'use client';
-
 import { useEffect, useState } from 'react';
 import { LocationsMap } from '@/components';
-import { 
-  NativeSelect, 
-  Paper, 
-  Title, 
-  Text, 
-  Stack, 
-  Alert, 
-  Container,
-  Card,
-  Loader
-} from '@mantine/core';
+import {  NativeSelect,  Paper,  Title,  Text,  Stack,  Alert, Container, Card, Loader} from '@mantine/core';
 import { IconAlertCircle, IconMapPin } from '@tabler/icons-react';
 import { locationsService } from '@/services/locationsService';
 import { useAuthStore } from '@/stores/authStore';
 import { LocationMarker } from '@/types';
 import { locationServiceType } from '@/types/enums';
 import classes from './LocationsPage.module.css';
+import LocationsFilter from "@/components/shared/LocationsFilter/LocationsFilter";
 
 export default function LocationsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const user = useAuthStore((state) => state.user);
-
   const [serviceLocations, setServiceLocations] = useState<LocationMarker[]>([]);
   const [serviceType, setServiceType] = useState<locationServiceType>(locationServiceType.COACHING);
 
@@ -114,20 +103,8 @@ export default function LocationsPage() {
           Service Locations
         </Title>
 
-        <Paper withBorder shadow="sm" p="md" radius="md">
-          <Stack gap="sm">
-            <Text size="sm" color="dimmed">
-              Select a service type to view available locations on the map
-            </Text>
-            <NativeSelect
-                label="Service Type"
-                data={Object.values(locationServiceType).map((type) => ({ label: type, value: type }))}
-                value={serviceType}
-                onChange={(e) => setServiceType(e.target.value as locationServiceType)}
-                required
-            ></NativeSelect>
-          </Stack>
-        </Paper>
+        {/* Mostrar filtro - el filtro actualizará las ubicaciones */}
+        <LocationsFilter onLocationsChange={setServiceLocations} />
 
         {!serviceLocations.length ? (
           <Card withBorder shadow="sm" radius="md" p="xl">

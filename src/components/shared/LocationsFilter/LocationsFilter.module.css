@@ -1,0 +1,89 @@
+/* Contenedor principal del filtro */
+.locationsFilterContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+/* Botones principales (Todos / Favoritos) */
+.filterToggleButtons {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+/* Dropdown general */
+.filterDropdown {
+  width: 100%;
+}
+
+/* Menú desplegable con scroll */
+.dropdownScrollArea {
+  max-height: 200px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+/* Input de búsqueda de ciudad */
+.citySearchInput {
+  width: 100%;
+  margin-bottom: 0.5rem;
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Estilo de cada ciudad en la lista */
+.cityOption {
+  cursor: pointer;
+  padding: 4px 0;
+}
+
+/* Estilo del time picker */
+.timeInput {
+  width: 100%;
+  padding: 8px;
+  margin-top: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+/* Etiquetas de texto pequeñas */
+.textLabel {
+  font-size: 0.9rem;
+  color: #495057;
+  margin-bottom: 4px;
+}
+
+/* Input tipo range para filtros */
+.rangeInput :global(input[type="range"]) {
+  width: 100%;
+  margin-top: 4px;
+}
+
+/* Botón de limpiar filtros */
+.clearButton {
+  margin-top: 0.5rem;
+}
+
+/* Botón deshabilitado de disponibilidad */
+.disabledButton {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Resultados */
+.resultsList {
+  max-height: 200px;
+  overflow-y: auto;
+  margin-top: 1rem;
+}
+
+/* Mensaje de error */
+.errorText {
+  color: red;
+  margin-top: 0.5rem;
+}
