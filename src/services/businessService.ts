@@ -28,6 +28,11 @@ class BusinessService {
       const { data } = await apiClient.get(`/business/search/${encodeURIComponent(name)}`);
       return data.businesses;
     } catch (error: any) {
+
+      if (error.response?.status === 404) {
+        console.warn("No cities found matching the filters");
+        return [];
+      }
       console.error("Error searching business by name:", error?.response?.data || error);
       return null;
     }

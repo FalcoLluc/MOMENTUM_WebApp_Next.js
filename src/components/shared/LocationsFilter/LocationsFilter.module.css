@@ -1,89 +1,203 @@
-/* Contenedor principal del filtro */
-.locationsFilterContainer {
+/* Estilo para el botón Todos/Favoritos */
+.btnElegant {
+  background-color: #f5f5f5;
+  color: #444;
+  border: 1.5px solid #ccc;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 10px 20px;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 0; /* por defecto, sin bordes */
+}
+
+.btnElegant:hover {
+  background-color: #e0e0e0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.btnElegant:active {
+  background-color: #ccc;
+}
+
+.btnElegant:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(100, 100, 100, 0.4);
+}
+
+/* Estado activo */
+.btnActive {
+  background-color: #999999;
+  color: white;
+  border-color: #888888;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+/* Botones de filtro */
+.customButton {
+  background-color: #f5f5f5;
+  color: #333;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.customButton:hover {
+  background-color: #e0e0e0;
+}
+
+.customButtonActive {
+  background-color: #999999;
+  color: white;
+  border-color: #888888;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+/* Ciudades seleccionadas debajo */
+.selectedCitiesContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.selectedCity {
+  background-color: #e0e0e0;
+  color: #333;
+  padding: 6px 10px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+.removeCityBtn {
+  margin-left: 6px;
+  background: none;
+  border: none;
+  color: #555;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.removeCityBtn:hover {
+  color: #c00;
+}
+
+/* Horario de apertura */
+.timeDayWrapper {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  padding: 1rem;
-  background-color: #f8f9fa;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.timeInput,
+.daySelect {
+  width: 100%;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background-color: #f8f8f8;
+  font-size: 0.95rem;
+}
+
+.timeInput:focus,
+.daySelect:focus {
+  outline: none;
+  border-color: #888;
+  background-color: #fff;
+}
+
+/* Puntuación mínima, barra de progreso */
+.sliderWrapper {
+  margin-top: 8px;
+  padding: 8px 4px;
+  background-color: #f5f5f5;
   border-radius: 8px;
 }
 
-/* Botones principales (Todos / Favoritos) */
-.filterToggleButtons {
+.clearButton {
+  margin-top: 6px;
+  background-color: transparent;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  font-size: 0.85rem;
+  text-decoration: underline;
+}
+
+.clearButton:hover {
+  color: #555;
+}
+
+/* Contenedor principal y grupos */
+.container {
   display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.buttonGroup {
+  display: flex;
+  justify-content: space-between;
   gap: 0.5rem;
-  justify-content: center;
 }
 
-/* Dropdown general */
-.filterDropdown {
+/* Ciudad: input + sugerencias */
+.cityInput {
   width: 100%;
+  margin-bottom: 8px;
+  padding: 4px;
 }
 
-/* Menú desplegable con scroll */
-.dropdownScrollArea {
+.citySuggestions {
   max-height: 200px;
   overflow-y: auto;
-  padding-right: 0.5rem;
 }
 
-/* Input de búsqueda de ciudad */
-.citySearchInput {
-  width: 100%;
-  margin-bottom: 0.5rem;
-  padding: 6px 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-/* Estilo de cada ciudad en la lista */
-.cityOption {
+.citySuggestionItem {
   cursor: pointer;
   padding: 4px 0;
 }
 
-/* Estilo del time picker */
-.timeInput {
-  width: 100%;
-  padding: 8px;
-  margin-top: 8px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-}
-
-/* Etiquetas de texto pequeñas */
-.textLabel {
-  font-size: 0.9rem;
-  color: #495057;
-  margin-bottom: 4px;
-}
-
-/* Input tipo range para filtros */
-.rangeInput :global(input[type="range"]) {
-  width: 100%;
-  margin-top: 4px;
-}
-
-/* Botón de limpiar filtros */
-.clearButton {
-  margin-top: 0.5rem;
-}
-
-/* Botón deshabilitado de disponibilidad */
-.disabledButton {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-/* Resultados */
-.resultsList {
+/* Resultados del filtro */
+.scrollResults {
   max-height: 200px;
   overflow-y: auto;
   margin-top: 1rem;
 }
 
-/* Mensaje de error */
-.errorText {
-  color: red;
-  margin-top: 0.5rem;
+/* Para ordenar los filtros */
+.filtersRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.filtersRow > * {
+  flex: 1;
+  min-width: 180px;
+}
+
+/* Agrupación botones Todos/Favoritos sin separación */
+.filterToggleButtons {
+  display: flex;
+  justify-content: center;
+  gap: 0;
+}
+
+.btnElegant:first-child {
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+}
+
+.btnElegant:last-child {
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+.btnElegant:not(:last-child) {
+  border-right: none;
 }

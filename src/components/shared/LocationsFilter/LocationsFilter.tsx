@@ -26,14 +26,22 @@ export default function LocationsFilter({ onLocationsChange }: LocationsFilterPr
   const [selectedTypes, setSelectedTypes] = useState<locationServiceType[]>([]);
   const [searchCityText, setSearchCityText] = useState<string>("");
   const [citySuggestions, setCitySuggestions] = useState<string[]>([]);
-  const [selectedCities, setSelectedCities] = useState<string[]>([]);
+  const [cities, setSelectedCities] = useState<string[]>([]);
   const [showTimePicker, setShowTimePicker] = useState<boolean>(false);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
-  const [minRating, setMinRating] = useState<number>(0);
+  const [ratingMin, setMinRating] = useState<number>(0);
   const [maxDistance, setMaxDistance] = useState<number>(0);
   const [results, setResults] = useState<IBusiness[] | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [selectedDay, setSelectedDay] = useState<string | null>(null);
+  const [showRating, setShowRating] = useState(false);
+  const [showDistance, setShowDistance] = useState(false);
+
+  
+  const getTodayDayString = (): string => {
+  return new Date().toLocaleDateString("en-US", { weekday: "long" }).toLowerCase();
+};
 
   const serviceOptions = Object.values(locationServiceType).map((value) => ({
     value,
@@ -72,6 +80,22 @@ export default function LocationsFilter({ onLocationsChange }: LocationsFilterPr
     fetchCitySuggestions();
   }, [searchCityText]);
 
+  const [coords, setCoords] = useState<{ lat: number; lon: number } | null>(null);
+
+    useEffect(() => {
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+        setCoords({
+            lat: position.coords.latitude,
+            lon: position.coords.longitude,
+        });
+        },
+        (err) => {
+        console.warn("No se pudo obtener ubicación:", err);
+        }
+    );
+    }, []);
+
   const handleFilter = async () => {
     if (!user?._id) {
       setError("User not authenticated");
@@ -83,13 +107,19 @@ export default function LocationsFilter({ onLocationsChange }: LocationsFilterPr
       setError(null);
 
       const appliedFilters: FilterOptions = {
-        ...filters,
-        ...(selectedTypes.length > 0 ? { serviceTypes: selectedTypes } : {}),
-        ...(selectedCities.length > 0 ? { cities: selectedCities } : {}),
-        ...(selectedTime ? { time: selectedTime } : {}),
-        ...(minRating > 0 ? { minRating } : {}),
-        ...(maxDistance > 0 ? { maxDistance } : {}),
+        ...(selectedTypes.length > 0 && { serviceTypes: selectedTypes }),
+        ...(cities.length > 0 && { cities }),
+        ...(selectedTime && { time: selectedTime }),
+        ...(ratingMin > 0 && { ratingMin }),
+        ...(maxDistance > 0 && { maxDistance }),
+        ...(coords && !isNaN(coords.lat) && !isNaN(coords.lon) && {
+            lat: coords.lat,
+            lon: coords.lon,
+        }),
+        ...(selectedTime && { day: selectedDay ?? getTodayDayString() }), // sólo envía 'day' si se elige hora
       };
+
+      console.log("Applied filters:", appliedFilters);
 
       let data: IBusiness[] | null = null;
       if (activeTab === "todos") {
@@ -123,133 +153,207 @@ export default function LocationsFilter({ onLocationsChange }: LocationsFilterPr
     }
   };
 
-  return (
+return (
   <div className={styles.container}>
-    <Group className={styles.buttonGroup}>
-      <Button variant={activeTab === "todos" ? "filled" : "outline"} onClick={() => setActiveTab("todos")}>Todos</Button>
-      <Button variant={activeTab === "favoritos" ? "filled" : "outline"} onClick={() => setActiveTab("favoritos")}>Favoritos</Button>
-    </Group>
+    {/* Botones de tabs */}
+    <div className={styles.filterToggleButtons}>
+      <Button
+        className={`${styles.btnElegant} ${activeTab === "todos" ? styles.btnActive : ""}`}
+        onClick={() => setActiveTab("todos")}
+      >
+        Todos
+      </Button>
+      <Button
+        className={`${styles.btnElegant} ${activeTab === "favoritos" ? styles.btnActive : ""}`}
+        onClick={() => setActiveTab("favoritos")}
+      >
+        Favoritos
+      </Button>
+    </div>
 
-    <Menu shadow="md" width={260}>
-      <Menu.Target>
-        <Button>
-          {selectedTypes.length > 0
-            ? `${selectedTypes.length} tipo${selectedTypes.length > 1 ? "s" : ""}`
-            : "Tipos de servicio"}
-        </Button>
-      </Menu.Target>
-      <Menu.Dropdown>
-        <ScrollArea style={{ height: 200 }} pr="xs">
-          {serviceOptions.map(({ value, label }) => (
-            <Checkbox
-              key={value}
-              label={label}
-              checked={selectedTypes.includes(value)}
-              onChange={(e) => {
-                const checked = e.currentTarget.checked;
-                setSelectedTypes((prev) =>
-                  checked ? [...prev, value] : prev.filter((t) => t !== value)
-                );
-              }}
-              mb="xs"
-            />
-          ))}
-        </ScrollArea>
-      </Menu.Dropdown>
-    </Menu>
+    {/* Filtros en una sola fila */}
+    <div className={styles.filtersRow}>
 
-    <Menu shadow="md" width={260}>
-      <Menu.Target>
-        <Button variant={selectedCities.length ? "filled" : "outline"}>
-          {selectedCities.length > 0 ? selectedCities.join(', ') : 'Ciudad'}
-        </Button>
-      </Menu.Target>
-      <Menu.Dropdown>
-        <div style={{ padding: 8 }}>
-          <input
-            type="text"
-            value={searchCityText}
-            onChange={(e) => setSearchCityText(e.target.value)}
-            placeholder="Buscar ciudad..."
-            style={{ width: '100%', marginBottom: 8, padding: 4 }}
-          />
-          <ScrollArea className={styles.citySuggestions}>
-            {citySuggestions.map((city) => (
-              <Text
-                key={city}
-                onClick={() => {
-                  if (!selectedCities.includes(city)) {
-                    setSelectedCities((prev) => [...prev, city]);
-                  }
+      {/* Filtro tipo de servicio */}
+      <Menu shadow="md" width={260}>
+        <Menu.Target>
+          <Button
+            className={selectedTypes.length > 0 ? styles.customButtonActive : styles.customButton}
+          >
+            {selectedTypes.length > 0
+              ? `${selectedTypes.length} tipo${selectedTypes.length > 1 ? "s" : ""}`
+              : "Tipos de servicio"}
+          </Button>
+        </Menu.Target>
+        <Menu.Dropdown>
+          <ScrollArea style={{ height: 200 }} pr="xs">
+            {serviceOptions.map(({ value, label }) => (
+              <Checkbox
+                key={value}
+                label={label}
+                checked={selectedTypes.includes(value)}
+                onChange={(e) => {
+                  const checked = e.currentTarget.checked;
+                  setSelectedTypes((prev) =>
+                    checked ? [...prev, value] : prev.filter((t) => t !== value)
+                  );
                 }}
-                style={{ cursor: 'pointer', padding: '4px 0' }}
-              >
-                {city}
-              </Text>
+                mb="xs"
+              />
             ))}
           </ScrollArea>
-        </div>
-      </Menu.Dropdown>
-    </Menu>
+        </Menu.Dropdown>
+      </Menu>
 
-    {/* Filtro por hora */}
-    <div>
-      <Button
-        variant={selectedTime ? "filled" : "outline"}
-        onClick={() => setShowTimePicker((prev) => !prev)}
-        fullWidth
-      >
-        {selectedTime ? `Abierto a ${selectedTime}` : "Abierto a"}
-      </Button>
-      {showTimePicker && (
-        <input
-          type="time"
-          value={selectedTime ?? ""}
-          onChange={(e) => setSelectedTime(e.target.value)}
-          style={{ marginTop: "8px", width: "100%", padding: "8px" }}
-        />
-      )}
+      {/* Filtro ciudad */}
+      <Menu shadow="md" width={260}>
+        <Menu.Target>
+          <Button
+            className={cities.length > 0 ? styles.customButtonActive : styles.customButton}
+          >
+            Ciudad
+          </Button>
+        </Menu.Target>
+        <Menu.Dropdown>
+          <div className={styles.citySearchWrapper}>
+            <input
+              type="text"
+              value={searchCityText}
+              onChange={(e) => setSearchCityText(e.target.value)}
+              placeholder="Buscar ciudad..."
+              className={styles.cityInput}
+            />
+            <ScrollArea className={styles.citySuggestions}>
+              {citySuggestions.map((city) => (
+                <Text
+                  key={city}
+                  onClick={() => {
+                    if (!cities.includes(city)) {
+                      setSelectedCities((prev) => [...prev, city]);
+                    }
+                  }}
+                  className={styles.citySuggestionItem}
+                >
+                  {city}
+                </Text>
+              ))}
+            </ScrollArea>
+          </div>
+        </Menu.Dropdown>
+      </Menu>
+
+      {/* Filtro por hora/día */}
+      <div style={{ flex: 1 }}>
+        <Button
+          className={
+            selectedTime || selectedDay ? styles.customButtonActive : styles.customButton
+          }
+          onClick={() => setShowTimePicker((prev) => !prev)}
+          fullWidth
+        >
+          {selectedTime || selectedDay
+            ? `Abierto${selectedTime ? ` a ${selectedTime}` : ""}${selectedDay ? ` (${selectedDay})` : ""}`
+            : "Abierto a..."}
+        </Button>
+        {showTimePicker && (
+          <div className={styles.timeDayWrapper}>
+            <input
+              type="time"
+              value={selectedTime ?? ""}
+              onChange={(e) => setSelectedTime(e.target.value)}
+              className={styles.timeInput}
+            />
+            <select
+              value={selectedDay ?? ""}
+              onChange={(e) => setSelectedDay(e.target.value || null)}
+              className={styles.daySelect}
+            >
+              <option value="">(Hoy)</option>
+              <option value="monday">Lunes</option>
+              <option value="tuesday">Martes</option>
+              <option value="wednesday">Miércoles</option>
+              <option value="thursday">Jueves</option>
+              <option value="friday">Viernes</option>
+              <option value="saturday">Sábado</option>
+              <option value="sunday">Domingo</option>
+            </select>
+          </div>
+        )}
+      </div>
+
+      {/* Filtro valoración mínima */}
+      <div style={{ flex: 1 }}>
+        <Button
+          className={ratingMin > 0 ? styles.customButtonActive : styles.customButton}
+          onClick={() => setShowRating((prev) => !prev)}
+          fullWidth
+        >
+          {ratingMin > 0 ? `Valoración mínima: ${ratingMin.toFixed(1)} ⭐` : "Valoración mínima"}
+        </Button>
+        {showRating && (
+          <div className={styles.sliderWrapper}>
+            <input
+              type="range"
+              min={0}
+              max={5}
+              step={0.1}
+              value={ratingMin}
+              onChange={(e) => setMinRating(parseFloat(e.target.value))}
+              style={{ width: "100%" }}
+            />
+            <button className={styles.clearButton} onClick={() => setMinRating(0)}>
+              Limpiar
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Filtro distancia */}
+      <div style={{ flex: 1 }}>
+        <Button
+          className={maxDistance > 0 ? styles.customButtonActive : styles.customButton}
+          onClick={() => setShowDistance((prev) => !prev)}
+          fullWidth
+        >
+          {maxDistance > 0 ? `Distancia máxima: ${maxDistance} km` : "Distancia máxima"}
+        </Button>
+        {showDistance && (
+          <div className={styles.sliderWrapper}>
+            <input
+              type="range"
+              min={0}
+              max={100}
+              step={1}
+              value={maxDistance}
+              onChange={(e) => setMaxDistance(parseInt(e.target.value))}
+              style={{ width: "100%" }}
+            />
+            <button className={styles.clearButton} onClick={() => setMaxDistance(0)}>
+              Limpiar
+            </button>
+          </div>
+        )}
+      </div>
     </div>
 
-    {/* Filtro por valoración mínima */}
-    <div className={styles.sliderWrapper}>
-      <Text size="sm" className={styles.sliderLabel}>
-        Valoración mínima: {minRating.toFixed(1)} ⭐
-      </Text>
-      <input
-        type="range"
-        min={0}
-        max={5}
-        step={0.1}
-        value={minRating}
-        onChange={(e) => setMinRating(parseFloat(e.target.value))}
-        style={{ width: "100%" }}
-      />
-      <button className={styles.clearButton} onClick={() => setMinRating(0)}>
-        Limpiar
-      </button>
-    </div>
+    {/* Ciudades seleccionadas */}
+    {cities.length > 0 && (
+      <div className={styles.selectedCitiesContainer}>
+        {cities.map((city) => (
+          <span key={city} className={styles.selectedCity}>
+            {city}
+            <button
+              className={styles.removeCityBtn}
+              onClick={() => setSelectedCities((prev) => prev.filter((c) => c !== city))}
+            >
+              ×
+            </button>
+          </span>
+        ))}
+      </div>
+    )}
 
-    {/* Filtro por distancia */}
-    <div className={styles.sliderWrapper}>
-      <Text size="sm" className={styles.sliderLabel}>
-        Distancia máxima: {maxDistance} km
-      </Text>
-      <input
-        type="range"
-        min={0}
-        max={100}
-        step={1}
-        value={maxDistance}
-        onChange={(e) => setMaxDistance(parseInt(e.target.value))}
-        style={{ width: "100%" }}
-      />
-      <button className={styles.clearButton} onClick={() => setMaxDistance(0)}>
-        Limpiar
-      </button>
-    </div>
-
-    {/* Botón de disponibilidad */}
+    {/* Botón disponibilidad y buscar */}
     <Button variant="outline" color="gray" fullWidth disabled>
       Disponibilidad (próximamente)
     </Button>
