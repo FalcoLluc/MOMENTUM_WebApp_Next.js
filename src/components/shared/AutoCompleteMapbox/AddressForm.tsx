@@ -3,7 +3,10 @@
 import { TextInput } from '@mantine/core';
 import { useState, useCallback } from 'react';
 import { GeoJSONPoint } from '@/types';
+import { getRuntimeEnv } from '@/utils/getRuntimeEnv';
 import dynamic from 'next/dynamic';
+
+const { NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN } = getRuntimeEnv();
 
 const AddressAutofill = dynamic(
   () => import('@mapbox/search-js-react').then((mod) => mod.AddressAutofill),
@@ -46,7 +49,7 @@ export function AddressForm({ onSave, initialAddress = '' }: AddressFormProps) {
     setAddress(value);
   };
 
-  const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
+  const mapboxToken = NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
 
   if (!mapboxToken) {
     return <TextInput label="Address" placeholder="Mapbox service unavailable" disabled />;

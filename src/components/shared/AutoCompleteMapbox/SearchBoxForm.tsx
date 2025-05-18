@@ -3,9 +3,12 @@
 import { useRef, useEffect, useState, useCallback } from 'react';
 import { Box, Text, TextInput } from '@mantine/core';
 import { GeoJSONPoint } from '@/types';
+import { getRuntimeEnv } from '@/utils/getRuntimeEnv';
 import mapboxgl from 'mapbox-gl';
 import dynamic from 'next/dynamic';
 import 'mapbox-gl/dist/mapbox-gl.css';
+
+const { NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN } = getRuntimeEnv();
 
 const SearchBox = dynamic(
   () => import('@mapbox/search-js-react').then((mod) => mod.SearchBox),
@@ -58,7 +61,7 @@ export function SearchBoxForm({
   required = false,
   label = 'Address'
 }: SearchBoxFormProps) {
-  const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN!;
+  const mapboxToken = NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const [address, setAddress] = useState('');
