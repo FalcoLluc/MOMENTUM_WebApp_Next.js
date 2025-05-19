@@ -32,6 +32,7 @@ export function updateSocket(accessToken: string | null) {
         auth: {
             token: accessToken,
         },
+        transports: ["polling", "websocket"],
     }); 
     useSocket.getState().setSocket(newSocket);
 }
