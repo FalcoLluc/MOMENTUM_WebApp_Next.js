@@ -14,7 +14,7 @@ interface AuthState {
   logout: () => void;
 }
 
-export const useAuthStore = create<AuthState>()(persist(
+const authStore = persist<AuthState>(
   (set) => ({
     user: null,
     accessToken: null,
@@ -39,7 +39,9 @@ export const useAuthStore = create<AuthState>()(persist(
     storage: createJSONStorage(() => localStorage), 
   }
 
-))
+);
+
+export const useAuthStore = create<AuthState>()(authStore);
 
 // EXTRA (No necessari?)
 /*

@@ -1,7 +1,7 @@
 // src/services/locationsService.ts
 import apiClient from "@/lib/apiClient";
 import { ILocation } from "@/types";
-import { locationServiceType } from "@/types/enums";
+import { LocationServiceType } from "@/types/enums";
 
 class LocationsService {
   async getLocationById(id: string) {
@@ -13,7 +13,7 @@ class LocationsService {
     }
   }
 
-  async getAllLocationsByServiceType(serviceType: locationServiceType) {
+  async getAllLocationsByServiceType(serviceType: LocationServiceType) {
     try {
       const { data } = await apiClient.get<ILocation[]>(`/location/serviceType/${serviceType}`);
       return data;

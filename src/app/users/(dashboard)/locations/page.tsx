@@ -6,7 +6,7 @@ import { IconAlertCircle, IconMapPin } from '@tabler/icons-react';
 import { locationsService } from '@/services/locationsService';
 import { useAuthStore } from '@/stores/authStore';
 import { LocationMarker } from '@/types';
-import { locationServiceType } from '@/types/enums';
+import { LocationServiceType } from '@/types/enums';
 import classes from './LocationsPage.module.css';
 import LocationsFilter from "@/components/shared/LocationsFilter/LocationsFilter";
 
@@ -15,7 +15,7 @@ export default function LocationsPage() {
   const [error, setError] = useState<string | null>(null);
   const user = useAuthStore((state) => state.user);
   const [serviceLocations, setServiceLocations] = useState<LocationMarker[]>([]);
-  const [serviceType, setServiceType] = useState<locationServiceType>(locationServiceType.COACHING);
+  const [serviceType, setServiceType] = useState<LocationServiceType>(LocationServiceType.COACHING);
 
   useEffect(() => {
     const fetchServiceLocations = async () => {
@@ -102,7 +102,7 @@ export default function LocationsPage() {
         <Title order={2} className={classes.title}>
           Service Locations
         </Title>
-
+        
         {/* Mostrar filtro - el filtro actualizará las ubicaciones */}
         <LocationsFilter onLocationsChange={setServiceLocations} />
 

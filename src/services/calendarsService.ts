@@ -34,6 +34,10 @@ class CalendarsService {
             console.error(error);
         }
     }
+
+    async deleteEvent(eventId: string) {
+        await apiClient.delete(`/calendars/appointments/${eventId}/soft-delete`);
+    }
 }
 
 export const calendarsService = new CalendarsService();

@@ -7,9 +7,9 @@ import { useAuthStore } from "@/stores/authStore";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { calendarsService } from "@/services/calendarsService";
-import { ICalendar } from "@/types";
+import { IAppointment, ICalendar } from "@/types";
 import { useCalendarStore } from "@/stores/calendarStore";
-import { BigCalendar, NewAppointmentOverlay, NewCalendarOverlay } from "@/components";
+import { AppointmentOverlay, BigCalendar, NewAppointmentOverlay, NewCalendarOverlay } from "@/components";
 
 function CalendarList(
   { calendars }:
@@ -61,6 +61,15 @@ export default function UserCalendarPage() {
   const selectedCalendars = useCalendarStore((state) => state.selectedCalendars); 
   const [key, setKey] = useState(0); // Add this line
 
+  const [viewingAppointment, setViewingAppointment] = useState<IAppointment | null>(null)
+  const [appointmentOverlay, appointmentOverlayHandlers] = useDisclosure();
+
+  function onSelectAppointment(appointment: IAppointment) {
+    setViewingAppointment(appointment);
+    appointmentOverlayHandlers.open();
+    console.log(appointment);
+  }
+
   const [hydrated, setHydrated] = useState(false);
   useEffect(() => {
     setHydrated(true);
@@ -106,7 +115,10 @@ export default function UserCalendarPage() {
       gap={{ base: 'sm', lg: 'lg' }}  
     >
       <div style={{flex: "1 0 auto"}}>
-        <BigCalendar calendars={visibleCalendars}/>
+        <BigCalendar 
+          calendars={visibleCalendars}
+          onSelectAppointment={onSelectAppointment}
+        />
       </div>
       <Stack style={{flex: "0 1 200px"}}>
         <Button
@@ -137,6 +149,11 @@ export default function UserCalendarPage() {
         disclosure={[newCalendarOverlay, newCalendarOverlayHandlers]}
         onCalendarSaved={reloadAppointments}
       ></NewCalendarOverlay>
+      <AppointmentOverlay
+        disclosure={[appointmentOverlay, appointmentOverlayHandlers]}
+        appointment={viewingAppointment}
+        onAppointmentDeleted={reloadAppointments}
+      ></AppointmentOverlay>
     </Flex>
   );
 }
