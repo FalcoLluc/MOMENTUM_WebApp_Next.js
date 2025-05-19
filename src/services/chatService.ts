@@ -3,7 +3,7 @@ import { IChat } from "@/types";
 
 class ChatService {
     async getChats(userId: string) {
-        return await apiClient.get<[name: string, id: string][]>(`/chat/people/${userId}`);
+        return await apiClient.get<{people: [name: string, id: string][]}>(`/chat/people/${userId}`);
     }
 
     async getChat(user1ID: string, user2ID: string) {

@@ -17,7 +17,7 @@ export default function ChatPage() {
     useEffect(() => {
         if (!user) return;
         chatService.getChats(user._id!)
-            .then((response) => {setChats(response.data)}) 
+            .then((response) => {setChats(response.data.people); console.debug(response.data)}) 
             .catch((error: AxiosError) => {
                 if (error.response && (error.response.data as {error: string}).error == "No people found") {
                     setChats([]);
