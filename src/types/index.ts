@@ -87,6 +87,20 @@ export interface  LocationMarker{
   business: string;
 }
 
+export interface IBusiness {
+  _id: string;
+  name: string;
+  location: ILocation[]; // populate desde el backend
+  isDeleted: boolean;
+}
+
+export interface FilterOptions {
+  serviceTypes?: locationServiceType[]; // múltiple selección
+  cities?: string[]; // nombres de ciudad
+  openAt?: string; // string con hora en formato ISO o HH:mm
+  minRating?: number; // por ejemplo: 4
+  maxDistanceKm?: number; // por ejemplo: 10
+}
 export interface IMessage {
   from: string;
   text: string;
