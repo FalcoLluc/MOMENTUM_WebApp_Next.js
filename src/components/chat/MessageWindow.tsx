@@ -78,6 +78,7 @@ export function MessageWindow ({chat, user}: {chat: [name: string, id: string], 
 
     async function sendMessage() {
         if (!chatId) return;
+        if (message == "") return;
         try {
             await chatService.sendMessage(chatId, user.name, message);
             if (socket) {
@@ -142,11 +143,15 @@ export function MessageWindow ({chat, user}: {chat: [name: string, id: string], 
 
                 }
             </ScrollArea>
-
+            
+            <form>
+                
+            </form>
             <TextInput
                 value={message}
                 onChange={(event) => setMessage(event.currentTarget.value)}
                 placeholder="message"
+                onKeyUp={(event) => {if (event.key == "Enter") sendMessage()}}
                 rightSection={
                     <ActionIcon variant="filled" aria-label="" onClick={() => sendMessage()}><IconSend></IconSend></ActionIcon>
                 }

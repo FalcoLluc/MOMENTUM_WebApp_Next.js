@@ -5,8 +5,6 @@ import { create } from "zustand";
 import { useAuthStore } from "./authStore";
 import { getRuntimeEnv } from "@/utils/getRuntimeEnv";
 
-const { NEXT_PUBLIC_API_URL } = getRuntimeEnv();
-
 interface SocketStore {
     socket: Socket | null;
     setSocket: (socket: Socket | null) => void;
@@ -28,11 +26,14 @@ export function updateSocket(accessToken: string | null) {
     if (!accessToken) return;
     
     console.info("connecting socket");
-    const newSocket = io(NEXT_PUBLIC_API_URL, {
+    console.info(accessToken);
+    const { API_URL } = getRuntimeEnv();
+    const newSocket = io(API_URL, {
         auth: {
             token: accessToken,
         },
         transports: ["polling", "websocket"],
+        autoConnect: true,
     }); 
     useSocket.getState().setSocket(newSocket);
 }

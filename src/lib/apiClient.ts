@@ -3,16 +3,16 @@ import axios from 'axios';
 import { useAuthStore } from '@/stores/authStore';
 import { getRuntimeEnv } from '@/utils/getRuntimeEnv';
 
-const { NEXT_PUBLIC_API_URL } = getRuntimeEnv();
+const { API_URL } = getRuntimeEnv();
 
 // Main API client (no cookies for regular requests)
 const apiClient = axios.create({
-  baseURL: NEXT_PUBLIC_API_URL,
+  baseURL: API_URL,
 });
 
 // Auth-specific client (sends cookies for login/refresh/logout)
 export const authClient = axios.create({
-  baseURL: NEXT_PUBLIC_API_URL,
+  baseURL: API_URL,
   withCredentials: true, // Critical for cookies
 });
 
