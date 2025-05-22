@@ -15,19 +15,10 @@ import { GoogleButton } from '../providers/GoogleButton';
 import classes from './BusinessAuthForm.module.css';
 import Link from 'next/link';
 import { useState } from 'react';
-
-export interface NewBusinessRequestBody {
-  name: string;
-  age: number;
-  mail: string;
-  password: string;
-  businessName: string;
-}
-
-export interface LoginRequestBody {
-  name_or_mail: string;
-  password: string;
-}
+import { businessService } from '@/services/businessService';
+import { LoginRequestBody, NewBusinessRequestBody } from '@/types';
+import { useRouter } from 'next/navigation';
+import { notifications } from '@mantine/notifications';
 
 interface BusinessAuthFormProps {
   type: 'login' | 'register';
@@ -47,6 +38,7 @@ const INITIAL_LOGIN_STATE: LoginRequestBody = {
 };
 
 export function BusinessAuthForm({ type }: BusinessAuthFormProps) {
+  const router = useRouter();
   const [registerCredentials, setRegisterCredentials] = useState<NewBusinessRequestBody>(INITIAL_REGISTER_STATE);
   const [loginCredentials, setLoginCredentials] = useState<LoginRequestBody>(INITIAL_LOGIN_STATE);
 
@@ -58,14 +50,37 @@ export function BusinessAuthForm({ type }: BusinessAuthFormProps) {
     setLoginCredentials((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (type === 'register') {
-      // Call your register API with registerCredentials
-      console.log('Register:', registerCredentials);
+      try {
+        // Call your register API with registerCredentials
+        console.log('Register:', registerCredentials);
+        const { success, message } = await businessService.registerBusiness(registerCredentials);
+
+        if (success) {
+          console.log('Registration successful:', message);
+          notifications.show({
+            title: 'Registration successful',
+            message: message,
+            color: 'green',
+          });
+          // Redirect to the business dashboard or confirmation page
+          router.push('/login?authType=business'); // Replace with your desired route
+        }
+      } catch (error : unknown) {
+        console.error('Error during registration:', error);
+        // Optionally, handle the error (e.g., show a notification)
+        const errorMessage = error instanceof Error ? error.message : 'Registration failed';
+        notifications.show({
+          title: 'Registration error',
+          message: errorMessage,
+          color: 'red',
+        });
+      }
     } else {
-      // Call your login API with loginCredentials
-      console.log('Login:', loginCredentials);
+        console.log('Login:', loginCredentials);
     }
   };
 
