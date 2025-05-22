@@ -12,7 +12,7 @@ export const metadata = {
   description: 'I have followed setup instructions carefully',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
