@@ -16,6 +16,11 @@ export interface NewBusinessRequestBody {
   businessName: string;
 }
 
+export enum WorkerRole {
+    WORKER = 'worker',
+    ADMIN = 'admin',
+}
+
 export interface User {
   _id?: string;
   name: string;
@@ -24,6 +29,18 @@ export interface User {
   password: string;
   isDeleted?: boolean;
 }
+
+export interface Worker {
+  _id?: string;
+  name: string;
+  age: number;
+  mail: string;
+  role: WorkerRole;
+  location: string[];
+  password: string;
+  isDeleted?: boolean;
+}
+
 export interface GeoJSONPoint {
   type: 'Point';
   coordinates: [number, number]; // [longitude, latitude]

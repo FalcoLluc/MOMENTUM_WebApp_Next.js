@@ -10,6 +10,7 @@ import {
   TextInput,
   Title,
   NumberInput,
+  LoadingOverlay,
 } from '@mantine/core';
 import { GoogleButton } from '../providers/GoogleButton';
 import classes from './BusinessAuthForm.module.css';
@@ -39,6 +40,7 @@ const INITIAL_LOGIN_STATE: LoginRequestBody = {
 
 export function BusinessAuthForm({ type }: BusinessAuthFormProps) {
   const router = useRouter();
+  const [loading, setLoading] = useState(false); // Add loading state
   const [registerCredentials, setRegisterCredentials] = useState<NewBusinessRequestBody>(INITIAL_REGISTER_STATE);
   const [loginCredentials, setLoginCredentials] = useState<LoginRequestBody>(INITIAL_LOGIN_STATE);
 
@@ -52,35 +54,52 @@ export function BusinessAuthForm({ type }: BusinessAuthFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true); // Start loading
 
     if (type === 'register') {
       try {
-        // Call your register API with registerCredentials
         console.log('Register:', registerCredentials);
         const { success, message } = await businessService.registerBusiness(registerCredentials);
 
         if (success) {
-          console.log('Registration successful:', message);
           notifications.show({
             title: 'Registration successful',
             message: message,
             color: 'green',
           });
-          // Redirect to the business dashboard or confirmation page
-          router.push('/login?authType=business'); // Replace with your desired route
+          router.push('/login?authType=business'); // Redirect after successful registration
         }
-      } catch (error : unknown) {
-        console.error('Error during registration:', error);
-        // Optionally, handle the error (e.g., show a notification)
+      } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : 'Registration failed';
         notifications.show({
           title: 'Registration error',
           message: errorMessage,
           color: 'red',
         });
+      } finally {
+        setLoading(false); // Stop loading
       }
     } else {
+      try {
         console.log('Login:', loginCredentials);
+        const { worker } = await businessService.loginWorker(loginCredentials);
+
+        notifications.show({
+          title: 'Login successful',
+          message: `Welcome back, ${worker.name}!`,
+          color: 'green',
+        });
+        //router.push('/users/account'); // Redirect after successful login
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : 'Login failed';
+        notifications.show({
+          title: 'Login error',
+          message: errorMessage,
+          color: 'red',
+        });
+      } finally {
+        setLoading(false); // Stop loading
+      }
     }
   };
 
@@ -89,7 +108,8 @@ export function BusinessAuthForm({ type }: BusinessAuthFormProps) {
   };
 
   return (
-    <div className={classes.wrapper}>
+    <div className={classes.wrapper} style={{ position: 'relative' }}>
+      <LoadingOverlay visible={loading} /> {/* Add LoadingOverlay */}
       <Paper className={classes.form} radius={0} p={30}>
         <Title order={2} className={classes.title} ta="center" mt="md" mb={50}>
           {type === 'login' ? 'Business Login' : 'Business Registration'}
@@ -170,7 +190,7 @@ export function BusinessAuthForm({ type }: BusinessAuthFormProps) {
             </>
           )}
 
-          <Button fullWidth mt="xl" size="md" type="submit">
+          <Button fullWidth mt="xl" size="md" type="submit" loading={loading}>
             {type === 'login' ? 'Business Login' : 'Register Business'}
           </Button>
         </form>
