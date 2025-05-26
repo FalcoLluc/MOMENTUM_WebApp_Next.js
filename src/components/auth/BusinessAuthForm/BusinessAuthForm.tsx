@@ -17,7 +17,7 @@ import classes from './BusinessAuthForm.module.css';
 import Link from 'next/link';
 import { useState } from 'react';
 import { businessService } from '@/services/businessService';
-import { LoginRequestBody, NewBusinessRequestBody } from '@/types';
+import { LoginRequestBody, NewBusinessRequestBody, WorkerRole } from '@/types';
 import { useRouter } from 'next/navigation';
 import { notifications } from '@mantine/notifications';
 
@@ -89,7 +89,11 @@ export function BusinessAuthForm({ type }: BusinessAuthFormProps) {
           message: `Welcome back, ${worker.name}!`,
           color: 'green',
         });
-        //router.push('/users/account'); // Redirect after successful login
+        if (worker.role === WorkerRole.ADMIN) {
+          router.push('/admins/account'); // Redirect to admin account page
+        } else {
+          router.push('/workers/account'); // Redirect to worker account page
+        }
       } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : 'Login failed';
         notifications.show({
