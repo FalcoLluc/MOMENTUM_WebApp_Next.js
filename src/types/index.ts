@@ -119,3 +119,30 @@ export interface  LocationMarker{
   phone: string;
   business: string;
 }
+
+export interface IBusiness {
+  _id: string;
+  name: string;
+  location: ILocation[]; // populate desde el backend
+  isDeleted: boolean;
+}
+
+export interface FilterOptions {
+  serviceTypes?: LocationServiceType[]; // múltiple selección
+  cities?: string[]; // nombres de ciudad
+  openAt?: string; // string con hora en formato ISO o HH:mm
+  minRating?: number; // por ejemplo: 4
+  maxDistanceKm?: number; // por ejemplo: 10
+}
+export interface IMessage {
+  from: string;
+  text: string;
+  timestamp: Date;
+}
+
+export interface IChat{
+  user1: User;
+  user2: User;
+  messages: IMessage[];
+  _id?: string;
+}

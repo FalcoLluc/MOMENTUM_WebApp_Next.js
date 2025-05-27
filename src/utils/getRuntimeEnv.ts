@@ -3,7 +3,7 @@ export const getRuntimeEnv = (): RuntimeEnv => {
     return window.__ENV__;
   }
   return {
-    NEXT_PUBLIC_API_URL: process.env.API_URL || 'http://localhost:8080',
-    NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN: process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || '',
+    API_URL: process.env.API_URL || 'http://localhost:8080',
+    MAPBOX_ACCESS_TOKEN: process.env.MAPBOX_ACCESS_TOKEN || '',
   };
 };

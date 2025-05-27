@@ -1,6 +1,6 @@
 interface RuntimeEnv {
-  NEXT_PUBLIC_API_URL: string;
-  NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN: string; 
+  API_URL: string;
+  MAPBOX_ACCESS_TOKEN: string; 
 }
 
 interface Window {
