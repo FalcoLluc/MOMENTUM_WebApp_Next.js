@@ -9,7 +9,7 @@ interface LoginWorkerResponse {
   accessToken: string;
 }
 
-class BusinessService {
+class WorkersService {
     async registerBusiness(body: NewBusinessRequestBody): Promise<{ success: boolean; message: string }> {
         try {
             const response = await apiClient.post('auth/registerBusiness', body);
@@ -87,4 +87,4 @@ class BusinessService {
 
 }
 
-export const businessService = new BusinessService();
+export const workersService = new WorkersService();

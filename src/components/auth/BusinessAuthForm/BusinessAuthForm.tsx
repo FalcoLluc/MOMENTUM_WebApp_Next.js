@@ -16,7 +16,7 @@ import { GoogleButton } from '../providers/GoogleButton';
 import classes from './BusinessAuthForm.module.css';
 import Link from 'next/link';
 import { useState } from 'react';
-import { businessService } from '@/services/businessService';
+import { workersService } from '@/services/workersService';
 import { LoginRequestBody, NewBusinessRequestBody, WorkerRole } from '@/types';
 import { useRouter } from 'next/navigation';
 import { notifications } from '@mantine/notifications';
@@ -59,7 +59,7 @@ export function BusinessAuthForm({ type }: BusinessAuthFormProps) {
     if (type === 'register') {
       try {
         console.log('Register:', registerCredentials);
-        const { success, message } = await businessService.registerBusiness(registerCredentials);
+        const { success, message } = await workersService.registerBusiness(registerCredentials);
 
         if (success) {
           notifications.show({
@@ -82,7 +82,7 @@ export function BusinessAuthForm({ type }: BusinessAuthFormProps) {
     } else {
       try {
         console.log('Login:', loginCredentials);
-        const { worker } = await businessService.loginWorker(loginCredentials);
+        const { worker } = await workersService.loginWorker(loginCredentials);
 
         notifications.show({
           title: 'Login successful',

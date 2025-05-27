@@ -17,7 +17,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import classes from './WorkersNavbar.module.css';
 import { notifications } from '@mantine/notifications';
 import { useAuthStore } from '@/stores/authStore';
-import { businessService } from '@/services/businessService';
+import { workersService } from '@/services/workersService';
 
 const navLinks = [
   { label: 'Account', icon: IconUser, href: '/workers/account' },
@@ -32,7 +32,7 @@ export function WorkersNavbar() {
   const handleLogout = async () => {
     // Add your logout logic here
     console.log('Logging out...');
-    await businessService.logoutWorker();
+    await workersService.logoutWorker();
     notifications.show({
       title: 'Logged out',
       message: 'You have been successfully logged out',
