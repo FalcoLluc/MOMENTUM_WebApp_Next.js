@@ -1,6 +1,8 @@
 // src/components/index.ts
 export { AuthPage } from './auth/AuthPage';
 export { UsersNavbar } from './shared/UsersNavbar/UsersNavbar';
+export { AdminsNavbar } from './shared/AdminsNavbar/AdminsNavbar';
+export { WorkersNavbar } from './shared/WorkersNavbar/WorkersNavbar';
 export { BigCalendar } from './calendar/BigCalendar'
 export { NewAppointmentOverlay} from './calendar/NewAppointmentOverlay'
 export { NewCalendarOverlay } from './calendar/NewCalendarOverlay'

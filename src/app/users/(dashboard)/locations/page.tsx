@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { LocationsMap } from '@/components';
-import {  NativeSelect,  Paper,  Title,  Text,  Stack,  Alert, Container, Card, Loader} from '@mantine/core';
+import {  Title,  Text,  Stack,  Alert, Container, Card, Loader} from '@mantine/core';
 import { IconAlertCircle, IconMapPin } from '@tabler/icons-react';
 import { locationsService } from '@/services/locationsService';
 import { useAuthStore } from '@/stores/authStore';
@@ -15,7 +15,7 @@ export default function LocationsPage() {
   const [error, setError] = useState<string | null>(null);
   const user = useAuthStore((state) => state.user);
   const [serviceLocations, setServiceLocations] = useState<LocationMarker[]>([]);
-  const [serviceType, setServiceType] = useState<LocationServiceType>(LocationServiceType.COACHING);
+  const [serviceType] = useState<LocationServiceType>(LocationServiceType.COACHING);
 
   useEffect(() => {
     const fetchServiceLocations = async () => {

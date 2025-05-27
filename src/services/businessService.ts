@@ -1,4 +1,4 @@
-// src/services/businessService.ts
+import axios from "axios";
 import apiClient from "@/lib/apiClient";
 import { IBusiness, FilterOptions } from "@/types";
 
@@ -9,52 +9,68 @@ class BusinessService {
         "/business/filter",
         filters
       );
-      // El backend responde { message, businesses }
       return data.businesses;
-    } catch (error: any) {
-      // Si es un 404 real de "no hay resultados" podemos devolver []:
-      if (error.response?.status === 404) {
-        console.warn("No businesses found matching the filters");
-        return [];
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 404) {
+          console.warn("No businesses found matching the filters");
+          return [];
+        }
+        console.error("Error getting filtered businesses:", error.response?.data?.message || "Request failed");
+        throw new Error(error.response?.data?.message || "Failed to fetch filtered businesses");
       }
-      // Para otros errores, lo mostramos y relanzamos o devolvemos vacío
-      console.error("Error getting filtered businesses:", error.response?.data || error);
-      return [];
+      throw new Error("Network error - please try again");
     }
   }
 
   async searchBusinessByName(name: string): Promise<IBusiness[] | null> {
     try {
-      const { data } = await apiClient.get(`/business/search/${encodeURIComponent(name)}`);
+      const { data } = await apiClient.get<{ businesses: IBusiness[] }>(
+        `/business/search/${encodeURIComponent(name)}`
+      );
       return data.businesses;
-    } catch (error: any) {
-
-      if (error.response?.status === 404) {
-        console.warn("No cities found matching the filters");
-        return [];
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 404) {
+          console.warn("No cities found matching the filters");
+          return [];
+        }
+        console.error("Error searching business by name:", error.response?.data?.message || "Request failed");
+        throw new Error(error.response?.data?.message || "Failed to search businesses by name");
       }
-      console.error("Error searching business by name:", error?.response?.data || error);
-      return null;
+      throw new Error("Network error - please try again");
     }
   }
 
   async getFavoriteBusinesses(userId: string): Promise<IBusiness[] | null> {
     try {
-      const { data } = await apiClient.get(`/business/favorites/${userId}`);
+      const { data } = await apiClient.get<{ businesses: IBusiness[] }>(`/business/favorites/${userId}`);
       return data.businesses;
-    } catch (error: any) {
-      console.error("Error getting favorite businesses:", error?.response?.data || error);
-      return null;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.error("Error getting favorite businesses:", error.response?.data?.message || "Request failed");
+        throw new Error(error.response?.data?.message || "Failed to fetch favorite businesses");
+      }
+      throw new Error("Network error - please try again");
     }
   }
 
   async getFilteredFavoriteBusinesses(userId: string, filters: FilterOptions): Promise<IBusiness[] | null> {
     try {
-      const { data } = await apiClient.post(`/business/favorites/filter/${userId}`, filters);
+      const { data } = await apiClient.post<{ businesses: IBusiness[] }>(
+        `/business/favorites/filter/${userId}`,
+        filters
+      );
       return data.businesses;
-    } catch (error: any) {
-      console.error("Error getting filtered favorite businesses:", error?.response?.data || error);
-      return null;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.error(
+          "Error getting filtered favorite businesses:",
+          error.response?.data?.message || "Request failed"
+        );
+        throw new Error(error.response?.data?.message || "Failed to fetch filtered favorite businesses");
+      }
+      throw new Error("Network error - please try again");
     }
   }
 }

@@ -9,10 +9,9 @@ import {
   Menu,
   Checkbox,
   ScrollArea,
-  Group,
   Text,
 } from "@mantine/core";
-import { locationServiceType } from "@/types/enums";
+import { LocationServiceType } from "@/types/enums";
 import styles from "./LocationsFilter.module.css";
 
 interface LocationsFilterProps {
@@ -22,8 +21,7 @@ interface LocationsFilterProps {
 export default function LocationsFilter({ onLocationsChange }: LocationsFilterProps) {
   const user = useAuthStore((state) => state.user);
   const [activeTab, setActiveTab] = useState<"todos" | "favoritos">("todos");
-  const [filters, setFilters] = useState<FilterOptions>({});
-  const [selectedTypes, setSelectedTypes] = useState<locationServiceType[]>([]);
+  const [selectedTypes, setSelectedTypes] = useState<LocationServiceType[]>([]);
   const [searchCityText, setSearchCityText] = useState<string>("");
   const [citySuggestions, setCitySuggestions] = useState<string[]>([]);
   const [cities, setSelectedCities] = useState<string[]>([]);
@@ -43,7 +41,7 @@ export default function LocationsFilter({ onLocationsChange }: LocationsFilterPr
   return new Date().toLocaleDateString("en-US", { weekday: "long" }).toLowerCase();
 };
 
-  const serviceOptions = Object.values(locationServiceType).map((value) => ({
+  const serviceOptions = Object.values(LocationServiceType).map((value) => ({
     value,
     label: value.charAt(0).toUpperCase() + value.slice(1),
   }));
