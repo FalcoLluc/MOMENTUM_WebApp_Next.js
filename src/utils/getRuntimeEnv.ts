@@ -1,5 +1,5 @@
 export const getRuntimeEnv = (): RuntimeEnv => {
-  if (typeof window !== 'undefined' && window.__ENV__ && window.__ENV__.API_URL!== '' && window.__ENV__.MAPBOX_ACCESS_TOKEN !== '') {
+  if (typeof window !== 'undefined' && window.__ENV__ && window.__ENV__.API_URL!== '') {
     return window.__ENV__;
   }
   return {
