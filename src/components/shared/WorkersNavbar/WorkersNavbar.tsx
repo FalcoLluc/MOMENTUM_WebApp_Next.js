@@ -10,45 +10,35 @@ import {
   useMantineTheme,
 } from '@mantine/core';
 import {
-  IconCalendar,
-  IconMessage,
   IconUser,
   IconLogout,
-  IconMap,
-  IconSettings,
-  IconBuildingStore,
 } from '@tabler/icons-react';
 import { useRouter, usePathname } from 'next/navigation';
-import classes from './UsersNavbar.module.css';
-import { authService } from '@/services/authService';
+import classes from './WorkersNavbar.module.css';
 import { notifications } from '@mantine/notifications';
 import { useAuthStore } from '@/stores/authStore';
+import { workersService } from '@/services/workersService';
 
 const navLinks = [
-  { label: 'Calendar', icon: IconCalendar, href: '/users/calendar' },
-  { label: 'Chats', icon: IconMessage, href: '/users/chats' },
-  { label: 'Map', icon: IconMap, href: '/users/appointments' },
-  { label: 'Locations', icon: IconBuildingStore, href: '/users/locations' },
-  { label: 'Account', icon: IconUser, href: '/users/account' },
-  { label: 'Settings', icon: IconSettings, href: '/users/settings' },
+  { label: 'Account', icon: IconUser, href: '/workers/account' },
 ];
 
-export function UsersNavbar() {
+export function WorkersNavbar() {
   const router = useRouter();
   const pathname = usePathname();
   const theme = useMantineTheme();
-  const user = useAuthStore((state) => state.user);
+  const worker = useAuthStore((state) => state.worker);
 
   const handleLogout = async () => {
     // Add your logout logic here
     console.log('Logging out...');
-    await authService.logoutUser();
+    await workersService.logoutWorker();
     notifications.show({
       title: 'Logged out',
       message: 'You have been successfully logged out',
       color: 'green',
     });
-    router.push('/login?authType=user');
+    router.push('/login?authType=business');
   };
 
   return (
@@ -91,14 +81,14 @@ export function UsersNavbar() {
                 radius="xl"
                 color={theme.primaryColor}
               >
-                {user?.name?.charAt(0).toUpperCase() || 'U'}
+                {worker?.name?.charAt(0).toUpperCase() || 'U'}
               </Avatar>
               <div style={{ flex: 1 }}>
                 <Text size="sm" fw={500}>
-                  {user?.name || 'User'}
+                  {worker?.name || 'Worker'}
                 </Text>
                 <Text c="dimmed" size="xs">
-                  {user?.mail || 'user@example.com'}
+                  {worker?.mail || 'user@example.com'}
                 </Text>
               </div>
             </Group>

@@ -4,18 +4,43 @@ import { LatLngExpression } from 'leaflet';
 // Els ObjectID de Mongo els posem com strings
 
 export interface LoginRequestBody {
-    name_or_mail: string;
-    password: string;
-  }
+  name_or_mail: string;
+  password: string;
+}
+
+export interface NewBusinessRequestBody {
+  name: string;
+  age: number;
+  mail: string;
+  password: string;
+  businessName: string;
+}
+
+export enum WorkerRole {
+    WORKER = 'worker',
+    ADMIN = 'admin',
+}
 
 export interface User {
-    _id?: string;
-    name: string;
-    age: number;
-    mail: string;
-    password: string;
-    isDeleted?: boolean;
-  }
+  _id?: string;
+  name: string;
+  age: number;
+  mail: string;
+  password: string;
+  isDeleted?: boolean;
+}
+
+export interface Worker {
+  _id?: string;
+  name: string;
+  age: number;
+  mail: string;
+  role: WorkerRole;
+  location: string[];
+  password: string;
+  isDeleted?: boolean;
+}
+
 export interface GeoJSONPoint {
   type: 'Point';
   coordinates: [number, number]; // [longitude, latitude]
@@ -66,6 +91,14 @@ export interface ILocation {
   isDeleted: boolean;
 }
 
+export interface NewBusinessRequestBody {
+  name: string;
+  age: number;
+  mail: string;
+  password: string;
+  businessName: string;
+}
+
 // Això és el tipus Location de leaflet (ho mapejem a aquí)
 // INTERFIACES PER A MARKERS DE MAP
 export interface AppointmentMarker {
@@ -87,6 +120,20 @@ export interface  LocationMarker{
   business: string;
 }
 
+export interface IBusiness {
+  _id: string;
+  name: string;
+  location: ILocation[]; // populate desde el backend
+  isDeleted: boolean;
+}
+
+export interface FilterOptions {
+  serviceTypes?: LocationServiceType[]; // múltiple selección
+  cities?: string[]; // nombres de ciudad
+  openAt?: string; // string con hora en formato ISO o HH:mm
+  minRating?: number; // por ejemplo: 4
+  maxDistanceKm?: number; // por ejemplo: 10
+}
 export interface IMessage {
   from: string;
   text: string;
