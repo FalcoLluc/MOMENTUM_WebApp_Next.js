@@ -37,6 +37,7 @@ export interface Worker {
   mail: string;
   role: WorkerRole;
   location: string[];
+  businessAdministrated?: string;
   password: string;
   isDeleted?: boolean;
 }
