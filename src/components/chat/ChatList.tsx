@@ -1,9 +1,10 @@
 'use client'
+import { ChatListItem } from "@/types"
 import { Button, NavLink, Skeleton, Stack } from "@mantine/core"
 
 interface ChatListParams {
-    chats: [name: string, id: string][] | null,
-    onChatSelected: (chat: [name: string, id: string]) => void,
+    chats: ChatListItem[] | null,
+    onChatSelected: (chat: ChatListItem) => void,
 }
 
 export function ChatList({chats, onChatSelected}: ChatListParams) {
@@ -12,7 +13,7 @@ export function ChatList({chats, onChatSelected}: ChatListParams) {
         <Stack>
             <Button variant="filled" color="teal">New Chat</Button>
             { chats ? 
-                chats.map((chat: [name: string, id: string]) => (
+                chats.map((chat: ChatListItem) => (
                     <NavLink
                         key={chat[1]}
                         onClick={() => onChatSelected(chat)}

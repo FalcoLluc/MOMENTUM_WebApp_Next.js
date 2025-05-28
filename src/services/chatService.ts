@@ -1,9 +1,9 @@
 import apiClient from "@/lib/apiClient";
-import { IChat } from "@/types";
+import { ChatListItem, IChat } from "@/types";
 
 class ChatService {
-    async getChats(userId: string) {
-        return await apiClient.get<{people: [name: string, id: string][]}>(`/chat/people/${userId}`);
+    async getUserChats(userId: string) {
+        return await apiClient.get<{people: ChatListItem[], error?: string}>(`/chat/people/user/${userId}`);
     }
 
     async getChat(user1ID: string, user2ID: string) {
