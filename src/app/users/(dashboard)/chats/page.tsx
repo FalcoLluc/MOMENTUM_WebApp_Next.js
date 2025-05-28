@@ -3,7 +3,7 @@
 import { ChatList, MessageWindow } from "@/components"
 import { chatService } from "@/services/chatService";
 import { useAuthStore } from "@/stores/authStore";
-import { ChatListItem, NewChat } from "@/types";
+import { ChatListItem } from "@/types";
 import { Box, Divider, Group } from "@mantine/core"
 import { notifications } from "@mantine/notifications";
 import { AxiosError } from "axios";
@@ -35,9 +35,6 @@ export default function ChatPage() {
         setChat(chat);
     }
 
-    function onChatCreated(chat: NewChat) {
-
-    }
 
     if (!user) return null;
 
@@ -48,7 +45,7 @@ export default function ChatPage() {
             height: "calc(100dvh - var(--app-shell-header-offset, 0rem) - var(--app-shell-padding) - var(--app-shell-footer-offset, 0rem) - var(--app-shell-padding))",
         }}>
             <Box style={{flex: "0 1 200px", height: "100%"}}>
-                <ChatList chats={chats} onChatSelected={onChatSelected} onNewChatCreated={onChatCreated}></ChatList>
+                <ChatList chats={chats} onChatSelected={onChatSelected}></ChatList>
             </Box>
             <Divider orientation="vertical"></Divider>
             <Box style={{flex: "1 0 auto", height: "100%"}}>
