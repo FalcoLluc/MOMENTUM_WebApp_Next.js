@@ -3,6 +3,7 @@
 import { ChatList, MessageWindow } from "@/components"
 import { chatService } from "@/services/chatService";
 import { useAuthStore } from "@/stores/authStore";
+import { ChatListItem, NewChat } from "@/types";
 import { Box, Divider, Group } from "@mantine/core"
 import { notifications } from "@mantine/notifications";
 import { AxiosError } from "axios";
@@ -10,13 +11,13 @@ import { useEffect, useState } from "react";
 
 
 export default function ChatPage() {
-    const [chats, setChats] = useState<[name: string, id: string][] | null>(null);
-    const [chat, setChat] = useState<[name: string, id: string] | null>(null);
+    const [chats, setChats] = useState<ChatListItem[] | null>(null);
+    const [chat, setChat] = useState<ChatListItem | null>(null);
     const user = useAuthStore((state) => state.user);
 
     useEffect(() => {
         if (!user) return;
-        chatService.getChats(user._id!)
+        chatService.getUserChats(user._id!)
             .then((response) => {setChats(response.data.people); console.debug(response.data)}) 
             .catch((error: AxiosError) => {
                 if (error.response && (error.response.data as {error: string}).error == "No people found") {
@@ -30,8 +31,12 @@ export default function ChatPage() {
             });
     }, [user])
     
-    function onChatSelected(chat: [name: string, id: string]) {
+    function onChatSelected(chat: ChatListItem) {
         setChat(chat);
+    }
+
+    function onChatCreated(chat: NewChat) {
+
     }
 
     if (!user) return null;
@@ -43,7 +48,7 @@ export default function ChatPage() {
             height: "calc(100dvh - var(--app-shell-header-offset, 0rem) - var(--app-shell-padding) - var(--app-shell-footer-offset, 0rem) - var(--app-shell-padding))",
         }}>
             <Box style={{flex: "0 1 200px", height: "100%"}}>
-                <ChatList chats={chats} onChatSelected={onChatSelected}></ChatList>
+                <ChatList chats={chats} onChatSelected={onChatSelected} onNewChatCreated={onChatCreated}></ChatList>
             </Box>
             <Divider orientation="vertical"></Divider>
             <Box style={{flex: "1 0 auto", height: "100%"}}>
