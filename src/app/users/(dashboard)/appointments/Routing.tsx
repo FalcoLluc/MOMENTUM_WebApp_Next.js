@@ -15,6 +15,7 @@ export default function Routing({ waypoints }: { waypoints: L.LatLng[] }) {
   useEffect(() => {
     if (!map) return;
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const routingControl = L.Routing.control({
       waypoints: waypoints,
       routeWhileDragging: false,
