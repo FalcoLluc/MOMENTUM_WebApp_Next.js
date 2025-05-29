@@ -16,5 +16,5 @@ export { AppointmentOverlay} from './calendar/appointmentOverlay';
 export { ChatList } from './chat/ChatList';
 export { MessageWindow } from './chat/MessageWindow';
 export { MessageComponent } from './chat/MessageComponent';
-export { AppointmentsMapRouting2 } from './shared/AppointmentsMap/AppointmentsMapRouting2';
+export { AppointmentsMapRouting } from './shared/AppointmentsMap/AppointmentsMapRouting';
 export { AppointmentsRouting } from './shared/AppointmentsRoutingMapbox/AppointmentsRouting';
