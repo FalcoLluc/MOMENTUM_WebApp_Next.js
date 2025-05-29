@@ -10,13 +10,14 @@ import { calendarsService } from "@/services/calendarsService";
 import { IAppointment, ICalendar } from "@/types";
 import { useCalendarStore } from "@/stores/calendarStore";
 import { AppointmentOverlay, BigCalendar, NewAppointmentOverlay, NewCalendarOverlay } from "@/components";
+import { IconSparkles } from "@tabler/icons-react";
+import { AppointmentAssistantOverlay } from "@/components/calendar/appointmentAssistant";
 
 function CalendarList(
   { calendars }:
   { calendars: ICalendar[] | null}
 ) {
   const calendarStore = useCalendarStore();
-
   function changeCalendarSelection(selected: boolean, calendarId: string) {
     if (selected) {
       calendarStore.selectCalendar(calendarId);
@@ -56,6 +57,7 @@ function CalendarList(
 export default function UserCalendarPage() {
   const [newAppointmentOpened, newAppointmentHandlers] = useDisclosure();
   const [newCalendarOverlay, newCalendarOverlayHandlers] = useDisclosure();
+  const [appointmentAssistant, appointmentAssistantHandlers] = useDisclosure();
   const router = useRouter();
   const user = useAuthStore((state) => state.user);
   const selectedCalendars = useCalendarStore((state) => state.selectedCalendars); 
@@ -128,6 +130,14 @@ export default function UserCalendarPage() {
         >
           New Appointment
         </Button>
+        <Button
+          variant="outline"
+          color="grape"
+          leftSection={<IconSparkles></IconSparkles>}
+          onClick={appointmentAssistantHandlers.open}
+        >
+          AI Assistant
+        </Button>
         <Text mt="sm" ml="sm" tt="uppercase" size="xs" c="dimmed">
           Your Calendars
         </Text>
@@ -154,6 +164,11 @@ export default function UserCalendarPage() {
         appointment={viewingAppointment}
         onAppointmentDeleted={reloadAppointments}
       ></AppointmentOverlay>
+      <AppointmentAssistantOverlay
+          userId={user?._id}
+          disclosure={[appointmentAssistant, appointmentAssistantHandlers]}
+          onAppointmentAdded={reloadAppointments}
+      ></AppointmentAssistantOverlay>
     </Flex>
   );
 }

@@ -147,3 +147,19 @@ export interface IChat{
   messages: IMessage[];
   _id?: string;
 }
+
+export interface PlannedAppointment {
+  calendarId?: string;
+  inTime: Date;
+  outTime: Date;
+  title: string;
+  description?: string;
+  colour?: string;
+  customAddress?: string;
+  customUbicacion?: GeoJSONPoint;
+}
+
+export interface AppointmentPlanningResponse {
+  response: string,
+  appointments: PlannedAppointment[],
+}
