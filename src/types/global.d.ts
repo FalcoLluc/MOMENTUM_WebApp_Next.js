@@ -35,3 +35,28 @@ declare module '@mapbox/search-js-react' {
   export const useAddressAutofill: any; // You should also type this properly
   export const useConfirmAddress: any;  // You should also type this properly
 }
+
+
+declare module 'leaflet-routing-machine' {
+  import * as L from 'leaflet';
+
+  namespace Routing {
+    interface ControlOptions {
+      waypoints?: L.LatLng[];
+      routeWhileDragging?: boolean;
+      show?: boolean;
+      addWaypoints?: boolean;
+      draggableWaypoints?: boolean;
+      fitSelectedRoutes?: boolean;
+      showAlternatives?: boolean;
+      altLineOptions?: L.PolylineOptions;
+      lineOptions?: L.PolylineOptions;
+      createMarker?: (i: number, waypoint: L.Routing.Waypoint, n: number) => L.Marker | undefined;
+      waypointMode?: 'snap' | 'connect';
+    }
+
+    function control(options?: ControlOptions): L.Control;
+  }
+
+  export const Routing: typeof Routing;
+}

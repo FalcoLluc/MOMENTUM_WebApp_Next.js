@@ -1,11 +1,14 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { AppointmentsMap } from '@/components';
 import { calendarsService } from '@/services/calendarsService';
 import { locationsService } from '@/services/locationsService';
 import { useAuthStore } from '@/stores/authStore';
 import { AppointmentMarker } from '@/types';
+//import { AppointmentsMap } from '@/components';
+import { AppointmentsMapRouting2 } from '@/components';
+//import { AppointmentsRouting } from '@/components';
+
 
 export default function AppointmentsPage() {
   const [loading, setLoading] = useState(true);
@@ -105,7 +108,7 @@ export default function AppointmentsPage() {
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">Today&#39;s Appointments</h1>
       <div className="h-[600px]">
-        <AppointmentsMap appointments={appointments} />
+        <AppointmentsMapRouting2 appointments={appointments} />
       </div>
     </div>
   );
