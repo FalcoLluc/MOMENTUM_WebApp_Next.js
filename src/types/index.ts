@@ -28,6 +28,8 @@ export interface User {
   mail: string;
   password: string;
   isDeleted?: boolean;
+  followers?: string[]; // Array de IDs d'usuaris que segueixen aquest usuari
+  following?: string[]; // Array de IDs d'usuaris que aquest usuari segueix
 }
 
 export interface Worker {
