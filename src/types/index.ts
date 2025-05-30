@@ -1,4 +1,4 @@
-import { AppointmentServiceType, AppointmentState, LocationServiceType, LocationSchedule } from '@/types/enums';
+import { AppointmentServiceType, AppointmentState, LocationServiceType, LocationSchedule, ChatUserType } from '@/types/enums';
 import { LatLngExpression } from 'leaflet';
 
 // Els ObjectID de Mongo els posem com strings
@@ -148,6 +148,11 @@ export interface IChat{
   _id?: string;
 }
 
+export type ChatListItem = [
+  chatName: string,
+  userId: string,
+  userType: ChatUserType,
+]
 export interface PlannedAppointment {
   calendarId?: string;
   inTime: Date;

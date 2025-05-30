@@ -105,3 +105,10 @@ export enum LocationSchedule {
     SATURDAY = 'saturday',
     SUNDAY = 'sunday',
 }
+
+export enum ChatUserType {
+    WORKER = 'worker',
+    USER = 'user',
+    LOCATION = 'location',
+    BUSINESS = 'business',
+}

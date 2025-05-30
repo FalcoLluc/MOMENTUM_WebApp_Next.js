@@ -1,7 +1,7 @@
 'use client'
 
 import { chatService } from "@/services/chatService";
-import { IMessage, User } from "@/types";
+import { ChatListItem, IMessage, User } from "@/types";
 import { ActionIcon, Paper, ScrollArea, Stack, Text, TextInput, useMantineTheme } from "@mantine/core"
 import { notifications } from "@mantine/notifications";
 import { IconSend } from "@tabler/icons-react"
@@ -15,7 +15,7 @@ interface SocketMessage {
     message: string,
 }
 
-export function MessageWindow ({chat, user}: {chat: [name: string, id: string], user: User}) {
+export function MessageWindow ({chat, user}: {chat: ChatListItem, user: User}) {
     const theme = useMantineTheme();
     const [messages, setMessages] = useState<IMessage[]>([]);
     const [chatId, setChatId] = useState<string | null>(null);
