@@ -1,5 +1,5 @@
 import apiClient from "@/lib/apiClient";
-import { ICalendar, IAppointment } from "@/types";
+import { ICalendar, IAppointment, AppointmentPlanningResponse } from "@/types";
 class CalendarsService {
     async createCalendar(calendar: Partial<ICalendar>) {
         try {
@@ -37,6 +37,20 @@ class CalendarsService {
 
     async deleteEvent(eventId: string) {
         await apiClient.delete(`/calendars/appointments/${eventId}/soft-delete`);
+    }
+
+    async planAppointmentsAi(userId: string, prompt: string): Promise<AppointmentPlanningResponse | null> {
+        try {
+            const response = await apiClient.post("/calendars/appointment-planning", {
+                userId,
+                prompt,
+            });
+            return response.data;
+        } catch (error) {
+            console.error(error);
+            return null;
+        }
+
     }
 }
 

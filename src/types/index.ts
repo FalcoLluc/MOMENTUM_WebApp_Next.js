@@ -153,3 +153,18 @@ export type ChatListItem = [
   userId: string,
   userType: ChatUserType,
 ]
+export interface PlannedAppointment {
+  calendarId?: string;
+  inTime: Date;
+  outTime: Date;
+  title: string;
+  description?: string;
+  colour?: string;
+  customAddress?: string;
+  customUbicacion?: GeoJSONPoint;
+}
+
+export interface AppointmentPlanningResponse {
+  response: string,
+  appointments: PlannedAppointment[],
+}
