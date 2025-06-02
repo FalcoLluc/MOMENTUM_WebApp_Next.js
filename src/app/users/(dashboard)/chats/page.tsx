@@ -27,7 +27,7 @@ export default function ChatPage() {
                 notifications.show({
                     message: "Error fetching chats",
                     color: "red",
-                })
+                });
             });
     }, [user])
     

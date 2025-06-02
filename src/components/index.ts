@@ -5,7 +5,7 @@ export { AdminsNavbar } from './shared/AdminsNavbar/AdminsNavbar';
 export { WorkersNavbar } from './shared/WorkersNavbar/WorkersNavbar';
 export { BigCalendar } from './calendar/BigCalendar'
 export { NewAppointmentOverlay} from './calendar/NewAppointmentOverlay'
-export { NewCalendarOverlay } from './calendar/NewCalendarOverlay'
+export { EditCalendarOverlay } from './calendar/EditCalendarOverlay'
 export { ChangePasswordForm } from './user_settings/ChangePasswordForm';
 export { AppointmentsMap } from './shared/AppointmentsMap/AppointmentsMap';
 export { LocationsMap } from './shared/LocationsMap/LocationsMap';
