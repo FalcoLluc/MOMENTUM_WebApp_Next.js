@@ -9,6 +9,14 @@ class CalendarsService {
         }
     }
 
+    async editCalendar(calendarId: string, changes: Partial<ICalendar>) {
+        await apiClient.patch("/calendars/" + calendarId, changes);
+    }
+
+    async deleteCalendar(calendarId: string) {
+        await apiClient.delete("/calendars/" + calendarId);
+    }
+
     async getUserCalendars(userId: string) {
         try {
             const { data } = await apiClient.get<{message: string, calendars: ICalendar[]}>("/calendars/" + userId);

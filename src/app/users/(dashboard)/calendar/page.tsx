@@ -1,7 +1,7 @@
 // app/users/(dashboard)/calendar/page.tsx
 'use client';
 
-import { Button, Checkbox, Flex, Skeleton, Stack, Text } from "@mantine/core";
+import { ActionIcon, Button, Checkbox, Flex, Group, Skeleton, Stack, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useAuthStore } from "@/stores/authStore";
 import { useEffect, useState } from "react";
@@ -9,15 +9,21 @@ import { useRouter } from "next/navigation";
 import { calendarsService } from "@/services/calendarsService";
 import { IAppointment, ICalendar } from "@/types";
 import { useCalendarStore } from "@/stores/calendarStore";
-import { AppointmentOverlay, BigCalendar, NewAppointmentOverlay, NewCalendarOverlay } from "@/components";
-import { IconSparkles } from "@tabler/icons-react";
+import { AppointmentOverlay, BigCalendar, NewAppointmentOverlay, EditCalendarOverlay } from "@/components";
+import { IconSettings, IconSparkles } from "@tabler/icons-react";
 import { AppointmentAssistantOverlay } from "@/components/calendar/appointmentAssistant";
 
 function CalendarList(
-  { calendars }:
-  { calendars: ICalendar[] | null}
+  { calendars, reloadAppointments }:
+  { 
+    calendars: ICalendar[] | null,
+    reloadAppointments: () => void,
+  }
 ) {
   const calendarStore = useCalendarStore();
+  const [calendar, setCalendar] = useState<ICalendar | null>(null);
+  const [editCalendarOverlay, editCalendarOverlayHandlers] = useDisclosure();
+
   function changeCalendarSelection(selected: boolean, calendarId: string) {
     if (selected) {
       calendarStore.selectCalendar(calendarId);
@@ -25,6 +31,7 @@ function CalendarList(
       calendarStore.unselectCalendar(calendarId);
     }
   }
+
   if (!calendars) {
     return Array(4)
       .fill(true)
@@ -39,18 +46,41 @@ function CalendarList(
         ></Skeleton>
       ));
   } else {
-    return calendars.map((calendar) => (
-      <Checkbox
-        key={calendar._id}
-        label={calendar.calendarName}
-        size="sm"
-        color={calendar.defaultColour ?? '#228be6'}
-        defaultChecked={calendarStore.selectedCalendars.has(calendar._id!)}
-        onChange={(event) =>
-          changeCalendarSelection(event.currentTarget.checked, calendar._id!)
-        }
-      ></Checkbox>
-    ));
+    return <>
+      {calendars.map((calendar) => (
+        <Group key={calendar._id}>
+          <Checkbox
+            label={calendar.calendarName}
+            size="sm"
+            color={calendar.defaultColour ?? '#228be6'}
+            defaultChecked={calendarStore.selectedCalendars.has(calendar._id!)}
+            onChange={(event) =>
+              changeCalendarSelection(event.currentTarget.checked, calendar._id!)
+            }
+            flex="1 0 0"
+          />
+          <ActionIcon
+            size="sm"
+            variant="subtle"
+            flex="0 0 0"
+            onClick={() => {
+              setCalendar(calendar);
+              editCalendarOverlayHandlers.open();
+            }}
+          >
+            <IconSettings></IconSettings>
+          </ActionIcon>
+
+
+        </Group>
+      ))}
+
+      <EditCalendarOverlay
+        disclosure={[editCalendarOverlay, editCalendarOverlayHandlers]}
+        onCalendarSaved={reloadAppointments}
+        calendar={calendar!}
+      ></EditCalendarOverlay>
+    </>
   }
 }
 
@@ -105,7 +135,8 @@ export default function UserCalendarPage() {
   function reloadAppointments() {
     if (user?._id) {
       calendarsService.getUserCalendars(user._id).then((calendars) => {
-        setCalendars(calendars?.filter((calendar) => selectedCalendars.has(calendar._id!)) || null);
+        setCalendars(calendars ?? []);
+        setVisibleCalendars((calendars ?? []).filter((calendar) => selectedCalendars.has(calendar._id!)));
       });
     }
   }
@@ -141,7 +172,7 @@ export default function UserCalendarPage() {
         <Text mt="sm" ml="sm" tt="uppercase" size="xs" c="dimmed">
           Your Calendars
         </Text>
-        <CalendarList calendars={calendars}/>
+        <CalendarList calendars={calendars} reloadAppointments={reloadAppointments}/>
         <Button
           variant="outline"
           color="teal"
@@ -155,10 +186,10 @@ export default function UserCalendarPage() {
         calendars={calendars ?? []}
         onAppointmentSaved={reloadAppointments}
       />
-      <NewCalendarOverlay
+      <EditCalendarOverlay
         disclosure={[newCalendarOverlay, newCalendarOverlayHandlers]}
         onCalendarSaved={reloadAppointments}
-      ></NewCalendarOverlay>
+      ></EditCalendarOverlay>
       <AppointmentOverlay
         disclosure={[appointmentOverlay, appointmentOverlayHandlers]}
         appointment={viewingAppointment}
