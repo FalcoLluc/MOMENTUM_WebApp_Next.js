@@ -16,3 +16,5 @@ export { AppointmentOverlay} from './calendar/appointmentOverlay';
 export { ChatList } from './chat/ChatList';
 export { MessageWindow } from './chat/MessageWindow';
 export { MessageComponent } from './chat/MessageComponent';
+export { NewLocationOverlay } from './admin/LocationOverlay/NewLocationOverlay';
+export { LocationDetailsOverlay } from './admin/LocationOverlay/LocationDetailsOverlay';

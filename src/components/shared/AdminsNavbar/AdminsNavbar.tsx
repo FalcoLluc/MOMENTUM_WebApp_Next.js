@@ -11,6 +11,8 @@ import {
 } from '@mantine/core';
 import {
   IconUser,
+  IconUsers,
+  IconBuildingStore,
   IconLogout,
 } from '@tabler/icons-react';
 import { useRouter, usePathname } from 'next/navigation';
@@ -21,6 +23,8 @@ import { workersService } from '@/services/workersService';
 
 const navLinks = [
   { label: 'Account', icon: IconUser, href: '/admins/account' },
+  { label: 'Workers', icon: IconUsers, href: '/admins/workers' },
+  { label: 'Locations', icon: IconBuildingStore, href: '/admins/locations' },
 ];
 
 export function AdminsNavbar() {

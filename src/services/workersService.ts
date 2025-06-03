@@ -84,7 +84,6 @@ class WorkersService {
         throw new Error('Logout failed - please try again');
         }
   }
-
 }
 
 export const workersService = new WorkersService();
