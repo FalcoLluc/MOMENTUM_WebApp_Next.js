@@ -18,3 +18,5 @@ export { MessageWindow } from './chat/MessageWindow';
 export { MessageComponent } from './chat/MessageComponent';
 export { NewLocationOverlay } from './admin/LocationOverlay/NewLocationOverlay';
 export { LocationDetailsOverlay } from './admin/LocationOverlay/LocationDetailsOverlay';
+export { NewWorkerOverlay } from './admin/WorkerOverlay/NewWorkerOverlay';
+export { EditWorkerOverlay } from './admin/WorkerOverlay/EditWorkerOverlay';

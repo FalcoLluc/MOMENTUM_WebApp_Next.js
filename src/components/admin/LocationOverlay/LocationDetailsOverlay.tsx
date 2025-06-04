@@ -1,7 +1,7 @@
 'use client';
 
-import { Drawer, Group, Stack, Text, Title, Badge, Divider } from "@mantine/core";
-import { IconMapPin, IconPhone, IconStar } from "@tabler/icons-react";
+import { Drawer, Group, Stack, Text, Badge, Paper } from "@mantine/core";
+import { IconMapPin, IconPhone, IconStar, IconClock, IconTools } from "@tabler/icons-react";
 import { ILocation } from "@/types";
 
 export function LocationDetailsOverlay({
@@ -9,53 +9,55 @@ export function LocationDetailsOverlay({
   onClose,
   opened,
 }: {
-  location: ILocation | null; // Pass the selected location
+  location: ILocation | null;
   onClose: () => void;
   opened: boolean;
 }) {
-  if (!location) return null; // If no location is selected, return nothing
+  if (!location) return null;
 
   return (
     <Drawer
       opened={opened}
       onClose={onClose}
-      title={<Title order={4}>Location Details</Title>}
+      title={<Text size="lg" fw={600}>Location Details</Text>} 
       position="right"
       size="lg"
       overlayProps={{ backgroundOpacity: 0.5, blur: 4 }}
     >
       <Stack gap="md">
-        {/* Location Name */}
-        <Title order={5}>{location.nombre}</Title>
+        {/* Location Header */}
+        <Paper withBorder p="md" radius="md">
+          <Text size="xl" fw={700}>{location.nombre}</Text>
+          <Group gap="xs" mt="sm">
+            <Badge
+              leftSection={<IconStar size={14} />}
+              color={location.rating >= 4 ? 'teal' : location.rating >= 2.5 ? 'yellow' : 'red'}
+              variant="light"
+            >
+              {location.rating.toFixed(1)}
+            </Badge>
+          </Group>
+        </Paper>
 
-        {/* Address */}
-        <Group gap="xs">
-          <IconMapPin size={16} style={{ color: 'var(--mantine-color-blue-6)' }} />
-          <Text>{location.address}</Text>
-        </Group>
+        {/* Contact Information */}
+        <Paper withBorder p="md" radius="md">
+          <Text fw={600} mb="sm">Contact Information</Text>
+          <Group gap="xs" mb="xs">
+            <IconMapPin size={18} style={{ color: 'var(--mantine-color-blue-6)' }} />
+            <Text>{location.address}</Text>
+          </Group>
+          <Group gap="xs">
+            <IconPhone size={18} style={{ color: 'var(--mantine-color-teal-6)' }} />
+            <Text>{location.phone}</Text>
+          </Group>
+        </Paper>
 
-        {/* Phone */}
-        <Group gap="xs">
-          <IconPhone size={16} style={{ color: 'var(--mantine-color-teal-6)' }} />
-          <Text>{location.phone}</Text>
-        </Group>
-
-        {/* Rating */}
-        <Group gap="xs">
-          <IconStar size={16} style={{ color: 'var(--mantine-color-yellow-6)' }} />
-          <Badge
-            color={location.rating >= 4 ? 'teal' : location.rating >= 2.5 ? 'yellow' : 'red'}
-            variant="light"
-          >
-            {location.rating.toFixed(1)} / 5
-          </Badge>
-        </Group>
-
-        <Divider />
-
-        {/* Service Types */}
-        <Stack>
-          <Text fw={600}>Services Offered:</Text>
+        {/* Services Section */}
+        <Paper withBorder p="md" radius="md">
+          <Group gap="xs" mb="sm">
+            <IconTools size={18} />
+            <Text fw={600}>Services Offered</Text>
+          </Group>
           {location.serviceType.length > 0 ? (
             <Group gap="xs">
               {location.serviceType.map((service, index) => (
@@ -67,19 +69,22 @@ export function LocationDetailsOverlay({
           ) : (
             <Text c="dimmed">No services listed</Text>
           )}
-        </Stack>
+        </Paper>
 
-        <Divider />
-
-        {/* Schedule */}
-        <Stack>
-          <Text fw={600}>Opening Hours:</Text>
+        {/* Schedule Section */}
+        <Paper withBorder p="md" radius="md">
+          <Group gap="xs" mb="sm">
+            <IconClock size={18} />
+            <Text fw={600}>Opening Hours</Text>
+          </Group>
           {location.schedule.length > 0 ? (
-            <Stack>
+            <Stack gap="xs">
               {location.schedule.map((entry, index) => (
                 <Group key={index} justify="space-between">
-                  <Text>{entry.day.charAt(0).toUpperCase() + entry.day.slice(1)}</Text>
                   <Text>
+                    {entry.day.charAt(0).toUpperCase() + entry.day.slice(1).toLowerCase()}
+                  </Text>
+                  <Text fw={500}>
                     {entry.open} - {entry.close}
                   </Text>
                 </Group>
@@ -88,7 +93,7 @@ export function LocationDetailsOverlay({
           ) : (
             <Text c="dimmed">No schedule available</Text>
           )}
-        </Stack>
+        </Paper>
       </Stack>
     </Drawer>
   );
