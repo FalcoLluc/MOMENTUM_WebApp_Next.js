@@ -14,6 +14,7 @@ import { useForm } from "@mantine/form";
 import { Worker, ILocation } from "@/types";
 import { adminService } from "@/services/adminService";
 import { useState, useEffect } from "react";
+import { notifications } from '@mantine/notifications';
 
 export function EditWorkerOverlay({
   worker,
@@ -78,15 +79,29 @@ export function EditWorkerOverlay({
       }
 
       // Only include password if it was changed
-      const updateData = values.password 
-        ? values 
+      const updateData = values.password
+        ? values
         : { ...values, password: undefined };
 
       await adminService.updateWorker(worker._id, updateData);
+
+      notifications.show({
+        title: 'Worker Updated',
+        message: 'The worker has been successfully updated!',
+        color: 'green',
+      });
+
       onWorkerUpdated();
       onClose();
     } catch (error) {
       console.error("Failed to update worker:", error);
+
+      const errorMessage = error instanceof Error ? error.message : 'Failed to update worker.';
+      notifications.show({
+        title: 'Error',
+        message: errorMessage,
+        color: 'red',
+      });
     } finally {
       setLoading(false);
     }

@@ -22,6 +22,7 @@ import { useState } from "react";
 import { SearchBoxForm } from "@/components";
 import { useAuthStore } from "@/stores/authStore";
 import { IconTrash, IconClock, IconPlus } from "@tabler/icons-react";
+import { notifications } from '@mantine/notifications';
 
 export function NewLocationOverlay({
   onClose,
@@ -54,9 +55,23 @@ export function NewLocationOverlay({
         workers: [],
         isDeleted: false,
       } as ILocation);
+
+      notifications.show({
+        title: 'Location Created',
+        message: 'The location has been successfully created!',
+        color: 'green',
+      });
+
       onLocationCreated();
     } catch (error) {
       console.error("Failed to create location:", error);
+
+      const errorMessage = error instanceof Error ? error.message : 'Failed to create location.';
+      notifications.show({
+        title: 'Error',
+        message: errorMessage,
+        color: 'red',
+      });
     } finally {
       setLoading(false);
     }

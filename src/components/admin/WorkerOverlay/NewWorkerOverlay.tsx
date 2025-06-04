@@ -15,6 +15,7 @@ import { adminService } from "@/services/adminService";
 import { Worker, WorkerRole, ILocation } from "@/types";
 import { useState, useEffect, useCallback } from "react";
 import { useAuthStore } from "@/stores/authStore";
+import { notifications } from '@mantine/notifications';
 
 export function NewWorkerOverlay({
   onClose,
@@ -67,9 +68,23 @@ export function NewWorkerOverlay({
         businessAdministrated: worker?.businessAdministrated || "",
         isDeleted: false,
       } as Worker);
+
+      notifications.show({
+        title: 'Worker Created',
+        message: 'The worker has been successfully created!',
+        color: 'green',
+      });
+
       onWorkerCreated();
     } catch (error) {
       console.error("Failed to create worker:", error);
+
+      const errorMessage = error instanceof Error ? error.message : 'Failed to create worker.';
+      notifications.show({
+        title: 'Error',
+        message: errorMessage,
+        color: 'red',
+      });
     } finally {
       setLoading(false);
     }
