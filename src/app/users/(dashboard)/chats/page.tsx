@@ -1,17 +1,16 @@
-'use client'
+'use client';
 
-import { ChatList, MessageWindow } from "@/components"
+import { ChatList, MessageWindow } from "@/components";
 import { chatService } from "@/services/chatService";
 import { useAuthStore } from "@/stores/authStore";
 import { ChatListItem } from "@/types";
-import { Box, Divider, Group } from "@mantine/core"
+import { Box, Divider, Group, Loader } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { AxiosError } from "axios";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 
-
-export default function ChatPage() {
+function ChatContent() {
     const [chats, setChats] = useState<ChatListItem[] | null>(null);
     const [chat, setChat] = useState<ChatListItem | null>(null);
     const user = useAuthStore((state) => state.user);
@@ -26,14 +25,17 @@ export default function ChatPage() {
                 if (chatId == c[1]) setChat(c);
             }
         }
-    }, [chatId, chats])
+    }, [chatId, chats]);
 
     useEffect(() => {
         if (!user) return;
         chatService.getUserChats(user._id!)
-            .then((response) => {setChats(response.data.people); console.debug(response.data)}) 
+            .then((response) => {
+                setChats(response.data.people);
+                console.debug(response.data);
+            })
             .catch((error: AxiosError) => {
-                if (error.response && (error.response.data as {error: string}).error == "No people found") {
+                if (error.response && (error.response.data as { error: string }).error == "No people found") {
                     setChats([]);
                     return;
                 }
@@ -42,26 +44,31 @@ export default function ChatPage() {
                     color: "red",
                 });
             });
-    }, [user])
+    }, [user]);
 
     if (!user) return null;
 
-    //const isMobile = useMediaQuery(`(max-width: ${em(750)})`)
-
     return (
-        <Group style={{
-            height: "calc(100dvh - var(--app-shell-header-offset, 0rem) - var(--app-shell-padding) - var(--app-shell-footer-offset, 0rem) - var(--app-shell-padding))",
-        }}>
-            <Box style={{flex: "0 1 200px", height: "100%"}}>
+        <Group
+            style={{
+                height: "calc(100dvh - var(--app-shell-header-offset, 0rem) - var(--app-shell-padding) - var(--app-shell-footer-offset, 0rem) - var(--app-shell-padding))",
+            }}
+        >
+            <Box style={{ flex: "0 1 200px", height: "100%" }}>
                 <ChatList chats={chats}></ChatList>
             </Box>
             <Divider orientation="vertical"></Divider>
-            <Box style={{flex: "1 0 auto", height: "100%"}}>
-                { chat ? 
-                    <MessageWindow chat={chat} user={user}></MessageWindow>
-                    : null
-                }
+            <Box style={{ flex: "1 0 auto", height: "100%" }}>
+                {chat ? <MessageWindow chat={chat} user={user}></MessageWindow> : null}
             </Box>
         </Group>
-    )
+    );
+}
+
+export default function ChatPage() {
+    return (
+        <Suspense fallback={<Loader />}>
+            <ChatContent />
+        </Suspense>
+    );
 }
