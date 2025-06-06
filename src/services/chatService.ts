@@ -1,5 +1,6 @@
 import apiClient from "@/lib/apiClient";
 import { ChatListItem, IChat } from "@/types";
+import { ChatUserType } from "@/types/enums";
 
 class ChatService {
     async getUserChats(userId: string) {
@@ -10,8 +11,13 @@ class ChatService {
         return await apiClient.get<IChat>(`/chat/${user1ID}/${user2ID}`);
     }
 
-    async createChat(user1ID: string, user2ID: string) {
-        return await apiClient.post(`/chat/create`, {user1ID, user2ID});
+    async createChat(
+        user1ID: string,
+        user2ID: string,
+        typeOfUser1: ChatUserType,
+        typeOfUser2: ChatUserType
+    ) {
+        return await apiClient.post(`/chat/create`, {user1ID, user2ID, typeOfUser1, typeOfUser2});
     }
 
     async getLastMessages(chatId: string) {
