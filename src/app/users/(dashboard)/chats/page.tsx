@@ -7,6 +7,7 @@ import { ChatListItem } from "@/types";
 import { Box, Divider, Group } from "@mantine/core"
 import { notifications } from "@mantine/notifications";
 import { AxiosError } from "axios";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 
@@ -14,6 +15,18 @@ export default function ChatPage() {
     const [chats, setChats] = useState<ChatListItem[] | null>(null);
     const [chat, setChat] = useState<ChatListItem | null>(null);
     const user = useAuthStore((state) => state.user);
+    const params = useSearchParams();
+    const chatId = params.get("u");
+
+    useEffect(() => {
+        if (!chatId || !chats) {
+            setChat(null);
+        } else {
+            for (const c of chats) {
+                if (chatId == c[1]) setChat(c);
+            }
+        }
+    }, [chatId, chats])
 
     useEffect(() => {
         if (!user) return;
@@ -30,11 +43,6 @@ export default function ChatPage() {
                 });
             });
     }, [user])
-    
-    function onChatSelected(chat: ChatListItem) {
-        setChat(chat);
-    }
-
 
     if (!user) return null;
 
@@ -45,7 +53,7 @@ export default function ChatPage() {
             height: "calc(100dvh - var(--app-shell-header-offset, 0rem) - var(--app-shell-padding) - var(--app-shell-footer-offset, 0rem) - var(--app-shell-padding))",
         }}>
             <Box style={{flex: "0 1 200px", height: "100%"}}>
-                <ChatList chats={chats} onChatSelected={onChatSelected}></ChatList>
+                <ChatList chats={chats}></ChatList>
             </Box>
             <Divider orientation="vertical"></Divider>
             <Box style={{flex: "1 0 auto", height: "100%"}}>
