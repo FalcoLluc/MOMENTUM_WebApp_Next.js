@@ -7,6 +7,10 @@ class ChatService {
         return await apiClient.get<{people: ChatListItem[], error?: string}>(`/chat/people/user/${userId}`);
     }
 
+    async getWorkerChats(workerId: string) {
+        return await apiClient.get<{people: ChatListItem[], error?: string}>(`/chat/people/worker/${workerId}`);
+    }
+
     async getChat(user1ID: string, user2ID: string) {
         return await apiClient.get<IChat>(`/chat/${user1ID}/${user2ID}`);
     }

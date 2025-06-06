@@ -152,6 +152,7 @@ export type ChatListItem = [
   chatName: string,
   userId: string,
   userType: ChatUserType,
+  selfId: string,
 ]
 export interface PlannedAppointment {
   calendarId?: string;

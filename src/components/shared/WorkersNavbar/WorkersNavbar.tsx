@@ -12,6 +12,7 @@ import {
 import {
   IconUser,
   IconLogout,
+  IconMessage,
 } from '@tabler/icons-react';
 import { useRouter, usePathname } from 'next/navigation';
 import classes from './WorkersNavbar.module.css';
@@ -21,6 +22,7 @@ import { workersService } from '@/services/workersService';
 
 const navLinks = [
   { label: 'Account', icon: IconUser, href: '/workers/account' },
+  { label: 'Chats', icon: IconMessage, href: '/workers/chats'},
 ];
 
 export function WorkersNavbar() {

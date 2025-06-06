@@ -20,3 +20,4 @@ export { NewLocationOverlay } from './admin/LocationOverlay/NewLocationOverlay';
 export { LocationDetailsOverlay } from './admin/LocationOverlay/LocationDetailsOverlay';
 export { NewWorkerOverlay } from './admin/WorkerOverlay/NewWorkerOverlay';
 export { EditWorkerOverlay } from './admin/WorkerOverlay/EditWorkerOverlay';
+export { WorkerChatList } from './chat/WorkerChatList';
