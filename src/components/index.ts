@@ -8,6 +8,7 @@ export { NewAppointmentOverlay} from './calendar/NewAppointmentOverlay'
 export { EditCalendarOverlay } from './calendar/EditCalendarOverlay'
 export { ChangePasswordForm } from './user_settings/ChangePasswordForm';
 export { AppointmentsMap } from './shared/AppointmentsMap/AppointmentsMap';
+export { AppointmentsMapRouting } from './shared/AppointmentsMap/AppointmentsMapRouting';
 export { LocationsMap } from './shared/LocationsMap/LocationsMap';
 export { AddressForm } from './shared/AutoCompleteMapbox/AddressForm';
 export { SearchBoxForm } from './shared/AutoCompleteMapbox/SearchBoxForm';

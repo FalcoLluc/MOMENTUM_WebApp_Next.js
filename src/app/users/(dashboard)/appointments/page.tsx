@@ -1,18 +1,22 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { AppointmentsMap } from '@/components';
 import { calendarsService } from '@/services/calendarsService';
 import { locationsService } from '@/services/locationsService';
 import { useAuthStore } from '@/stores/authStore';
 import { AppointmentMarker } from '@/types';
+import { AppointmentsMapRouting } from '@/components';
+import { Container, Title, Loader, Center, Alert, Stack, Button } from '@mantine/core';
+import { DatePickerInput } from '@mantine/dates';
+import { IconCalendar, IconAlertCircle } from '@tabler/icons-react';
 
 export default function AppointmentsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const user = useAuthStore((state) => state.user);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
 
   const [appointments, setAppointments] = useState<AppointmentMarker[]>([]);
+  const user = useAuthStore((state) => state.user);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -24,18 +28,18 @@ export default function AppointmentsPage() {
           throw new Error('User not authenticated');
         }
 
-        // Get today's date range
-        const today = new Date();
-        const start = new Date(today.setHours(0, 0, 0, 0));
-        const end = new Date(today.setHours(23, 59, 59, 999));
+        if (!selectedDate) return;
 
-        // Fetch user calendars
+        const start = new Date(selectedDate);
+        start.setHours(0, 0, 0, 0);
+        const end = new Date(selectedDate);
+        end.setHours(23, 59, 59, 999);
+
         const calendars = await calendarsService.getUserCalendars(user._id);
         if (!calendars?.length) {
           throw new Error('No calendars found');
         }
 
-        // Fetch today's appointments
         const appointments = (
           await Promise.all(
             calendars.map((calendar) =>
@@ -46,12 +50,11 @@ export default function AppointmentsPage() {
           )
         ).flat();
 
-        // Fetch locations for appointments
         const locationPromises = appointments
-          .filter((app) => app && (app.location || app.customUbicacion)) // Ensure app and app.location are valid
+          .filter((app) => app && (app.location || app.customUbicacion))
           .map(async (app) => {
-            if (app &&
-              app.customUbicacion &&
+            if (
+              app?.customUbicacion &&
               Array.isArray(app.customUbicacion.coordinates) &&
               app.customUbicacion.coordinates.length === 2
             ) {
@@ -59,29 +62,29 @@ export default function AppointmentsPage() {
                 id: app._id || crypto.randomUUID(),
                 name: app.title,
                 position: [
-                  app.customUbicacion.coordinates[1], // latitude
-                  app.customUbicacion.coordinates[0], // longitude
+                  app.customUbicacion.coordinates[1],
+                  app.customUbicacion.coordinates[0],
                 ],
                 address: app.customAddress || 'Custom Location',
                 serviceType: app.serviceType || 'Unknown',
               };
-            }
-            else if( app && app.location) {
-              const location = await locationsService.getLocationById(app.location); // No non-null assertion
-              if (!location || !Array.isArray(location.ubicacion.coordinates) || location.ubicacion.coordinates.length === 2) return null;
+            } else if (app?.location) {
+              const location = await locationsService.getLocationById(app.location);
+              if (!location || !Array.isArray(location.ubicacion.coordinates) || location.ubicacion.coordinates.length !== 2) return null;
 
               return {
                 id: app._id || crypto.randomUUID(),
                 name: location.nombre,
                 position: [
-                  location.ubicacion.coordinates[1], // latitude
-                  location.ubicacion.coordinates[0], // longitude
+                  location.ubicacion.coordinates[1],
+                  location.ubicacion.coordinates[0],
                 ],
                 address: location.address,
                 serviceType: app.serviceType || 'Unknown',
               };
             }
           });
+
         const validLocations = (await Promise.all(locationPromises)).filter(Boolean) as AppointmentMarker[];
         setAppointments(validLocations);
       } catch (err) {
@@ -93,20 +96,50 @@ export default function AppointmentsPage() {
     };
 
     fetchData();
-  }, [user?._id]);  
-
-  if (loading) return <div>Loading appointments...</div>;
-  if (!loading && !appointments.length) {
-    return <div>No appointments found for today.</div>;
-  }
-  if (error) return <div className="text-red-500">{error}</div>;
+  }, [user?._id, selectedDate]);
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Today&#39;s Appointments</h1>
-      <div className="h-[600px]">
-        <AppointmentsMap appointments={appointments} />
-      </div>
-    </div>
+    <Container size="lg" py="md">
+      <Stack gap="md">
+        <Title order={2}>Appointments</Title>
+
+        <DatePickerInput
+          label="Select date"
+          rightSection={<IconCalendar size={18} />}
+          value={selectedDate}
+          onChange={setSelectedDate}
+          maxDate={new Date(new Date().setFullYear(new Date().getFullYear() + 1))}
+          minDate={new Date(new Date().setFullYear(new Date().getFullYear() - 1))}
+        />
+
+        <Button onClick={() => setSelectedDate(new Date())} variant="outline" color="blue">
+          Select Today
+        </Button>
+
+        {loading && (
+          <Center py="md">
+            <Loader />
+          </Center>
+        )}
+
+        {error && (
+          <Alert icon={<IconAlertCircle size={16} />} color="red">
+            {error}
+          </Alert>
+        )}
+
+        {!loading && !error && appointments.length === 0 && (
+          <Alert color="yellow" title="No appointments">
+            No appointments found for the selected day.
+          </Alert>
+        )}
+
+        {!loading && appointments.length > 0 && (
+          <div className="h-[600px]">
+            <AppointmentsMapRouting appointments={appointments} />
+          </div>
+        )}
+      </Stack>
+    </Container>
   );
 }

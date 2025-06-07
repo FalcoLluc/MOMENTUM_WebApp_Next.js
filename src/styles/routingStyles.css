@@ -1,0 +1,6 @@
+.leaflet-touch .leaflet-control-layers,
+.leaflet-touch .leaflet-bar {
+  border: 2px solid #0003;
+  background-clip: padding-box;
+  color: black;
+}

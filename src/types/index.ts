@@ -154,6 +154,14 @@ export type ChatListItem = [
   userType: ChatUserType,
   selfId: string,
 ]
+
+export interface AppointmentMarkerMapbox {
+  id: string;
+  name: string;
+  position: [number, number];
+  address?: string;
+  serviceType: string;
+}
 export interface PlannedAppointment {
   calendarId?: string;
   inTime: Date;
