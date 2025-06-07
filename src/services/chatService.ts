@@ -31,6 +31,14 @@ class ChatService {
     async sendMessage(chatId: string, userFrom: string, message: string) {
         return await apiClient.post(`/chat/send`, {chatId, userFrom, message});
     }
+
+    async editChat(chatId: string, changes: any) {
+        return await apiClient.patch(`/chat/${chatId}`, changes);
+    }
+
+    async deleteChat(chatId: string) {
+        return await apiClient.delete(`/chat/${chatId}`);
+    }
 }
 
 export const chatService = new ChatService();
