@@ -108,8 +108,22 @@ class AuthService {
       throw new Error('Network error - please try again');
     }
   }
-  
-  
+
+  async validateToken(): Promise<boolean> {
+    try {
+      const response = await apiClient.get('/auth/validateLogin', {
+        // Don't throw on 401/403 - we'll handle it manually
+        validateStatus: (status) => status < 500
+      });
+      
+      // Consider 200-299 as valid responses
+      return response.status >= 200 && response.status < 300;
+    } catch (error) {
+      console.error('Token validation failed:', error);
+      return false;
+    }
+  }
+
 }
 
 export const authService = new AuthService();

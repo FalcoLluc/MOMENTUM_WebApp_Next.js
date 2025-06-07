@@ -13,6 +13,7 @@ import {
 } from "@mantine/core";
 import { LocationServiceType } from "@/types/enums";
 import styles from "./LocationsFilter.module.css";
+import { BusinessCard } from "./BusinessCard";
 
 interface LocationsFilterProps {
   onLocationsChange: (locations: LocationMarker[]) => void;
@@ -156,13 +157,13 @@ return (
     {/* Botones de tabs */}
     <div className={styles.filterToggleButtons}>
       <Button
-        className={`${styles.btnElegant} ${activeTab === "todos" ? styles.btnActive : ""}`}
+        variant={activeTab === "todos" ? "filled" : "outline"}
         onClick={() => setActiveTab("todos")}
       >
         Todos
       </Button>
       <Button
-        className={`${styles.btnElegant} ${activeTab === "favoritos" ? styles.btnActive : ""}`}
+        variant={activeTab === "favoritos" ? "filled" : "outline"}
         onClick={() => setActiveTab("favoritos")}
       >
         Favoritos
@@ -176,7 +177,7 @@ return (
       <Menu shadow="md" width={260}>
         <Menu.Target>
           <Button
-            className={selectedTypes.length > 0 ? styles.customButtonActive : styles.customButton}
+            variant={selectedTypes.length > 0 ? "filled" : "outline"}
           >
             {selectedTypes.length > 0
               ? `${selectedTypes.length} tipo${selectedTypes.length > 1 ? "s" : ""}`
@@ -207,7 +208,7 @@ return (
       <Menu shadow="md" width={260}>
         <Menu.Target>
           <Button
-            className={cities.length > 0 ? styles.customButtonActive : styles.customButton}
+            variant={cities.length > 0 ? "filled" : "outline"}
           >
             Ciudad
           </Button>
@@ -243,9 +244,7 @@ return (
       {/* Filtro por hora/día */}
       <div style={{ flex: 1 }}>
         <Button
-          className={
-            selectedTime || selectedDay ? styles.customButtonActive : styles.customButton
-          }
+          variant={selectedTime || selectedDay ? "filled" : "outline"}
           onClick={() => setShowTimePicker((prev) => !prev)}
           fullWidth
         >
@@ -282,7 +281,7 @@ return (
       {/* Filtro valoración mínima */}
       <div style={{ flex: 1 }}>
         <Button
-          className={ratingMin > 0 ? styles.customButtonActive : styles.customButton}
+          variant={ratingMin > 0 ? "filled" : "outline"}
           onClick={() => setShowRating((prev) => !prev)}
           fullWidth
         >
@@ -309,7 +308,7 @@ return (
       {/* Filtro distancia */}
       <div style={{ flex: 1 }}>
         <Button
-          className={maxDistance > 0 ? styles.customButtonActive : styles.customButton}
+          variant={maxDistance > 0 ? "filled" : "outline"}
           onClick={() => setShowDistance((prev) => !prev)}
           fullWidth
         >
@@ -365,9 +364,7 @@ return (
     {results && results.length > 0 && (
       <ScrollArea className={styles.scrollResults}>
         {results.map((business) => (
-          <Text key={business._id?.toString()} mb="xs">
-            • {business.name}
-          </Text>
+          <BusinessCard key={business._id} business={business}></BusinessCard>
         ))}
       </ScrollArea>
     )}

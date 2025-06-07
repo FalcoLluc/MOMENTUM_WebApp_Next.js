@@ -1,13 +1,14 @@
 'use client'
 
 import { chatService } from "@/services/chatService";
-import { ChatListItem, IMessage, User } from "@/types";
-import { ActionIcon, Paper, ScrollArea, Stack, Text, TextInput, useMantineTheme } from "@mantine/core"
+import { ChatListItem, IChat, IMessage, User, Worker } from "@/types";
+import { ActionIcon, Button, Menu, Paper, ScrollArea, Stack, Text, TextInput, useMantineTheme } from "@mantine/core"
 import { notifications } from "@mantine/notifications";
-import { IconSend } from "@tabler/icons-react"
+import { IconSend, IconTrash, IconUserCheck } from "@tabler/icons-react"
 import { useCallback, useEffect, useRef, useState } from "react";
 import { MessageComponent } from "./MessageComponent";
 import { useSocket } from "@/stores/socketStore";
+import { ChatUserType } from "@/types/enums";
 
 interface SocketMessage {
     chatId: string,
@@ -15,11 +16,13 @@ interface SocketMessage {
     message: string,
 }
 
-export function MessageWindow ({chat, user}: {chat: ChatListItem, user: User}) {
+export function MessageWindow ({chat, user}: {chat: ChatListItem, user: User | Worker}) {
     const theme = useMantineTheme();
     const [messages, setMessages] = useState<IMessage[]>([]);
     const [chatId, setChatId] = useState<string | null>(null);
+    const [currentChat, setCurrentChat] = useState<IChat | null>(null);
     const [message, setMessage] = useState<string>("");
+    const [deleteConfirmation, setDeleteConfirmation] = useState(false);
     const socket = useSocket((state) => state.socket);
     
     const messageArea = useRef<HTMLDivElement>(null);
@@ -61,7 +64,8 @@ export function MessageWindow ({chat, user}: {chat: ChatListItem, user: User}) {
     useEffect(() => {
         async function getMessages() {
             try {
-                const res = await chatService.getChat(chat[1], user._id!);
+                const res = await chatService.getChat(chat[1], chat[3]);
+                setCurrentChat(res.data);
                 const id = res.data._id!;
                 const messages = await chatService.getLastMessages(id);
                 setMessages(messages.data);
@@ -74,6 +78,10 @@ export function MessageWindow ({chat, user}: {chat: ChatListItem, user: User}) {
 
         getMessages();
     }, [chat, user, newMessageCallback])
+
+    // Checks if reader of the chat (me) is a location. False if I'm chatting
+    // with a location
+    const isLocationChat = user._id != chat[3] && chat[2] == ChatUserType.LOCATION;
 
 
     async function sendMessage() {
@@ -111,15 +119,87 @@ export function MessageWindow ({chat, user}: {chat: ChatListItem, user: User}) {
         return message.from == user.name;
     }
 
+    // only used to assign location chats to a worker
+    async function assignClient() {
+        if (!currentChat) return;
+
+        let changes;
+        try {
+            if (chat[3] == currentChat?.user1._id ) {
+                // the location is user1
+                changes = {
+                    user1: user._id,
+                    typeOfUser1: "worker",
+                }
+            } else {
+                // the location is user2
+                changes = {
+                    user2: user._id,
+                    typeOfUser2: "worker",
+                }
+            }
+
+            await chatService.editChat(currentChat._id!, changes);
+            window.location.reload();
+        } catch {
+            notifications.show({
+                message: "Error updating chat",
+                color: "red",
+            });
+        }
+    }
+
+    async function deleteChat() {
+        try {
+            const chatId = currentChat?._id;
+            if (!chatId) return;
+            
+            await chatService.deleteChat(chatId);
+            window.location.reload();
+        } catch {
+            notifications.show({
+                message: "Error deleting chat",
+                color: "red",
+            });
+        }
+    }
+
     return (
         <Stack style={{height: "100%"}}>
-            <Paper style={{backgroundColor: theme.colors.blue[7], display: "flex"}}>
+            <Paper 
+                style={{
+                    backgroundColor: theme.colors.blue[7],
+                    display: "flex",
+                    gap: "4px",
+                    alignItems: "center",
+                    padding: "4px",
+                    paddingLeft: "8px",
+                }}
+            >
                 <Text 
                     size="lg"
                     fw="500"
                     c="white"
-                    style={{margin: 4, flexGrow: 1, textAlign: "center"}}
                 >{chat[0]}</Text>
+                <div style={{flexGrow: 1}}></div>
+                <Menu opened={deleteConfirmation} onChange={setDeleteConfirmation}>
+                    <Menu.Target>
+                        <ActionIcon><IconTrash/></ActionIcon>
+                    </Menu.Target>
+                    <Menu.Dropdown>
+                        <Menu.Label style={{fontSize: "1rem"}}>Delete Chat?</Menu.Label>
+                        <Menu.Item color="red" onClick={deleteChat}>Yes</Menu.Item>
+                        <Menu.Item color="green" onClick={() => setDeleteConfirmation(false)}>No</Menu.Item>
+                    </Menu.Dropdown>
+                </Menu>
+
+                { isLocationChat ? 
+                    <Button leftSection={<IconUserCheck/>} size="compact-sm" onClick={assignClient}>
+                        Assign Client
+                    </Button>
+                    : null
+                }
+
             </Paper>
 
             <ScrollArea style={{flexGrow: 1}} viewportRef={messageArea}>

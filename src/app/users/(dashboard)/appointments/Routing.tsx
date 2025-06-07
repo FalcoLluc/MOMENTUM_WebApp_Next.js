@@ -18,8 +18,20 @@ export default function Routing({ waypoints }: { waypoints: L.LatLng[] }) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const routingControl = L.Routing.control({
       waypoints: waypoints,
-      routeWhileDragging: false,
-      show: false,
+      routeWhileDragging: false, // Disable dragging of the route
+      addWaypoints: false, // Disable adding new waypoints by clicking
+      show: false, // Hide the routing UI
+      lineOptions: {
+        styles: [
+          {
+            color: "blue", // Customize the line color
+            weight: 4, // Customize the line thickness
+            opacity: 0.7, // Customize the line opacity
+          },
+        ],
+        extendToWaypoints: true, // Ensure the line extends to all waypoints
+        missingRouteTolerance: 10, // Tolerance for missing routes in meters
+      },
     }).addTo(map);
 
     // return () => map.removeControl(routingControl);

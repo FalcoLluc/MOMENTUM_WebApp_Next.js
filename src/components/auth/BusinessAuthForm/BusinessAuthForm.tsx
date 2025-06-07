@@ -20,6 +20,7 @@ import { workersService } from '@/services/workersService';
 import { LoginRequestBody, NewBusinessRequestBody, WorkerRole } from '@/types';
 import { useRouter } from 'next/navigation';
 import { notifications } from '@mantine/notifications';
+import { useAuthStore } from '@/stores/authStore';
 
 interface BusinessAuthFormProps {
   type: 'login' | 'register';
@@ -40,6 +41,7 @@ const INITIAL_LOGIN_STATE: LoginRequestBody = {
 
 export function BusinessAuthForm({ type }: BusinessAuthFormProps) {
   const router = useRouter();
+  const authStore = useAuthStore();
   const [loading, setLoading] = useState(false); // Add loading state
   const [registerCredentials, setRegisterCredentials] = useState<NewBusinessRequestBody>(INITIAL_REGISTER_STATE);
   const [loginCredentials, setLoginCredentials] = useState<LoginRequestBody>(INITIAL_LOGIN_STATE);
@@ -83,6 +85,7 @@ export function BusinessAuthForm({ type }: BusinessAuthFormProps) {
       try {
         console.log('Login:', loginCredentials);
         const { worker } = await workersService.loginWorker(loginCredentials);
+        authStore.setWorker(worker);
 
         notifications.show({
           title: 'Login successful',
