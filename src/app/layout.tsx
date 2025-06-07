@@ -8,8 +8,8 @@ import '@/styles/globals.css';
 import ClientSocketProvider from './socketProvider';
 
 export const metadata = {
-  title: 'My Mantine app',
-  description: 'I have followed setup instructions carefully',
+  title: 'Momentum',
+  description: 'Making lifes easier',
 };
 
 export default async function RootLayout({
@@ -22,6 +22,7 @@ export default async function RootLayout({
       <head>
         <ColorSchemeScript />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" href="/momentum-icon.ico" type="image/x-icon" />
         {/* Add runtime_config.js script asynchronously */}
         <Script
           src="/runtime_config.js"
