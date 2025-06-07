@@ -119,8 +119,8 @@ export function AppointmentsMapRouting({
     <div style={{ position: 'relative', height: '400px', width: '100%' }}>
       <MapContainer center={center} zoom={zoom} style={{ height: '100%', width: '100%' }}>
         <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         <AutoCenter appointments={appointments} trigger={centerTrigger} />
         {appointments.map((app) => (

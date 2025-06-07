@@ -5,36 +5,40 @@ import "leaflet-routing-machine";
 import { useMap } from "react-leaflet";
 import "@/styles/routingStyles.css";
 
-L.Marker.prototype.options.icon = L.icon({
-  iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
-});
+interface RoutingControlOptions extends L.Routing.RoutingControlOptions {
+  createMarker?: (i: number, waypoint: L.Routing.Waypoint, n: number) => L.Marker | false;
+}
 
 export default function Routing({ waypoints }: { waypoints: L.LatLng[] }) {
   const map = useMap();
 
   useEffect(() => {
-    if (!map) return;
+    if (!map || waypoints.length < 2) return;
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const routingControl = L.Routing.control({
       waypoints: waypoints,
-      routeWhileDragging: false, // Disable dragging of the route
-      addWaypoints: false, // Disable adding new waypoints by clicking
-      show: false, // Hide the routing UI
+      routeWhileDragging: false,
+      addWaypoints: false,
+      show: false,
       lineOptions: {
         styles: [
-          {
-            color: "blue", // Customize the line color
-            weight: 4, // Customize the line thickness
-            opacity: 0.7, // Customize the line opacity
-          },
+          { color: "blue", weight: 5, opacity: 0.8 },
+          { color: "cyan", weight: 3, opacity: 0.6 },
+          { color: "lightblue", weight: 1.5, opacity: 0.4 },
         ],
-        extendToWaypoints: true, // Ensure the line extends to all waypoints
-        missingRouteTolerance: 10, // Tolerance for missing routes in meters
+        extendToWaypoints: true,
+        missingRouteTolerance: 10,
       },
-    }).addTo(map);
+      createMarker: () => false,
+      showAlternatives: false,
+      fitSelectedRoutes: false,
+    } as RoutingControlOptions).addTo(map);
 
-    // return () => map.removeControl(routingControl);
+    return () => {
+      if (routingControl && map.hasLayer(routingControl.getPlan())) {
+        map.removeControl(routingControl);
+      }
+    };
   }, [map, waypoints]);
 
   return null;
