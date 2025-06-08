@@ -108,6 +108,8 @@ export interface AppointmentMarker {
   position: LatLngExpression;
   address?: string;
   serviceType: string;
+  startTime: Date; // Add start time
+  endTime: Date;
 }
 
 export interface  LocationMarker{
@@ -155,13 +157,6 @@ export type ChatListItem = [
   selfId: string,
 ]
 
-export interface AppointmentMarkerMapbox {
-  id: string;
-  name: string;
-  position: [number, number];
-  address?: string;
-  serviceType: string;
-}
 export interface PlannedAppointment {
   calendarId?: string;
   inTime: Date;

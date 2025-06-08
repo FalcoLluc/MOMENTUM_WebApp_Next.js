@@ -2,7 +2,8 @@
 
 import dynamic from 'next/dynamic';
 import { useState, useEffect, useMemo } from 'react';
-import { Button, Text } from '@mantine/core';
+import { Button, Text, Box } from '@mantine/core';
+import { IconMapPin, IconClock } from '@tabler/icons-react';
 import { AppointmentMarker } from '@/types';
 import { isValidCoordinate } from '@/utils/validation';
 
@@ -132,14 +133,24 @@ export function AppointmentsMapRouting({
 
         {/* Appointment markers */}
         {appointments.map((app) => (
-          <Marker key={app.id} position={app.position}>
-            <Popup>
-              <div style={{ minWidth: '200px' }}>
-                <h3 style={{ fontWeight: 'bold' }}>{app.name}</h3>
-                {app.address && <p>{app.address}</p>}
-              </div>
-            </Popup>
-          </Marker>
+        <Marker key={app.id} position={app.position}>
+          <Popup>
+            <Box miw={120} p={0}> {/* Removed padding */}
+              <Text fw={700} size="sm">{app.name}</Text> {/* Smaller font size */}
+              {app.address && (
+                <Text size="xs" color="dimmed" mt={0}> {/* Removed margin */}
+                  <IconMapPin size={10} /> {app.address} {/* Smaller icon */}
+                </Text>
+              )}
+              <Text size="xs" mt={0}> {/* Removed margin */}
+                <IconClock size={10} /> <strong>Start:</strong> {new Date(app.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              </Text>
+              <Text size="xs" mt={0}> {/* Removed margin */}
+                <IconClock size={10} /> <strong>End:</strong> {new Date(app.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              </Text>
+            </Box>
+          </Popup>
+        </Marker>
         ))}
 
         {/* User location marker */}

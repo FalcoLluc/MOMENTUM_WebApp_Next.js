@@ -67,6 +67,8 @@ export default function AppointmentsPage() {
                 ],
                 address: app.customAddress || 'Custom Location',
                 serviceType: app.serviceType || 'Unknown',
+                startTime: app.inTime,
+                endTime: app.outTime,
               };
             } else if (app?.location) {
               const location = await locationsService.getLocationById(app.location);
@@ -81,12 +83,16 @@ export default function AppointmentsPage() {
                 ],
                 address: location.address,
                 serviceType: app.serviceType || 'Unknown',
+                startTime: app.inTime,
+                endTime: app.outTime,
               };
             }
           });
 
         const validLocations = (await Promise.all(locationPromises)).filter(Boolean) as AppointmentMarker[];
-        setAppointments(validLocations);
+        const orderedLocations = validLocations.sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
+        
+        setAppointments(orderedLocations);
       } catch (err) {
         console.error('Error fetching data:', err);
         setError(err instanceof Error ? err.message : JSON.stringify(err));

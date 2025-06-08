@@ -69,6 +69,8 @@ export function AppointmentOverlay(
             ],
             serviceType: appointment.serviceType,
             address: appointment.customAddress,
+            startTime: appointment.inTime,
+            endTime: appointment.outTime,
         };
     }
 
