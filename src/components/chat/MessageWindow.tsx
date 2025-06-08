@@ -1,7 +1,7 @@
 'use client'
 
 import { chatService } from "@/services/chatService";
-import { ChatListItem, IChat, IMessage, User, Worker } from "@/types";
+import { ChatListItem, IChat, IMessage, SocketMessage, User, Worker } from "@/types";
 import { ActionIcon, Button, Menu, Paper, ScrollArea, Stack, Text, TextInput, useMantineTheme } from "@mantine/core"
 import { notifications } from "@mantine/notifications";
 import { IconSend, IconTrash, IconUserCheck } from "@tabler/icons-react"
@@ -10,13 +10,13 @@ import { MessageComponent } from "./MessageComponent";
 import { useSocket } from "@/stores/socketStore";
 import { ChatUserType } from "@/types/enums";
 
-interface SocketMessage {
-    chatId: string,
-    sender: string,
-    message: string,
+interface MessageWindowOptions {
+    chat: ChatListItem,
+    user: User | Worker
+    updateMessageList: () => void;
 }
 
-export function MessageWindow ({chat, user}: {chat: ChatListItem, user: User | Worker}) {
+export function MessageWindow ({chat, user, updateMessageList}: MessageWindowOptions) {
     const theme = useMantineTheme();
     const [messages, setMessages] = useState<IMessage[]>([]);
     const [chatId, setChatId] = useState<string | null>(null);
@@ -36,12 +36,13 @@ export function MessageWindow ({chat, user}: {chat: ChatListItem, user: User | W
 
     const newMessageCallback = useCallback((message: SocketMessage) => {
         console.log("got message: " + message);
+        if (chatId != message.chatId) return; // discard message
         setMessages(m => [{
-            from: message.sender,
+            from: message.senderName,
             text: message.message,
             timestamp: new Date(),
         }, ...m]);
-    }, []);
+    }, [chatId]);
 
     useEffect(() => {
         scrollToBottom();
@@ -50,9 +51,7 @@ export function MessageWindow ({chat, user}: {chat: ChatListItem, user: User | W
     useEffect(() =>  {
         if (!socket) return;
         
-        console.info("logging in to socket with username " + user.name);
         socket.on("new_message", newMessageCallback);
-        socket.emit("user_login", user.name);
 
         return () => {
             if (socket) {
@@ -92,14 +91,18 @@ export function MessageWindow ({chat, user}: {chat: ChatListItem, user: User | W
             if (socket) {
                 const newMessage = {
                     chatId: chatId,
-                    sender: user.name,
                     message: message,
+                    receiverId: chat[1],
+                    // if the user is the sender, then it must be of type user or worker. In this case, chat[2] indicates the receiver type
+                    // if it's not, then the message is being sent as location or business. Now, chat[2] indicates the sender type and we can't use it
+                    receiverType: user._id == chat[3] ? chat[2] : ChatUserType.USER,
+                    senderName: user.name,
                 } as SocketMessage;
                 socket.emit("new_message", newMessage);
                 console.info(newMessage);
                 setMessage("");
                 setMessages(m => [{
-                    from: newMessage.sender,
+                    from: newMessage.senderName,
                     text: newMessage.message,
                     timestamp: new Date(),
                 }, ...m]);
@@ -140,7 +143,7 @@ export function MessageWindow ({chat, user}: {chat: ChatListItem, user: User | W
             }
 
             await chatService.editChat(currentChat._id!, changes);
-            window.location.reload();
+            updateMessageList();
         } catch {
             notifications.show({
                 message: "Error updating chat",
@@ -155,7 +158,7 @@ export function MessageWindow ({chat, user}: {chat: ChatListItem, user: User | W
             if (!chatId) return;
             
             await chatService.deleteChat(chatId);
-            window.location.reload();
+            updateMessageList();
         } catch {
             notifications.show({
                 message: "Error deleting chat",

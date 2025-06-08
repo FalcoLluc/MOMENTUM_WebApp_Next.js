@@ -1,18 +1,20 @@
 'use client'
 import { useAuthStore } from "@/stores/authStore"
 import { ChatListItem } from "@/types"
+import { ChatUserType } from "@/types/enums";
 import { Button, NavLink, Skeleton, Stack, Title } from "@mantine/core"
 
 interface ChatListParams {
     chats: ChatListItem[] | null,
+    viewChat: (chat: ChatListItem) => void,
 }
 
-export function WorkerChatList({chats}: ChatListParams) {
+export function WorkerChatList({chats, viewChat}: ChatListParams) {
     const worker = useAuthStore(s => s.worker);
     if (!worker) return null;
 
-    const workerChats = chats?.filter(c => c[3] == worker._id);
-    const locationChats = chats?.filter(c => c[3] != worker._id);
+    const workerChats = chats?.filter(c => c[2] == ChatUserType.WORKER);
+    const locationChats = chats?.filter(c => c[2] == ChatUserType.LOCATION);
 
     return (
         <Stack>
@@ -23,7 +25,7 @@ export function WorkerChatList({chats}: ChatListParams) {
                     <NavLink
                         key={chat[1]}
                         label={chat[0]}
-                        href={"/workers/chats?u=" + chat[1]}
+                        onClick={() => viewChat(chat)}
                     />
                 ))
             :
@@ -44,7 +46,7 @@ export function WorkerChatList({chats}: ChatListParams) {
                     <NavLink
                         key={chat[1]}
                         label={chat[0]}
-                        href={"/workers/chats?u=" + chat[1]}
+                        onClick={() => viewChat(chat)}
                     />
                 ))
             :

@@ -8,7 +8,7 @@ export function MessageComponent({message, own}: {message: IMessage, own: boolea
     function getTime(): string {
         const timestamp = new Date(message.timestamp);
         if (!timestamp) return "";
-        return `${timestamp.getHours()}:${timestamp.getMinutes()}`;
+        return `${String(timestamp.getHours()).padStart(2, "0")}:${String(timestamp.getMinutes()).padStart(2, "0")}`;
     }
 
     return (

@@ -4,6 +4,8 @@ import { io, Socket } from "socket.io-client";
 import { create } from "zustand";
 import { useAuthStore } from "./authStore";
 import { getRuntimeEnv } from "@/utils/getRuntimeEnv";
+import { SocketMessage } from "@/types";
+import { notifications } from "@mantine/notifications";
 
 interface SocketStore {
     socket: Socket | null;
@@ -36,12 +38,22 @@ export function updateSocket(accessToken: string | null) {
         autoConnect: true,
     }); 
     useSocket.getState().setSocket(newSocket);
+
+    // subscribe to notifications globally
+    newSocket.on("new_message", (message: SocketMessage) => {
+        notifications.show({
+            title: "New Message",
+            message: `${message.senderName}: ${message.message}`,
+            autoClose: 5000,
+        })
+    })
 }
 
 useAuthStore.subscribe(
     (state, prevState) => {
-        if (state.accessToken == prevState.accessToken) return;
-        updateSocket(state.accessToken);
-    },
+        if (state.accessToken != prevState.accessToken) {
+            updateSocket(state.accessToken);
+        }
+    }
 );
 

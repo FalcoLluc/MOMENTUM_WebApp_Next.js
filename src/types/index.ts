@@ -155,6 +155,7 @@ export type ChatListItem = [
   userId: string,
   userType: ChatUserType,
   selfId: string,
+  chatId: string,
 ]
 
 export interface PlannedAppointment {
@@ -171,4 +172,18 @@ export interface PlannedAppointment {
 export interface AppointmentPlanningResponse {
   response: string,
   appointments: PlannedAppointment[],
+}
+
+export interface SocketMessage {
+  receiverId: string,
+  receiverType: ChatUserType,
+  senderId: string,
+  senderName: string,
+  chatId: string,
+  message: string,
+}
+
+export interface JoinRoomRequest {
+  userId: string,
+  rooms: string[],
 }

@@ -4,9 +4,10 @@ import { Button, NavLink, Skeleton, Stack } from "@mantine/core"
 
 interface ChatListParams {
     chats: ChatListItem[] | null,
+    viewChat: (chat: ChatListItem) => void,
 }
 
-export function ChatList({chats}: ChatListParams) {
+export function ChatList({chats, viewChat}: ChatListParams) {
 
     return (
         <Stack>
@@ -16,7 +17,7 @@ export function ChatList({chats}: ChatListParams) {
                     <NavLink
                         key={chat[1]}
                         label={chat[0]}
-                        href={"/users/chats?u=" + chat[1]}
+                        onClick={() => viewChat(chat)}
                     />
                 ))
             :

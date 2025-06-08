@@ -37,6 +37,12 @@ export default async function RootLayout({
             autoClose={3000}
             zIndex={1000}
             containerWidth="fit-content"
+            style={{
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              maxWidth: 400, // or whatever fits your layout
+            }}
           />
           {children}
         </MantineProvider>
