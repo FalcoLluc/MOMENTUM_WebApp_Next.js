@@ -20,7 +20,7 @@ function ChatContent() {
 
     useEffect(() => {
         if (!chatId || !chats) {
-            console.debug("setting chat to null")
+            setChat(null);
         } else {
             for (const c of chats) {
                 if (chatId == c[1]) {

@@ -49,6 +49,7 @@ function ChatContent() {
                 message: "Error fetching chats",
                 color: "red",
             }); 
+            setChats([]);
         }
     }, [worker]);
 
