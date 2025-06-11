@@ -47,7 +47,6 @@ class WorkersService {
         password,
         });
         const { worker, accessToken } = data;
-
         // Update workerStore
         useAuthStore.getState().loginWorker(worker, accessToken);
 

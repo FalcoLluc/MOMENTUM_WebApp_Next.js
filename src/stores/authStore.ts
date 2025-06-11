@@ -22,6 +22,7 @@ const authStore = persist<AuthState>(
     worker: null, // Initialize worker as null
     accessToken: null,
     isAuthenticated: false,
+    hydrated: false,
 
     // Actions
     setUser: (user) => set({ user }),
@@ -29,17 +30,14 @@ const authStore = persist<AuthState>(
     setAccessToken: (accessToken) => set({ accessToken }),
 
     login: (user, accessToken) => {
-      localStorage.setItem('accessToken', accessToken); // Persist token
       set({ user, worker: null, accessToken, isAuthenticated: true }); // Clear worker on user login
     },
 
     loginWorker: (worker, accessToken) => {
-      localStorage.setItem('accessToken', accessToken); // Persist token
       set({ worker, user: null, accessToken, isAuthenticated: true }); // Clear user on worker login
     },
 
     logout: () => {
-      localStorage.removeItem('accessToken');
       set({ user: null, worker: null, accessToken: null, isAuthenticated: false });
     },
   }),

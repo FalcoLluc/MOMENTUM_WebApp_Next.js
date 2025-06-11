@@ -16,7 +16,7 @@ export default function ClientSocketProvider() {
   useEffect(() => {
     // Poll or wait for RUNTIME_CONFIG to be present
     const waitForRuntimeConfig = () => {
-      if (getRuntimeEnv().API_URL != '') {
+      if (getRuntimeEnv().API_URL != '' || !useAuthStore.persist.hasHydrated()) {
         setReady(true); // Now it's safe to initialize socket
       } else {
         requestAnimationFrame(waitForRuntimeConfig); // Retry in next frame
@@ -28,7 +28,7 @@ export default function ClientSocketProvider() {
 
   useEffect(() => {
     if (!ready) return;
-    const accessToken = localStorage.getItem("accessToken");
+    const accessToken = useAuthStore.getState().accessToken;
     if (accessToken) {
       updateSocket(accessToken);
     }

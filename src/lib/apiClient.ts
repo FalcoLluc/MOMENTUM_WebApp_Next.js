@@ -18,7 +18,6 @@ export const authClient = axios.create({
 
 // Interceptor to attach access token
 apiClient.interceptors.request.use((config) => {
-  //const token = localStorage.getItem('accessToken'); // com ho tenia abans
   const token =
     typeof window !== 'undefined'
       ? useAuthStore.getState().accessToken
@@ -32,11 +31,10 @@ apiClient.interceptors.request.use((config) => {
 });
 
 // Token refresh logic
-async function refreshAccessToken() {
+export async function refreshAccessToken() {
   try {
     const response = await authClient.post('/auth/refresh'); // Uses authClient!
     const { accessToken } = response.data;
-    //localStorage.setItem('accessToken', accessToken);
     useAuthStore.getState().setAccessToken(accessToken); // Update Zustand store -> Guardem aquí el accessToken
 
     return accessToken;
@@ -52,6 +50,7 @@ apiClient.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
     if (error.response?.status === 401 && !originalRequest._retry) {
+      console.info("Acess token expired. Refreshing.");
       originalRequest._retry = true;
       try {
         const newToken = await refreshAccessToken();
@@ -59,7 +58,7 @@ apiClient.interceptors.response.use(
         return apiClient(originalRequest);
       } catch (refreshError) {
         console.error('Force logout needed:', refreshError);
-        localStorage.removeItem('accessToken');
+        useAuthStore.getState().logout();
         window.location.href = '/login'; // Redirect to login
         throw refreshError;
       }

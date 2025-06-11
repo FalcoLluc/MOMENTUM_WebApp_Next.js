@@ -6,6 +6,7 @@ import { useAuthStore } from "./authStore";
 import { getRuntimeEnv } from "@/utils/getRuntimeEnv";
 import { SocketMessage } from "@/types";
 import { notifications } from "@mantine/notifications";
+import { refreshAccessToken } from "@/lib/apiClient";
 
 interface SocketStore {
     socket: Socket | null;
@@ -46,6 +47,16 @@ export function updateSocket(accessToken: string | null) {
             message: `${message.senderName}: ${message.message}`,
             autoClose: 5000,
         })
+    })
+
+    newSocket.on("status", async (message) => {
+        switch (message.status) {
+            case "unauthorized":
+                await refreshAccessToken();
+                // TODO podriem re-enviar el missatge per assegurar-nos que arriba
+                // al destinatari. Amb l'arquitectura actual, és molt complicat.
+                break;
+        }
     })
 }
 
