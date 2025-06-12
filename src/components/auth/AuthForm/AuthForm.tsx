@@ -13,7 +13,6 @@ import {
   Title,
   LoadingOverlay,
 } from '@mantine/core';
-import { GoogleButton } from '../providers/GoogleButton';
 import classes from './AuthForm.module.css';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -23,6 +22,7 @@ import { authService } from '@/services/authService';
 import { LoginRequestBody } from '@/types';
 import { User } from '@/types';
 import { getRuntimeEnv } from '@/utils/getRuntimeEnv';
+import { IconBrandGoogle } from '@tabler/icons-react';
 
 
 interface AuthFormProps {
@@ -131,7 +131,16 @@ export function AuthForm({ type }: AuthFormProps) {
             color="blue"
             fullWidth
             mt="md"
+            styles={{
+              root: {
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px', // Add spacing between the icon and text
+              },
+            }}
           >
+            <IconBrandGoogle size={18} /> {/* Add the Google icon here */}
             Sign in with Google
           </Button>
 
@@ -219,7 +228,16 @@ export function AuthForm({ type }: AuthFormProps) {
           color="blue"
           fullWidth
           mt="md"
+          styles={{
+            root: {
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px', // Add spacing between the icon and text
+            },
+          }}
         >
+          <IconBrandGoogle size={18} /> {/* Add the Google icon here */}
           Sign in with Google
         </Button>
 
