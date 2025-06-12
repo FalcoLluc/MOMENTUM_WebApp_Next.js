@@ -22,6 +22,7 @@ import { notifications } from '@mantine/notifications';
 import { authService } from '@/services/authService';
 import { LoginRequestBody } from '@/types';
 import { User } from '@/types';
+import { getRuntimeEnv } from '@/utils/getRuntimeEnv';
 
 
 interface AuthFormProps {
@@ -49,6 +50,8 @@ export function AuthForm({ type }: AuthFormProps) {
   const handleGoogleSignIn = () => {
     // FALTA POSAR LOGICA
     console.log('Google sign in clicked');
+    const GOOGLE_AUTH_URL = `${getRuntimeEnv().API_URL}/auth/google`; // Backend Google OAuth endpoint
+    window.location.href = GOOGLE_AUTH_URL; // Redirect to backend
   };
 
   const handleLoginInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -122,7 +125,15 @@ export function AuthForm({ type }: AuthFormProps) {
             Create an account
           </Title>
 
-          <GoogleButton onClick={handleGoogleSignIn} mb="xl" />
+          <Button
+            onClick={handleGoogleSignIn}
+            variant="outline"
+            color="blue"
+            fullWidth
+            mt="md"
+          >
+            Sign in with Google
+          </Button>
 
           <Divider label="Or register with email" labelPosition="center" my="lg" />
 
@@ -202,7 +213,15 @@ export function AuthForm({ type }: AuthFormProps) {
           Welcome back!
         </Title>
 
-        <GoogleButton onClick={handleGoogleSignIn} mb="xl" />
+        <Button
+          onClick={handleGoogleSignIn}
+          variant="outline"
+          color="blue"
+          fullWidth
+          mt="md"
+        >
+          Sign in with Google
+        </Button>
 
         <Divider label="Or continue with username/email" labelPosition="center" my="lg" />
 
