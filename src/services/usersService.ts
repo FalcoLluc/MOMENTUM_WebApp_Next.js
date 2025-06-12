@@ -12,26 +12,27 @@ class UsersService {
     }
   }
     async followUser(followerId: string, followeeId: string): Promise<{ message: string; user: User } | undefined> {
-        try {
-        const { data } = await apiClient.patch<{ message: string; user: User }>(
-            `/users/${followerId}/follow/${followeeId}`
-        );
-        return data;
-        } catch (error) {
-        console.error('Error following user:', error);
-        }
+    try {
+      const { data } = await apiClient.post<{ message: string; user: User }>(
+        `/users/follow/${followerId}/${followeeId}`
+      );
+      return data;
+    } catch (error) {
+      console.error('Error following user:', error);
     }
+  }
 
     async unfollowUser(followerId: string, followeeId: string): Promise<{ message: string; user: User } | undefined> {
-        try {
-        const { data } = await apiClient.patch<{ message: string; user: User }>(
-            `/users/${followerId}/unfollow/${followeeId}`
-        );
-        return data;
-        } catch (error) {
-        console.error('Error unfollowing user:', error);
-        }
+    try {
+      const { data } = await apiClient.post<{ message: string; user: User }>(
+        `/users/unfollow/${followerId}/${followeeId}`
+      );
+      return data;
+    } catch (error) {
+      console.error('Error unfollowing user:', error);
     }
+  }
+
 }
 
 export const usersService = new UsersService();

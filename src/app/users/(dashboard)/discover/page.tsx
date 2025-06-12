@@ -20,7 +20,8 @@ export default function DiscoverPage() {
     setLoading(true);
     try {
       const results = await usersService.searchUsersByName(searchName);
-      setUsers(results || []);
+      const filtered = results?.filter(user => user._id !== currentUser?._id) || []; // Filtrar el usuario actual
+      setUsers(filtered);
     } catch (err) {
       setError('Failed to fetch users');
       setUsers([]);
@@ -35,37 +36,31 @@ export default function DiscoverPage() {
     return currentUser.following.includes(userId);
   };
 
-  // Función para seguir / dejar de seguir un usuario
-  const handleFollowToggle = async (userId: string) => {
-    if (!currentUser) return;
+const setUser = useAuthStore((state) => state.setUser);
 
-    try {
-      if (isFollowing(userId)) {
-        // Llamada a unfollow
-        await usersService.unfollowUser(currentUser._id!, userId);
-        // Actualizar estado local para reflejar el cambio (quitar userId de following)
-        setUsers((prevUsers) =>
-          prevUsers.map((user) =>
-            user._id === userId ? user : user
-          )
-        );
-        // Aquí también deberías actualizar el estado global / store si quieres reflejar el cambio globalmente
-        console.log(`Dejado de seguir a ${userId}`);
-      } else {
-        // Llamada a follow
-        await usersService.followUser(currentUser._id!, userId);
-        // Actualizar estado local para reflejar el cambio (añadir userId a following)
-        setUsers((prevUsers) =>
-          prevUsers.map((user) =>
-            user._id === userId ? user : user
-          )
-        );
-        console.log(`Seguido a ${userId}`);
-      }
-    } catch (error) {
-      console.error('Error following/unfollowing user:', error);
+// Función para seguir / dejar de seguir un usuario
+const handleFollowToggle = async (userId: string) => {
+  if (!currentUser) return;
+
+  try {
+    let updatedFollowing: string[];
+
+    if (isFollowing(userId)) {
+      // Llamada a unfollow
+      await usersService.unfollowUser(currentUser._id!, userId);
+      updatedFollowing = (currentUser.following ?? []).filter((id) => id !== userId);
+    } else {
+      // Llamada a follow
+      await usersService.followUser(currentUser._id!, userId);
+      updatedFollowing = [...(currentUser.following ?? []), userId];
     }
-  };
+    // Actualizar el usuario en el store global
+    setUser({ ...currentUser, following: updatedFollowing });
+  } catch (error) {
+    console.error('Error following/unfollowing user:', error);
+  }
+};
+
 
   return (
     <Container size="sm">
