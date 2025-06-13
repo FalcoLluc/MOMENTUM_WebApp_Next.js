@@ -7,7 +7,6 @@ import {
   Avatar,
   Group,
   UnstyledButton,
-  useMantineTheme,
 } from '@mantine/core';
 import {
   IconUser,
@@ -29,7 +28,6 @@ const navLinks = [
 export function WorkersNavbar() {
   const router = useRouter();
   const pathname = usePathname();
-  const theme = useMantineTheme();
   const worker = useAuthStore((state) => state.worker);
 
   const handleLogout = async () => {
