@@ -3,7 +3,6 @@
 import {
   Anchor,
   Button,
-  Divider,
   Paper,
   PasswordInput,
   Text,
@@ -12,7 +11,6 @@ import {
   NumberInput,
   LoadingOverlay,
 } from '@mantine/core';
-import { GoogleButton } from '../providers/GoogleButton';
 import classes from './BusinessAuthForm.module.css';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -110,10 +108,6 @@ export function BusinessAuthForm({ type }: BusinessAuthFormProps) {
     }
   };
 
-  const handleGoogleSignIn = () => {
-    console.log('Google sign in clicked for business');
-  };
-
   return (
     <div className={classes.wrapper} style={{ position: 'relative' }}>
       <LoadingOverlay visible={loading} /> {/* Add LoadingOverlay */}
@@ -121,10 +115,6 @@ export function BusinessAuthForm({ type }: BusinessAuthFormProps) {
         <Title order={2} className={classes.title} ta="center" mt="md" mb={50}>
           {type === 'login' ? 'Business Login' : 'Business Registration'}
         </Title>
-
-        <GoogleButton onClick={handleGoogleSignIn} mb="xl" />
-
-        <Divider label="Or continue with email" labelPosition="center" my="lg" />
 
         <form onSubmit={handleSubmit}>
           {type === 'login' ? (

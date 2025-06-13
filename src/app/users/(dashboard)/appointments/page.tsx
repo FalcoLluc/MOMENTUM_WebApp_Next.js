@@ -118,7 +118,7 @@ export default function AppointmentsPage() {
           minDate={new Date(new Date().setFullYear(new Date().getFullYear() - 1))}
         />
 
-        <Button onClick={() => setSelectedDate(new Date())} variant="outline" color="blue">
+        <Button onClick={() => setSelectedDate(new Date())} variant="outline" color="primary">
           Select Today
         </Button>
 

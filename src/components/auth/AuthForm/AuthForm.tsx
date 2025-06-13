@@ -128,19 +128,11 @@ export function AuthForm({ type }: AuthFormProps) {
           <Button
             onClick={handleGoogleSignIn}
             variant="outline"
-            color="blue"
+            color="primary"
             fullWidth
             mt="md"
-            styles={{
-              root: {
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px', // Add spacing between the icon and text
-              },
-            }}
+            leftSection={<IconBrandGoogle size="1rem" />}
           >
-            <IconBrandGoogle size={18} /> {/* Add the Google icon here */}
             Sign in with Google
           </Button>
 
@@ -154,6 +146,7 @@ export function AuthForm({ type }: AuthFormProps) {
             onChange={(e) => handleRegisterInputChange('name', e.target.value)}
             size="md"
             required
+            color="primary"
           />
 
           <NumberInput
@@ -178,6 +171,7 @@ export function AuthForm({ type }: AuthFormProps) {
             mt="md"
             size="md"
             required
+            color="primary"
           />
 
           <PasswordInput
@@ -190,9 +184,10 @@ export function AuthForm({ type }: AuthFormProps) {
             size="md"
             required
             minLength={6}
+            color="primary"
           />
 
-          <Button type="submit" fullWidth mt="xl" size="md" loading={loading}>
+          <Button type="submit" fullWidth mt="xl" size="md" loading={loading} color="primary">
             Register
           </Button>
 
@@ -221,26 +216,16 @@ export function AuthForm({ type }: AuthFormProps) {
         <Title order={2} className={classes.title} ta="center" mt="md" mb={50}>
           Welcome back!
         </Title>
-
         <Button
           onClick={handleGoogleSignIn}
           variant="outline"
-          color="blue"
+          color="primary"
           fullWidth
           mt="md"
-          styles={{
-            root: {
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px', // Add spacing between the icon and text
-            },
-          }}
+          leftSection={<IconBrandGoogle size="1rem" />}
         >
-          <IconBrandGoogle size={18} /> {/* Add the Google icon here */}
           Sign in with Google
         </Button>
-
         <Divider label="Or continue with username/email" labelPosition="center" my="lg" />
 
         <TextInput
@@ -251,6 +236,7 @@ export function AuthForm({ type }: AuthFormProps) {
           onChange={handleLoginInputChange}
           size="md"
           required
+          color="primary"
         />
 
         <PasswordInput
@@ -262,9 +248,10 @@ export function AuthForm({ type }: AuthFormProps) {
           mt="md"
           size="md"
           required
+          color="primary"
         />
 
-        <Button type="submit" fullWidth mt="xl" size="md" loading={loading}>
+        <Button type="submit" fullWidth mt="xl" size="md" loading={loading} color="primary">
           Login
         </Button>
 

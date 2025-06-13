@@ -44,6 +44,7 @@ export default function DashboardUsersLayout({
               variant="light"
               visibleFrom="sm"
               aria-label="Toggle desktop navigation"
+              color="primary" 
             >
               {desktopOpened ? <IconX size="1.5rem" /> : <IconMenu2 size="1.5rem" />}
             </ActionIcon>

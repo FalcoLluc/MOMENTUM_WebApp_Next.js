@@ -159,12 +159,14 @@ return (
       <Button
         variant={activeTab === "todos" ? "filled" : "outline"}
         onClick={() => setActiveTab("todos")}
+        color={activeTab === "todos" ? "primary" : "secondary"}
       >
         Todos
       </Button>
       <Button
         variant={activeTab === "favoritos" ? "filled" : "outline"}
         onClick={() => setActiveTab("favoritos")}
+        color={activeTab === "todos" ? "primary" : "secondary"}
       >
         Favoritos
       </Button>
@@ -178,6 +180,7 @@ return (
         <Menu.Target>
           <Button
             variant={selectedTypes.length > 0 ? "filled" : "outline"}
+            color={selectedTypes.length > 0 ? "primary" : "secondary"} 
           >
             {selectedTypes.length > 0
               ? `${selectedTypes.length} tipo${selectedTypes.length > 1 ? "s" : ""}`
@@ -198,6 +201,7 @@ return (
                   );
                 }}
                 mb="xs"
+                color="primary"
               />
             ))}
           </ScrollArea>
@@ -209,6 +213,7 @@ return (
         <Menu.Target>
           <Button
             variant={cities.length > 0 ? "filled" : "outline"}
+            color={cities.length > 0 ? "primary" : "secondary"}
           >
             Ciudad
           </Button>
@@ -232,6 +237,7 @@ return (
                     }
                   }}
                   className={styles.citySuggestionItem}
+                  color="secondary"
                 >
                   {city}
                 </Text>
@@ -246,6 +252,7 @@ return (
         <Button
           variant={selectedTime || selectedDay ? "filled" : "outline"}
           onClick={() => setShowTimePicker((prev) => !prev)}
+          color={ratingMin > 0 ? "primary" : "secondary"}
           fullWidth
         >
           {selectedTime || selectedDay
@@ -282,6 +289,7 @@ return (
       <div style={{ flex: 1 }}>
         <Button
           variant={ratingMin > 0 ? "filled" : "outline"}
+          color={ratingMin > 0 ? "primary" : "secondary"}
           onClick={() => setShowRating((prev) => !prev)}
           fullWidth
         >
@@ -310,6 +318,7 @@ return (
         <Button
           variant={maxDistance > 0 ? "filled" : "outline"}
           onClick={() => setShowDistance((prev) => !prev)}
+          color={maxDistance > 0 ? "primary" : "secondary"} 
           fullWidth
         >
           {maxDistance > 0 ? `Distancia máxima: ${maxDistance} km` : "Distancia máxima"}
@@ -351,11 +360,11 @@ return (
     )}
 
     {/* Botón disponibilidad y buscar */}
-    <Button variant="outline" color="gray" fullWidth disabled>
+    <Button variant="outline" color="secondary" fullWidth disabled>
       Disponibilidad (próximamente)
     </Button>
 
-    <Button onClick={handleFilter} loading={loading} fullWidth color="green">
+    <Button onClick={handleFilter} loading={loading} fullWidth color="primary">
       Buscar
     </Button>
 
@@ -370,7 +379,7 @@ return (
     )}
 
     {results && results.length === 0 && !loading && (
-      <Text color="red">No se encontraron resultados.</Text>
+      <Text color="secondary">No se encontraron resultados.</Text>
     )}
   </div>
 );

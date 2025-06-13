@@ -1,11 +1,11 @@
-import { ColorSchemeScript, MantineProvider, mantineHtmlProps } from '@mantine/core';
-import { Notifications } from '@mantine/notifications';
+import { ColorSchemeScript, mantineHtmlProps } from '@mantine/core';
 import Script from 'next/script';
 import '@mantine/notifications/styles.css';
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
 import '@/styles/globals.css'; 
 import ClientSocketProvider from './socketProvider';
+import { ThemeProvider } from '@/components/shared/ThemeProvider';
 
 export const metadata = {
   title: 'Momentum',
@@ -31,21 +31,9 @@ export default async function RootLayout({
         <ClientSocketProvider></ClientSocketProvider>
       </head>
       <body style={{ overflowX: 'hidden' }}>
-        <MantineProvider>
-          <Notifications
-            position="top-right"
-            autoClose={3000}
-            zIndex={1000}
-            containerWidth="fit-content"
-            style={{
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              maxWidth: 400, // or whatever fits your layout
-            }}
-          />
+        <ThemeProvider>
           {children}
-        </MantineProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

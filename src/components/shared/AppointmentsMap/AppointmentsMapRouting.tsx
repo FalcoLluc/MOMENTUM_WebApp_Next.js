@@ -135,7 +135,7 @@ export function AppointmentsMapRouting({
         {appointments.map((app) => (
         <Marker key={app.id} position={app.position}>
           <Popup>
-            <Box miw={120} p={0}> {/* Removed padding */}
+            <Box miw={120} p={0} style={{ backgroundColor: 'var(--mantine-color-secondary-light)' }}> {/* Removed padding */}
               <Text fw={700} size="sm">{app.name}</Text> {/* Smaller font size */}
               {app.address && (
                 <Text size="xs" color="dimmed" mt={0}> {/* Removed margin */}
@@ -194,6 +194,7 @@ export function AppointmentsMapRouting({
           zIndex: 1000,
         }}
         onClick={() => setCenterTrigger((prev) => !prev)}
+        color="secondary"
       >
         Center Map
       </Button>

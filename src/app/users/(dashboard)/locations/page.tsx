@@ -77,8 +77,8 @@ export default function LocationsPage() {
     return (
       <Container size="lg" py="xl" className={classes.container}>
         <Stack align="center" justify="center" style={{ height: '600px' }}>
-          <Loader size="lg" variant="dots" />
-          <Text color="dimmed" size="sm">
+          <Loader size="lg" variant="dots" color="primary"/>
+          <Text color="secondary" size="sm">
             Loading locations...
           </Text>
         </Stack>
@@ -89,7 +89,7 @@ export default function LocationsPage() {
   if (error) {
     return (
       <Container size="lg" py="xl">
-        <Alert icon={<IconAlertCircle size={16} />} title="Error" color="red">
+        <Alert icon={<IconAlertCircle size={16} color="secondary"/>} title="Error" color="red">
           {error}
         </Alert>
       </Container>

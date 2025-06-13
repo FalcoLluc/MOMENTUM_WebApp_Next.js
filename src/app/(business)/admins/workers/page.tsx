@@ -87,6 +87,7 @@ export default function WorkersPage() {
           onClick={open} 
           leftSection={<IconPlus size={18} />}
           size="sm"
+          color="primary"
         >
           Add New Worker
         </Button>
@@ -126,14 +127,14 @@ export default function WorkersPage() {
                     </Group>
                   </Table.Td>
                   <Table.Td>
-                    <Group gap="xs">
-                      <IconMail size={16} style={{ color: 'var(--mantine-color-teal-6)' }} />
+                    <Group gap="xs"style={{ color: 'var(--mantine-color-blue-6)' }}>
+                      <IconMail size={16}/>
                       <Text>{worker.mail}</Text>
                     </Group>
                   </Table.Td>
                   <Table.Td>{worker.age}</Table.Td>
                   <Table.Td>
-                    <Badge color="blue" variant="light">
+                    <Badge color="primary" variant="light">
                       {worker.role}
                     </Badge>
                   </Table.Td>
@@ -147,7 +148,7 @@ export default function WorkersPage() {
                             fetchLocationName(locId);
                           }
                           return (
-                            <Badge key={index} color="green" variant="light">
+                            <Badge key={index} color="secondary" variant="light">
                               {locationName}
                             </Badge>
                           );
@@ -158,7 +159,7 @@ export default function WorkersPage() {
                     )}
                   </Table.Td>
                   <Table.Td>
-                    <Button size="xs" variant="outline" onClick={() => handleEditWorker(worker)}>
+                    <Button size="xs" variant="outline" onClick={() => handleEditWorker(worker)} color="primary">
                       Edit
                     </Button>
                   </Table.Td>

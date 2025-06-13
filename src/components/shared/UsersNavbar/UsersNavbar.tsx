@@ -23,6 +23,7 @@ import classes from './UsersNavbar.module.css';
 import { authService } from '@/services/authService';
 import { notifications } from '@mantine/notifications';
 import { useAuthStore } from '@/stores/authStore';
+import { ThemeSwitch } from '@/components/shared/ThemeSwitch';
 
 const navLinks = [
   { label: 'Calendar', icon: IconCalendar, href: '/users/calendar' },
@@ -52,58 +53,58 @@ export function UsersNavbar() {
   };
 
   return (
-    <Stack h="100%" justify="space-between" gap={0}>
-      <Stack gap={0}>
-        <Group p="md" className={classes.header}>
-          <Text fw={700} size="xl">
-            Navigation
-          </Text>
-        </Group>
+<Stack h="100%" justify="space-between" gap={0}>
+  <Stack gap={0}>
+    <Group p="md" className={classes.header}>
+      <Text fw={700} size="xl" color="primary"> {/* Use primary for the header */}
+        Navigation
+      </Text>
+    </Group>
 
-        <Stack p="md" gap="xs">
-          {navLinks.map((item) => (
-            <NavLink
-              key={item.label}
-              label={item.label}
-              leftSection={<item.icon size="1rem" />}
-              active={pathname === item.href}
-              onClick={() => router.push(item.href)}
-              variant="filled"
-              className={classes.navLink}
-            />
-          ))}
-        </Stack>
-      </Stack>
-
-      <Stack p="md" gap="xs">
+    <Stack p="md" gap="xs">
+      {navLinks.map((item) => (
         <NavLink
-          label="Logout"
-          leftSection={<IconLogout size="1rem" />}
-          onClick={handleLogout}
+          key={item.label}
+          label={item.label}
+          leftSection={<item.icon size="1rem" />}
+          active={pathname === item.href}
+          onClick={() => router.push(item.href)}
           variant="filled"
           className={classes.navLink}
         />
-
-        <UnstyledButton className={classes.user}>
-            <Group>
-              <Avatar
-                src={null}
-                radius="xl"
-                color={theme.primaryColor}
-              >
-                {user?.name?.charAt(0).toUpperCase() || 'U'}
-              </Avatar>
-              <div style={{ flex: 1 }}>
-                <Text size="sm" fw={500}>
-                  {user?.name || 'User'}
-                </Text>
-                <Text c="dimmed" size="xs">
-                  {user?.mail || 'user@example.com'}
-                </Text>
-              </div>
-            </Group>
-          </UnstyledButton>
-      </Stack>
+      ))}
     </Stack>
+  </Stack>
+
+  <Stack p="md" gap="xs">
+    <NavLink
+      label="Logout"
+      leftSection={<IconLogout size="1rem" />}
+      onClick={handleLogout}
+      variant="filled"
+      className={classes.navLink}
+    />
+    <ThemeSwitch />
+    <UnstyledButton className={classes.user}>
+      <Group>
+        <Avatar
+          src={null}
+          radius="xl"
+          color="secondary"
+        >
+          {user?.name?.charAt(0).toUpperCase() || 'U'}
+        </Avatar>
+        <div style={{ flex: 1 }}>
+          <Text size="sm" fw={500}>
+            {user?.name || 'User'}
+          </Text>
+          <Text c="dimmed" size="xs"> {/* Use secondary for the email */}
+            {user?.mail || 'user@example.com'}
+          </Text>
+        </div>
+      </Group>
+    </UnstyledButton>
+  </Stack>
+</Stack>
   );
 }
