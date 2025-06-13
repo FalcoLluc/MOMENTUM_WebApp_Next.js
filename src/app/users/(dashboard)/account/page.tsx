@@ -16,6 +16,8 @@ export default function UserAccountPage() {
       <p>Welcome, <strong>{user.name}</strong>!</p>
       <p>Email: {user.mail}</p>
       <p>Age: {user.age}</p>
+      <p>Followers: {user.followers?.length || 0}</p>
+      <p>Following: {user.following?.length || 0}</p>
       {/* Add more user-specific content here */}
     </div>
   );
