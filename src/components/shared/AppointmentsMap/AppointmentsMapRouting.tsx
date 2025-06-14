@@ -65,6 +65,8 @@ function AutoCenter({ appointments, trigger }: { appointments: AppointmentMarker
 }
 
 // MAIN COMPONENT
+import { useThemeStore } from '@/stores/themeStore'; // Import the Daltonic mode flag
+
 export function AppointmentsMapRouting({
   appointments,
   center = [51.505, -0.09],
@@ -74,10 +76,15 @@ export function AppointmentsMapRouting({
   center?: L.LatLngExpression;
   zoom?: number;
 }) {
+  const { isDaltonic } = useThemeStore(); // Access Daltonic mode flag
   const [centerTrigger, setCenterTrigger] = useState(false);
   const [userLocation, setUserLocation] = useState<L.LatLngExpression | null>(null);
   const [userIcon, setUserIcon] = useState<L.Icon | null>(null);
   const [routeSummary, setRouteSummary] = useState<{ distance: number; time: number } | null>(null);
+
+  // Tile layer URLs
+  const defaultTileLayer = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+  const colorblindTileLayer = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
 
   // Get user location
   useEffect(() => {
@@ -105,7 +112,7 @@ export function AppointmentsMapRouting({
     }
   }, []);
 
-    const routingWaypoints = useMemo(() => {
+  const routingWaypoints = useMemo(() => {
     return appointments
       .filter((ap) => isValidCoordinate(ap.position))
       .map((ap) => {
@@ -125,7 +132,7 @@ export function AppointmentsMapRouting({
       <MapContainer center={center} zoom={zoom} style={{ height: '100%', width: '100%' }}>
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          url={isDaltonic ? colorblindTileLayer : defaultTileLayer} // Dynamically switch tile layer
         />
 
         {/* Center map based on appointments */}
@@ -133,37 +140,37 @@ export function AppointmentsMapRouting({
 
         {/* Appointment markers */}
         {appointments.map((app) => (
-        <Marker key={app.id} position={app.position}>
-          <Popup>
-            <Box miw={120} p={0} style={{ backgroundColor: 'var(--mantine-color-secondary-light)' }}> {/* Removed padding */}
-              <Text fw={700} size="sm">{app.name}</Text> {/* Smaller font size */}
-              {app.address && (
-                <Text size="xs" color="dimmed" mt={0}> {/* Removed margin */}
-                  <IconMapPin size={10} /> {app.address} {/* Smaller icon */}
+          <Marker key={app.id} position={app.position}>
+            <Popup>
+              <Box miw={120} p={0} style={{ backgroundColor: 'var(--mantine-color-secondary-light)' }}>
+                <Text fw={700} size="sm">{app.name}</Text>
+                {app.address && (
+                  <Text size="xs" color="dimmed" mt={0}>
+                    <IconMapPin size={10} /> {app.address}
+                  </Text>
+                )}
+                <Text size="xs" mt={0}>
+                  <IconClock size={10} /> <strong>Start:</strong> {new Date(app.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 </Text>
-              )}
-              <Text size="xs" mt={0}> {/* Removed margin */}
-                <IconClock size={10} /> <strong>Start:</strong> {new Date(app.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-              </Text>
-              <Text size="xs" mt={0}> {/* Removed margin */}
-                <IconClock size={10} /> <strong>End:</strong> {new Date(app.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-              </Text>
-            </Box>
-          </Popup>
-        </Marker>
+                <Text size="xs" mt={0}>
+                  <IconClock size={10} /> <strong>End:</strong> {new Date(app.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                </Text>
+              </Box>
+            </Popup>
+          </Marker>
         ))}
 
         {/* User location marker */}
         {userLocation && userIcon && <Marker position={userLocation} icon={userIcon} />}
 
         {/* Routing logic */}
-      <Routing
-        waypoints={routingWaypoints}
-        onRouteSummary={(summary) => {
-          setRouteSummary(summary);
-          console.log('Route Summary:', summary);
-        }}
-      />
+        <Routing
+          waypoints={routingWaypoints}
+          onRouteSummary={(summary) => {
+            setRouteSummary(summary);
+            console.log('Route Summary:', summary);
+          }}
+        />
       </MapContainer>
 
       {/* Route Summary UI */}

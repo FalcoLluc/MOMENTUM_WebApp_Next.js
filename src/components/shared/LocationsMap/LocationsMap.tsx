@@ -72,6 +72,8 @@ function AutoCenter({
     return null;
   }
 
+import { useThemeStore } from '@/stores/themeStore'; // Import the Daltonic mode flag
+
 export function LocationsMap({
   locations,
   center = [51.505, -0.09],
@@ -81,9 +83,14 @@ export function LocationsMap({
   center?: L.LatLngExpression;
   zoom?: number;
 }) {
+  const { isDaltonic } = useThemeStore(); // Access Daltonic mode flag
   const [centerTrigger, setCenterTrigger] = useState(false);
   const [userLocation, setUserLocation] = useState<L.LatLngExpression | null>(null);
   const [userIcon, setUserIcon] = useState<L.Icon | null>(null);
+
+  // Tile layer URLs
+  const defaultTileLayer = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+  const colorblindTileLayer = 'https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png'; // Daltonic-friendly
 
   // Fetch user's location
   useEffect(() => {
@@ -114,7 +121,7 @@ export function LocationsMap({
     <div style={{ position: 'relative', height: '400px', width: '100%' }}>
       <MapContainer center={center} zoom={zoom} style={{ height: '100%', width: '100%' }}>
         <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          url={isDaltonic ? colorblindTileLayer : defaultTileLayer} // Dynamically switch tile layer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
         <AutoCenter userLocation={userLocation} trigger={centerTrigger} />
