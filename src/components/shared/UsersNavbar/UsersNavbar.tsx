@@ -23,7 +23,6 @@ import classes from './UsersNavbar.module.css';
 import { authService } from '@/services/authService';
 import { notifications } from '@mantine/notifications';
 import { useAuthStore } from '@/stores/authStore';
-import { ThemeSwitch } from '@/components/shared/ThemeSwitch';
 
 const navLinks = [
   { label: 'Calendar', icon: IconCalendar, href: '/users/calendar' },
@@ -84,7 +83,6 @@ export function UsersNavbar() {
       variant="filled"
       className={classes.navLink}
     />
-    <ThemeSwitch />
     <UnstyledButton className={classes.user}>
       <Group>
         <Avatar

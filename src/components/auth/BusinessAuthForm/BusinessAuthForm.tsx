@@ -187,7 +187,7 @@ export function BusinessAuthForm({ type }: BusinessAuthFormProps) {
             </>
           )}
 
-          <Button fullWidth mt="xl" size="md" type="submit" loading={loading}>
+          <Button fullWidth mt="xl" size="md" type="submit" loading={loading} color="primary">
             {type === 'login' ? 'Business Login' : 'Register Business'}
           </Button>
         </form>
