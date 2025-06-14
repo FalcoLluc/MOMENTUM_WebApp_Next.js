@@ -64,6 +64,7 @@ export default function LocationsPage() {
           onClick={open} 
           leftSection={<IconPlus size={18} />}
           size="sm"
+          color="primary"
         >
           Add New Location
         </Button>
@@ -98,14 +99,14 @@ export default function LocationsPage() {
                   <Table.Td fw={500}>{location.nombre}</Table.Td>
                   <Table.Td>
                     <Group gap="xs">
-                      <IconMapPin size={16} style={{ color: 'var(--mantine-color-blue-6)' }} />
-                      <Text lineClamp={1}>{location.address}</Text>
+                      <IconMapPin size={16} style={{ color: 'var(--mantine-color-blue-6)' }}/>
+                      <Text color="secondary" lineClamp={1}>{location.address}</Text>
                     </Group>
                   </Table.Td>
                   <Table.Td>
                     <Group gap="xs">
                       <IconPhone size={16} style={{ color: 'var(--mantine-color-teal-6)' }} />
-                      <Text>{location.phone}</Text>
+                      <Text color="secondary">{location.phone}</Text>
                     </Group>
                   </Table.Td>
                   <Table.Td ta="center">
@@ -118,7 +119,7 @@ export default function LocationsPage() {
                     </Badge>
                   </Table.Td>
                   <Table.Td ta="center">
-                    <Button size="xs" variant="outline" onClick={() => handleViewDetails(location)}>
+                    <Button size="xs" variant="outline" onClick={() => handleViewDetails(location)} color="secondary">
                       View Details
                     </Button>
                   </Table.Td>

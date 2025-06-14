@@ -13,7 +13,6 @@ import {
   Title,
   LoadingOverlay,
 } from '@mantine/core';
-import { GoogleButton } from '../providers/GoogleButton';
 import classes from './AuthForm.module.css';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -22,6 +21,8 @@ import { notifications } from '@mantine/notifications';
 import { authService } from '@/services/authService';
 import { LoginRequestBody } from '@/types';
 import { User } from '@/types';
+import { getRuntimeEnv } from '@/utils/getRuntimeEnv';
+import { IconBrandGoogle } from '@tabler/icons-react';
 
 
 interface AuthFormProps {
@@ -49,6 +50,8 @@ export function AuthForm({ type }: AuthFormProps) {
   const handleGoogleSignIn = () => {
     // FALTA POSAR LOGICA
     console.log('Google sign in clicked');
+    const GOOGLE_AUTH_URL = `${getRuntimeEnv().API_URL}/auth/google`; // Backend Google OAuth endpoint
+    window.location.href = GOOGLE_AUTH_URL; // Redirect to backend
   };
 
   const handleLoginInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -122,7 +125,16 @@ export function AuthForm({ type }: AuthFormProps) {
             Create an account
           </Title>
 
-          <GoogleButton onClick={handleGoogleSignIn} mb="xl" />
+          <Button
+            onClick={handleGoogleSignIn}
+            variant="outline"
+            color="primary"
+            fullWidth
+            mt="md"
+            leftSection={<IconBrandGoogle size="1rem" />}
+          >
+            Sign in with Google
+          </Button>
 
           <Divider label="Or register with email" labelPosition="center" my="lg" />
 
@@ -134,6 +146,7 @@ export function AuthForm({ type }: AuthFormProps) {
             onChange={(e) => handleRegisterInputChange('name', e.target.value)}
             size="md"
             required
+            color="primary"
           />
 
           <NumberInput
@@ -158,6 +171,7 @@ export function AuthForm({ type }: AuthFormProps) {
             mt="md"
             size="md"
             required
+            color="primary"
           />
 
           <PasswordInput
@@ -170,9 +184,10 @@ export function AuthForm({ type }: AuthFormProps) {
             size="md"
             required
             minLength={6}
+            color="primary"
           />
 
-          <Button type="submit" fullWidth mt="xl" size="md" loading={loading}>
+          <Button type="submit" fullWidth mt="xl" size="md" loading={loading} color="primary">
             Register
           </Button>
 
@@ -201,9 +216,16 @@ export function AuthForm({ type }: AuthFormProps) {
         <Title order={2} className={classes.title} ta="center" mt="md" mb={50}>
           Welcome back!
         </Title>
-
-        <GoogleButton onClick={handleGoogleSignIn} mb="xl" />
-
+        <Button
+          onClick={handleGoogleSignIn}
+          variant="outline"
+          color="primary"
+          fullWidth
+          mt="md"
+          leftSection={<IconBrandGoogle size="1rem" />}
+        >
+          Sign in with Google
+        </Button>
         <Divider label="Or continue with username/email" labelPosition="center" my="lg" />
 
         <TextInput
@@ -214,6 +236,7 @@ export function AuthForm({ type }: AuthFormProps) {
           onChange={handleLoginInputChange}
           size="md"
           required
+          color="primary"
         />
 
         <PasswordInput
@@ -225,9 +248,10 @@ export function AuthForm({ type }: AuthFormProps) {
           mt="md"
           size="md"
           required
+          color="primary"
         />
 
-        <Button type="submit" fullWidth mt="xl" size="md" loading={loading}>
+        <Button type="submit" fullWidth mt="xl" size="md" loading={loading} color="primary">
           Login
         </Button>
 

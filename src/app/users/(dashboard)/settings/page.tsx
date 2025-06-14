@@ -2,6 +2,7 @@
 
 import { Title, Container, Stack } from '@mantine/core';
 import { ChangePasswordForm } from '@/components';
+import { ThemeSwitch } from '@/components/shared/ThemeSwitch';
 
 
 export default function SettingsPage() {
@@ -11,6 +12,7 @@ export default function SettingsPage() {
         Settings
       </Title>
       <Stack>
+        <ThemeSwitch />
         <ChangePasswordForm />
       </Stack>
     </Container>

@@ -23,6 +23,7 @@ export default function DiscoverPage() {
       const filtered = results?.filter(user => user._id !== currentUser?._id) || []; // Filtrar el usuario actual
       setUsers(filtered);
     } catch (err) {
+      console.error('Error fetching users:', err); // Log the error
       setError('Failed to fetch users');
       setUsers([]);
     } finally {
@@ -74,7 +75,7 @@ const handleFollowToggle = async (userId: string) => {
           onChange={(e) => setSearchName(e.currentTarget.value)}
           disabled={loading}
         />
-        <Button onClick={handleSearch} loading={loading} disabled={!searchName.trim()}>
+        <Button onClick={handleSearch} loading={loading} disabled={!searchName.trim()} color="primary">
           Search
         </Button>
 
@@ -95,6 +96,7 @@ const handleFollowToggle = async (userId: string) => {
                       size="xs"
                       variant={isFollowing(user._id!) ? 'outline' : 'filled'}
                       onClick={() => handleFollowToggle(user._id!)}
+                      color="secondary"
                     >
                       {isFollowing(user._id!) ? 'Dejar de seguir' : 'Seguir'}
                     </Button>

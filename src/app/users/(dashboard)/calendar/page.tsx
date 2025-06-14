@@ -156,7 +156,7 @@ export default function UserCalendarPage() {
       <Stack style={{flex: "0 1 200px"}}>
         <Button
           variant="filled"
-          color="teal"
+          color="secondary"
           onClick={newAppointmentHandlers.open}
         >
           New Appointment
@@ -175,7 +175,7 @@ export default function UserCalendarPage() {
         <CalendarList calendars={calendars} reloadAppointments={reloadAppointments}/>
         <Button
           variant="outline"
-          color="teal"
+          color="secondary"
           onClick={newCalendarOverlayHandlers.open}
         >
           New Calendar

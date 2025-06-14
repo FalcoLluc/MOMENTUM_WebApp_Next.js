@@ -7,7 +7,6 @@ import {
   Avatar,
   Group,
   UnstyledButton,
-  useMantineTheme,
 } from '@mantine/core';
 import {
   IconUser,
@@ -19,6 +18,7 @@ import classes from './WorkersNavbar.module.css';
 import { notifications } from '@mantine/notifications';
 import { useAuthStore } from '@/stores/authStore';
 import { workersService } from '@/services/workersService';
+import { ThemeSwitch } from '@/components/shared/ThemeSwitch';
 
 const navLinks = [
   { label: 'Account', icon: IconUser, href: '/workers/account' },
@@ -28,7 +28,6 @@ const navLinks = [
 export function WorkersNavbar() {
   const router = useRouter();
   const pathname = usePathname();
-  const theme = useMantineTheme();
   const worker = useAuthStore((state) => state.worker);
 
   const handleLogout = async () => {
@@ -75,13 +74,13 @@ export function WorkersNavbar() {
           variant="filled"
           className={classes.navLink}
         />
-
+        <ThemeSwitch />
         <UnstyledButton className={classes.user}>
             <Group>
               <Avatar
                 src={null}
                 radius="xl"
-                color={theme.primaryColor}
+                color="secondary"
               >
                 {worker?.name?.charAt(0).toUpperCase() || 'U'}
               </Avatar>

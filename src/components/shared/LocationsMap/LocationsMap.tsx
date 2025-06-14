@@ -163,6 +163,7 @@ export function LocationsMap({
           right: '10px',
           zIndex: 1000,
         }}
+        color="secondary"
         onClick={() => setCenterTrigger((prev) => !prev)}
       >
         Center Map

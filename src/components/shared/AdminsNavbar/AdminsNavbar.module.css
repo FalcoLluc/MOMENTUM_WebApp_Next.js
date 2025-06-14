@@ -14,7 +14,7 @@
   border-radius: var(--mantine-radius-sm);
 
   &[data-active] {
-    background-color: var(--mantine-color-blue-light);
-    color: var(--mantine-color-blue-light-color);
+    background-color: var(--mantine-color-primary-light);
+    color: var(--mantine-color-primary-light-color);
   }
 }

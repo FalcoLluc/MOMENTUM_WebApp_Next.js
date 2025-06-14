@@ -136,6 +136,7 @@ export function NewAppointmentOverlay({
           label="Title" {...form.getInputProps("title")} 
           required
           withAsterisk 
+          color="primary"
         ></TextInput>
         <NativeSelect
           key={form.key("serviceType")}
@@ -144,7 +145,7 @@ export function NewAppointmentOverlay({
           {...form.getInputProps("serviceType")}
           required
         ></NativeSelect>
-        <TextInput key={form.key("description")} label="Description" {...form.getInputProps("description")}></TextInput>
+        <TextInput key={form.key("description")} label="Description" {...form.getInputProps("description")} color="primary"></TextInput>
         <DateTimePicker
           key={form.key("startTime")}
           label="Start Time"
@@ -165,7 +166,7 @@ export function NewAppointmentOverlay({
           <Button variant="outline" color="red" onClick={handlers.close}>
             Cancel
           </Button>
-          <Button type="submit">Create Appointment</Button>
+          <Button type="submit" color="primary">Create Appointment</Button>
         </Group>
       </form>
     </Drawer>

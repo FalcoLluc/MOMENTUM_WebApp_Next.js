@@ -88,7 +88,7 @@ export function ChangePasswordForm() {
           onChange={(e) => setConfirmPassword(e.currentTarget.value)}
         />
         <Group justify="end" mt="sm">
-          <Button loading={loading} onClick={handleSubmit}>
+          <Button loading={loading} onClick={handleSubmit} color="primary">
             Update password
           </Button>
         </Group>
