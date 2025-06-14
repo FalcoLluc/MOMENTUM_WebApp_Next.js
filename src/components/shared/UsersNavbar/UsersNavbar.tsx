@@ -16,6 +16,7 @@ import {
   IconMap,
   IconSettings,
   IconBuildingStore,
+  IconSearch,
 } from '@tabler/icons-react';
 import { useRouter, usePathname } from 'next/navigation';
 import classes from './UsersNavbar.module.css';
@@ -31,6 +32,7 @@ const navLinks = [
   { label: 'Locations', icon: IconBuildingStore, href: '/users/locations' },
   { label: 'Account', icon: IconUser, href: '/users/account' },
   { label: 'Settings', icon: IconSettings, href: '/users/settings' },
+  { label: 'Discover', icon: IconSearch, href: '/users/discover' },
 ];
 
 export function UsersNavbar() {
