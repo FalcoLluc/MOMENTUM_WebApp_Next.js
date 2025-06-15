@@ -138,8 +138,7 @@ class AdminService {
 
   async updateWorker(workerId: string, body: Partial<Worker>): Promise<{ success: boolean; message: string }> {
     try {
-      const response = await apiClient.put(`/workers/${workerId}`, body);
-
+      const response = await apiClient.put(`/workers/admin/${workerId}`, body);
       if (response.status === 200) {
         return {
           success: true,

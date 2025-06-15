@@ -15,6 +15,7 @@ import { Worker, ILocation } from "@/types";
 import { adminService } from "@/services/adminService";
 import { useState, useEffect } from "react";
 import { notifications } from '@mantine/notifications';
+import { useAuthStore } from "@/stores/authStore";
 
 export function EditWorkerOverlay({
   worker,
@@ -57,8 +58,10 @@ export function EditWorkerOverlay({
   useEffect(() => {
     const fetchLocations = async () => {
       try {
-        if (worker?.businessAdministrated) {
-          const fetchedLocations = await adminService.getAllLocationsOfBusiness(worker.businessAdministrated);
+        const bus=useAuthStore.getState().worker?.businessAdministrated;
+        if (bus) {
+          const fetchedLocations = await adminService.getAllLocationsOfBusiness(bus);
+          console.log("Fetched locations EDIT WORKER:", fetchedLocations);
           setLocations(fetchedLocations);
         }
       } catch (error) {
@@ -66,10 +69,9 @@ export function EditWorkerOverlay({
       }
     };
 
-    if (worker) {
-      fetchLocations();
-    }
-  }, [worker]);
+    fetchLocations();
+    
+  }, []);
 
   async function handleSubmit(values: Partial<Worker>) {
     setLoading(true);

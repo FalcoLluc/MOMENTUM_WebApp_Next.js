@@ -1,7 +1,7 @@
 'use client';
 
-import { Drawer, Group, Stack, Text, Badge, Paper } from "@mantine/core";
-import { IconMapPin, IconPhone, IconStar, IconClock, IconTools } from "@tabler/icons-react";
+import { Drawer, Group, Stack, Text, Badge, Paper, ThemeIcon } from "@mantine/core";
+import { IconMapPin, IconPhone, IconClock, IconTools, IconCircleX, IconCircleCheck } from "@tabler/icons-react";
 import { ILocation } from "@/types";
 
 export function LocationDetailsOverlay({
@@ -25,9 +25,10 @@ export function LocationDetailsOverlay({
       overlayProps={{ backgroundOpacity: 0.5, blur: 4 }}
     >
       <Stack gap="md">
-        {/* Location Header */}
+        
         <Paper withBorder p="md" radius="md">
           <Text size="xl" fw={700}>{location.nombre}</Text>
+          {/* Location Header 
           <Group gap="xs" mt="sm">
             <Badge
               leftSection={<IconStar size={14} />}
@@ -37,7 +38,9 @@ export function LocationDetailsOverlay({
               {location.rating.toFixed(1)}
             </Badge>
           </Group>
+          */}
         </Paper>
+
 
         {/* Contact Information */}
         <Paper withBorder p="md" radius="md">
@@ -49,6 +52,19 @@ export function LocationDetailsOverlay({
           <Group gap="xs">
             <IconPhone size={18} style={{ color: 'var(--mantine-color-teal-6)' }} />
             <Text>{location.phone}</Text>
+          </Group>
+          <Group gap="xs">
+            <ThemeIcon
+              variant="light"
+              color={location.accessible ? "green" : "gray"}
+              radius="xl"
+              size="sm"
+            >
+              {location.accessible ? <IconCircleCheck size={16} /> : <IconCircleX size={16} />}
+            </ThemeIcon>
+            <Text color={location.accessible ? "green" : "dimmed"}>
+              {location.accessible ? "Accessible ✓" : "Not accessible"}
+            </Text>
           </Group>
         </Paper>
 

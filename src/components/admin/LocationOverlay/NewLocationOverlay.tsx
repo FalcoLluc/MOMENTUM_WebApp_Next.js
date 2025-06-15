@@ -5,7 +5,6 @@ import {
   Group,
   TextInput,
   MultiSelect,
-  NumberInput,
   Select,
   Stack,
   ActionIcon,
@@ -23,6 +22,7 @@ import { SearchBoxForm } from "@/components";
 import { useAuthStore } from "@/stores/authStore";
 import { IconTrash, IconClock, IconPlus } from "@tabler/icons-react";
 import { notifications } from '@mantine/notifications';
+import { Checkbox } from "@mantine/core";
 
 export function NewLocationOverlay({
   onClose,
@@ -43,6 +43,7 @@ export function NewLocationOverlay({
       ubicacion: { type: "Point", coordinates: [0, 0] } as GeoJSONPoint,
       serviceType: [],
       schedule: [],
+      accessible: false, 
     },
   });
 
@@ -118,16 +119,6 @@ export function NewLocationOverlay({
               required
             />
             
-            <NumberInput
-              label="Rating (0-5)"
-              placeholder="Enter rating"
-              {...form.getInputProps("rating")}
-              min={0}
-              max={5}
-              step={0.1}
-              required
-            />
-            
             <MultiSelect
               label="Service Types"
               placeholder="Select services"
@@ -138,6 +129,10 @@ export function NewLocationOverlay({
               {...form.getInputProps("serviceType")}
               required
               searchable
+            />
+            <Checkbox
+              label="Accessible for people with disabilities"
+              {...form.getInputProps("accessible", { type: "checkbox" })}
             />
           </Stack>
         </Paper>
@@ -207,7 +202,6 @@ export function NewLocationOverlay({
             ))}
           </Stack>
         </Paper>
-
         <Divider />
 
         <Group justify="flex-end">

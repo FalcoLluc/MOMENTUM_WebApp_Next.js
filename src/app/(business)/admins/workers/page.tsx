@@ -41,6 +41,7 @@ export default function WorkersPage() {
       try {
         const location = await adminService.getLocationById(locationId);
         setLocationCache((prev) => new Map(prev).set(locationId, location.nombre)); // Cache the name
+        console.log(`Fetched location name for ID ${locationId}: ${location.nombre}`);
         return location.nombre;
       } catch (error) {
         console.error(`Failed to fetch location name for ID ${locationId}:`, error);

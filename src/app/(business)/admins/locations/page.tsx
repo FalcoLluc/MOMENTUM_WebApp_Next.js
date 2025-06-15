@@ -1,13 +1,13 @@
 'use client';
 
 import { useState, useEffect, useCallback } from "react";
-import { Button, Drawer, Table, Group, Text, Stack, Title, Paper, LoadingOverlay, Badge, Box } from "@mantine/core";
+import { Button, Drawer, Table, Group, Text, Stack, Title, Paper, LoadingOverlay, Box } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useAuthStore } from "@/stores/authStore";
 import { adminService } from "@/services/adminService";
 import { ILocation } from "@/types";
 import { NewLocationOverlay, LocationDetailsOverlay } from "@/components";
-import { IconMapPin, IconPhone, IconStar, IconPlus } from "@tabler/icons-react";
+import { IconMapPin, IconPhone, IconPlus } from "@tabler/icons-react";
 
 export default function LocationsPage() {
   const worker = useAuthStore((state) => state.worker);
@@ -89,7 +89,7 @@ export default function LocationsPage() {
                 <Table.Th>Name</Table.Th>
                 <Table.Th>Address</Table.Th>
                 <Table.Th>Contact</Table.Th>
-                <Table.Th ta="center">Rating</Table.Th>
+                {/* <Table.Th ta="center">Rating</Table.Th>*/}
                 <Table.Th ta="center">Actions</Table.Th>
               </Table.Tr>
             </Table.Thead>
@@ -109,6 +109,7 @@ export default function LocationsPage() {
                       <Text color="secondary">{location.phone}</Text>
                     </Group>
                   </Table.Td>
+                  {/* 
                   <Table.Td ta="center">
                     <Badge
                       leftSection={<IconStar size={14} style={{ marginTop: 3 }} />}
@@ -118,6 +119,7 @@ export default function LocationsPage() {
                       {location.rating.toFixed(1)}
                     </Badge>
                   </Table.Td>
+                  */}
                   <Table.Td ta="center">
                     <Button size="xs" variant="outline" onClick={() => handleViewDetails(location)} color="secondary">
                       View Details
