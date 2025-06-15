@@ -124,6 +124,10 @@ class AuthService {
     }
   }
 
+  async verifyUser(username: string, requestId: string): Promise<void> {
+    return apiClient.get(`/users/activate/${username}/${requestId}`);
+  }
+
 }
 
 export const authService = new AuthService();
