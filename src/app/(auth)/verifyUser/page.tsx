@@ -4,11 +4,11 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Container, Title, Text, Button, Card, Center, Stack, Loader } from '@mantine/core';
 import { IconCheck, IconExclamationCircle } from '@tabler/icons-react';
 import { getRuntimeEnv } from '@/utils/getRuntimeEnv';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { authService } from '@/services/authService';
 import { isAxiosError } from 'axios';
 
-const VerifyUser: React.FC = () => {
+const VerifyUserComponent: React.FC = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [accountVerified, setAccountVerified] = useState(false);
@@ -88,5 +88,13 @@ const VerifyUser: React.FC = () => {
   }
 
 };
+
+const VerifyUser: React.FC = () => {
+  return (
+    <Suspense>
+      <VerifyUserComponent/>
+    </Suspense>
+  )
+}
 
 export default VerifyUser;
