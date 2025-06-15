@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { businessService } from "@/services/businessService";
 import { FilterOptions, IBusiness, LocationMarker } from "@/types";
 import { useAuthStore } from "@/stores/authStore";
+import { useForm } from "@mantine/form";
+import { Popover, Group } from '@mantine/core';
 import {
   Button,
   Menu,
@@ -14,12 +16,18 @@ import {
 import { LocationServiceType } from "@/types/enums";
 import styles from "./LocationsFilter.module.css";
 import { BusinessCard } from "./BusinessCard";
+import { DateTimePicker } from "@mantine/dates";
 
 interface LocationsFilterProps {
   onLocationsChange: (locations: LocationMarker[]) => void;
 }
 
 export default function LocationsFilter({ onLocationsChange }: LocationsFilterProps) {
+  interface FormValues {
+    date1: Date | null;
+    date2: Date | null;
+  }
+
   const user = useAuthStore((state) => state.user);
   const [activeTab, setActiveTab] = useState<"todos" | "favoritos">("todos");
   const [selectedTypes, setSelectedTypes] = useState<LocationServiceType[]>([]);
@@ -30,12 +38,23 @@ export default function LocationsFilter({ onLocationsChange }: LocationsFilterPr
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [ratingMin, setMinRating] = useState<number>(0);
   const [maxDistance, setMaxDistance] = useState<number>(0);
+  const [accessible, setAccessible] = useState<boolean>(false);
+  const form = useForm<FormValues>({
+    initialValues: {
+      date1: null,
+      date2: null,
+    }
+  });
+
+
+  // results
   const [results, setResults] = useState<IBusiness[] | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const [showRating, setShowRating] = useState(false);
   const [showDistance, setShowDistance] = useState(false);
+  const [datePickerOpen, setDatePickerOpen] = useState(false);
 
   
   const getTodayDayString = (): string => {
@@ -104,7 +123,7 @@ export default function LocationsFilter({ onLocationsChange }: LocationsFilterPr
     try {
       setLoading(true);
       setError(null);
-
+      console.log(form.values);
       const appliedFilters: FilterOptions = {
         ...(selectedTypes.length > 0 && { serviceTypes: selectedTypes }),
         ...(cities.length > 0 && { cities }),
@@ -116,13 +135,16 @@ export default function LocationsFilter({ onLocationsChange }: LocationsFilterPr
             lon: coords.lon,
         }),
         ...(selectedTime && { day: selectedDay ?? getTodayDayString() }), // sólo envía 'day' si se elige hora
+        ...(accessible && { accessible: accessible }),
+        ...(form.values.date1 && { date1: form.values.date1.toISOString() }),
+        ...(form.values.date2 && { date2: form.values.date2.toISOString() }),
       };
 
       console.log("Applied filters:", appliedFilters);
 
       let data: IBusiness[] | null = null;
       if (activeTab === "todos") {
-        data = await businessService.getFilteredBusinesses(appliedFilters);
+        data = await businessService.getFilteredBusinesses(user._id,appliedFilters);
       } else {
         data = await businessService.getFilteredFavoriteBusinesses(user._id, appliedFilters);
       }
@@ -139,6 +161,7 @@ export default function LocationsFilter({ onLocationsChange }: LocationsFilterPr
           rating: location.rating ?? 0,
           phone: location.phone ?? "",
           business: business.name,
+          accessible: location.accessible ?? false,
         })) || []
       );
 
@@ -248,6 +271,7 @@ return (
       </Menu>
 
       {/* Filtro por hora/día */}
+      {!form.values.date1 && !form.values.date2 && (
       <div style={{ flex: 1 }}>
         <Button
           variant={selectedTime || selectedDay ? "filled" : "outline"}
@@ -284,6 +308,7 @@ return (
           </div>
         )}
       </div>
+      )}
 
       {/* Filtro valoración mínima */}
       <div style={{ flex: 1 }}>
@@ -359,10 +384,91 @@ return (
       </div>
     )}
 
-    {/* Botón disponibilidad y buscar */}
-    <Button variant="outline" color="secondary" fullWidth disabled>
-      Disponibilidad (próximamente)
+    {/* Accessibility Filter */}
+    <Button
+      variant={accessible ? "filled" : "outline"}
+      onClick={() => setAccessible(!accessible)}
+      color={accessible ? "primary" : "secondary"}
+    >
+      {accessible ? "Accesible ✓" : "Accesible"}
     </Button>
+
+    {/* Date Range Filter */}
+    {!selectedTime && (
+      <Popover 
+        width={350}
+        position="bottom"
+        shadow="md"
+        opened={datePickerOpen}
+        onChange={setDatePickerOpen}
+        closeOnClickOutside={false}  // This prevents closing when clicking inside
+      >
+        <Popover.Target>
+          <Button
+            variant={form.values.date1 && form.values.date2 ? "filled" : "outline"}
+            color={form.values.date1 && form.values.date2 ? "primary" : "secondary"}
+            onClick={() => setDatePickerOpen((o) => !o)}
+          >
+            {form.values.date1 && form.values.date2
+              ? `${form.values.date1.toLocaleDateString()} - ${form.values.date2.toLocaleDateString()}`
+              : "Rango de fechas"}
+          </Button>
+        </Popover.Target>
+        <Popover.Dropdown>
+          <div 
+            style={{ padding: '10px' }}
+            onClick={(e) => e.stopPropagation()}  // Prevents click events from bubbling up
+          >
+            <DateTimePicker
+              key={form.key("date1")}
+              label="Fecha de inicio"
+              {...form.getInputProps("date1")}
+              valueFormat="DD/MM/YYYY HH:mm"
+              style={{ marginBottom: 10 }}
+              clearable
+              dropdownType="modal"  // This makes the calendar popover behave better
+            />
+            <DateTimePicker
+              key={form.key("date2")}
+              label="Fecha de fin"
+              {...form.getInputProps("date2")}
+              valueFormat="DD/MM/YYYY HH:mm"
+              style={{ marginBottom: 10 }}
+              clearable
+              minDate={form.values.date1 || undefined}
+              dropdownType="modal"  // This makes the calendar popover behave better
+            />
+            <Group justify="space-between" mt="sm">
+              <Button
+                size="xs"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  form.setFieldValue("date1", null);
+                  form.setFieldValue("date2", null);
+                }}
+                variant="subtle"
+                color="red"
+              >
+                Limpiar
+              </Button>
+              <Button
+                size="xs"
+                onClick={(e) => {
+                  if (form.values.date1 && form.values.date2 && form.values.date1 > form.values.date2) {
+                    form.setFieldValue("date1", form.values.date2);
+                  }
+                  e.stopPropagation();
+                  setDatePickerOpen(false);
+                }}
+                variant="subtle"
+              >
+                Aceptar
+              </Button>
+            </Group>
+          </div>
+        </Popover.Dropdown>
+      </Popover>          
+    )}
 
     <Button onClick={handleFilter} loading={loading} fullWidth color="primary">
       Buscar

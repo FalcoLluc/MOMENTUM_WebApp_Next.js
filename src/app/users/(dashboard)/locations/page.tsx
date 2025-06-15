@@ -55,6 +55,7 @@ export default function LocationsPage() {
                 rating: loc.rating,
                 phone: loc.phone,
                 business: loc.business,
+                accessible: loc.accessible,
               };
             }
             return null;

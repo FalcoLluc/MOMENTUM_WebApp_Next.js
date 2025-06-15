@@ -3,10 +3,10 @@ import apiClient from "@/lib/apiClient";
 import { IBusiness, FilterOptions } from "@/types";
 
 class BusinessService {
-  async getFilteredBusinesses(filters: FilterOptions): Promise<IBusiness[]> {
+  async getFilteredBusinesses(userId: string,filters: FilterOptions): Promise<IBusiness[]> {
     try {
       const { data } = await apiClient.post<{ message: string; businesses: IBusiness[] }>(
-        "/business/filter",
+        `/business/filter/${userId}`,
         filters
       );
       return data.businesses;

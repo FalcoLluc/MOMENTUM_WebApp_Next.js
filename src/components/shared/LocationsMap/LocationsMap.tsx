@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic';
 import { useState, useEffect } from 'react';
 import { Button } from '@mantine/core';
 import { LocationMarker } from '@/types';
+import { IconWheelchair } from '@tabler/icons-react';
 
 // Dynamically import Leaflet and react-leaflet components
 const MapContainer = dynamic(
@@ -154,6 +155,14 @@ export function LocationsMap({
                   <p style={{ margin: '4px 0', fontSize: '14px', color: '#34495e' }}>
                     <strong>Business:</strong> {app.business}
                   </p>
+                )}
+                {app.accessible && (
+                  <div style={{ display: 'flex', alignItems: 'center', margin: '4px 0', fontSize: '14px', color: '#34495e' }}>
+                    <span>
+                      <strong>Reduced Mobility Accessible</strong>
+                    </span>
+                    <IconWheelchair size={18} style={{ marginRight: '8px', color: '#2ecc71' }} /> {/* Green wheelchair icon */}
+                  </div>
                 )}
               </div>
             </Popup>

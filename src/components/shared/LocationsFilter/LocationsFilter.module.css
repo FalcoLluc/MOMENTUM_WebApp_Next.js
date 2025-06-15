@@ -167,3 +167,21 @@
 .btnElegant:not(:last-child) {
   border-right: none;
 }
+
+
+.dateInput {
+  padding: 8px;
+  border: 1px solid var(--mantine-color-gray-4);
+  border-radius: var(--mantine-radius-sm);
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.dateInput:focus {
+  outline: 2px solid var(--mantine-color-primary-5);
+}
+
+.dateRangeClear {
+  margin-top: 5px;
+  text-align: right;
+}

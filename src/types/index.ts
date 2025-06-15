@@ -91,6 +91,7 @@ export interface ILocation {
   }[];
   business: string
   workers: string[];
+  accessible: boolean;
   isDeleted: boolean;
 }
 
@@ -123,6 +124,7 @@ export interface  LocationMarker{
   rating: number;
   phone: string;
   business: string;
+  accessible: boolean;
 }
 
 export interface IBusiness {
@@ -133,11 +135,17 @@ export interface IBusiness {
 }
 
 export interface FilterOptions {
-  serviceTypes?: LocationServiceType[]; // múltiple selección
-  cities?: string[]; // nombres de ciudad
-  openAt?: string; // string con hora en formato ISO o HH:mm
-  minRating?: number; // por ejemplo: 4
-  maxDistanceKm?: number; // por ejemplo: 10
+  serviceTypes?: string[]; // Array of service types (e.g., ['Plumbing', 'Electrician'])
+  cities?: string[]; // Array of city names
+  ratingMin?: number; // Minimum rating (e.g., 4)
+  day?: string; // Day of the week (e.g., 'Monday')
+  time?: string; // Time in HH:mm format
+  lat?: number; // Latitude for location-based filtering
+  lon?: number; // Longitude for location-based filtering
+  maxDistance?: number; // Maximum distance in kilometers
+  date1?: string; // Start date in ISO format (e.g., "2025-06-16T14:30:00.000Z")
+  date2?: string; // End date in ISO format (e.g., "2025-06-16T16:30:00.000Z")
+  accessible?: boolean; // Accessibility filter (e.g., wheelchair accessible)
 }
 export interface IMessage {
   from: string;
