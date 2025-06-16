@@ -1,7 +1,7 @@
 // components/user_settings/ChangePasswordForm.tsx
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Button,
   PasswordInput,
@@ -20,8 +20,36 @@ export function ChangePasswordForm() {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [passwordValidations, setPasswordValidations] = useState({
+    length: false,
+    uppercase: false,
+    specialChar: false,
+  });
+
+  const validatePassword = (password: string) => {
+    setPasswordValidations({
+      length: password.length >= 8,
+      uppercase: (password.match(/[A-Z]/g) || []).length >= 2,
+      specialChar: /[!@#$%^&*(),.?":{}|<>]/.test(password),
+    });
+  };
+  useEffect(() => {
+    validatePassword(newPassword);
+  }, [newPassword]);
 
   const handleSubmit = async () => {
+    const { length, uppercase, specialChar } = passwordValidations;
+
+    if (!length || !uppercase || !specialChar) {
+      notifications.show({
+        title: 'Invalid Password',
+        message: 'Password does not meet all requirements.',
+        color: 'red',
+      });
+      setLoading(false);
+      return;
+    }
+
     if (newPassword !== confirmPassword) {
       notifications.show({
         color: 'red',
@@ -78,15 +106,41 @@ export function ChangePasswordForm() {
           onChange={(e) => setCurrentPassword(e.currentTarget.value)}
         />
         <PasswordInput
-          label="New password"
+          label="Password"
+          name="password"
+          placeholder="Your password"
           value={newPassword}
-          onChange={(e) => setNewPassword(e.currentTarget.value)}
+          onChange={(e) =>  setNewPassword(e.currentTarget.value)}
+          mt="md"
+          size="md"
+          required
+          color="primary"
         />
+
         <PasswordInput
-          label="Confirm new password"
+          label="Confirm Password"
+          name="confirmPassword"
+          placeholder="Retype your password"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.currentTarget.value)}
+          mt="md"
+          size="md"
+          required
+          color="primary"
         />
+
+        <div style={{ fontSize: '0.875rem', marginTop: '10px', color: 'gray' }}>
+          <Text fw={500}>Password must contain:</Text>
+          <Text c={passwordValidations.length ? 'green' : 'red'}>
+            {passwordValidations.length ? '✅' : '❌'} At least 8 characters
+          </Text>
+          <Text c={passwordValidations.uppercase ? 'green' : 'red'}>
+            {passwordValidations.uppercase ? '✅' : '❌'} Two uppercase letters
+          </Text>
+          <Text c={passwordValidations.specialChar ? 'green' : 'red'}>
+            {passwordValidations.specialChar ? '✅' : '❌'} One special character
+          </Text>
+        </div>
         <Group justify="end" mt="sm">
           <Button loading={loading} onClick={handleSubmit} color="primary">
             Update password

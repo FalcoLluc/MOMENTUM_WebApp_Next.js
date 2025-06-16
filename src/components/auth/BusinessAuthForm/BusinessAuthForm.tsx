@@ -13,7 +13,7 @@ import {
 } from '@mantine/core';
 import classes from './BusinessAuthForm.module.css';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { workersService } from '@/services/workersService';
 import { LoginRequestBody, NewBusinessRequestBody, WorkerRole } from '@/types';
 import { useRouter } from 'next/navigation';
@@ -43,6 +43,12 @@ export function BusinessAuthForm({ type }: BusinessAuthFormProps) {
   const [loading, setLoading] = useState(false); // Add loading state
   const [registerCredentials, setRegisterCredentials] = useState<NewBusinessRequestBody>(INITIAL_REGISTER_STATE);
   const [loginCredentials, setLoginCredentials] = useState<LoginRequestBody>(INITIAL_LOGIN_STATE);
+  const [confirmPassword, setConfirmPassword] = useState<string>('');
+  const [passwordValidations, setPasswordValidations] = useState({
+    length: false,
+    uppercase: false,
+    specialChar: false,
+  });
 
   const handleRegisterInputChange = (field: keyof NewBusinessRequestBody, value: string | number) => {
     setRegisterCredentials((prev) => ({ ...prev, [field]: value }));
@@ -52,11 +58,44 @@ export function BusinessAuthForm({ type }: BusinessAuthFormProps) {
     setLoginCredentials((prev) => ({ ...prev, [field]: value }));
   };
 
+  const validatePassword = (password: string) => {
+    setPasswordValidations({
+      length: password.length >= 8,
+      uppercase: (password.match(/[A-Z]/g) || []).length >= 2,
+      specialChar: /[!@#$%^&*(),.?":{}|<>]/.test(password),
+    });
+  };
+
+  useEffect(() => {
+    validatePassword(registerCredentials.password);
+  }, [registerCredentials.password]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true); // Start loading
 
     if (type === 'register') {
+      const { length, uppercase, specialChar } = passwordValidations;
+
+      if (!length || !uppercase || !specialChar) {
+        notifications.show({
+          title: 'Invalid Password',
+          message: 'Password does not meet all requirements.',
+          color: 'red',
+        });
+        setLoading(false);
+        return;
+      }
+
+      if (registerCredentials.password !== confirmPassword) {
+        notifications.show({
+          title: 'Password mismatch',
+          message: 'Passwords do not match.',
+          color: 'red',
+        });
+        setLoading(false);
+        return;
+      }
       try {
         console.log('Register:', registerCredentials);
         const { success, message } = await workersService.registerBusiness(registerCredentials);
@@ -158,13 +197,40 @@ export function BusinessAuthForm({ type }: BusinessAuthFormProps) {
               />
               <PasswordInput
                 label="Password"
+                name="password"
                 placeholder="Your password"
-                mt="md"
-                size="md"
                 value={registerCredentials.password}
                 onChange={(e) => handleRegisterInputChange('password', e.target.value)}
+                mt="md"
+                size="md"
                 required
+                color="primary"
               />
+
+              <PasswordInput
+                label="Confirm Password"
+                name="confirmPassword"
+                placeholder="Retype your password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.currentTarget.value)}
+                mt="md"
+                size="md"
+                required
+                color="primary"
+              />
+
+              <div style={{ fontSize: '0.875rem', marginTop: '10px', color: 'gray' }}>
+                <Text fw={500}>Password must contain:</Text>
+                <Text c={passwordValidations.length ? 'green' : 'red'}>
+                  {passwordValidations.length ? '✅' : '❌'} At least 8 characters
+                </Text>
+                <Text c={passwordValidations.uppercase ? 'green' : 'red'}>
+                  {passwordValidations.uppercase ? '✅' : '❌'} Two uppercase letters
+                </Text>
+                <Text c={passwordValidations.specialChar ? 'green' : 'red'}>
+                  {passwordValidations.specialChar ? '✅' : '❌'} One special character
+                </Text>
+              </div>
               <TextInput
                 label="Admin Name"
                 placeholder="Lluc Fernández"
