@@ -141,11 +141,6 @@ export function LocationsMap({
                     <strong>Service Types:</strong> {app.serviceTypes}
                   </p>
                 )}
-                {app.rating && (
-                  <p style={{ margin: '4px 0', fontSize: '14px', color: '#34495e' }}>
-                    <strong>Rating:</strong> {app.rating} ⭐
-                  </p>
-                )}
                 {app.phone && (
                   <p style={{ margin: '4px 0', fontSize: '14px', color: '#34495e' }}>
                     <strong>Phone:</strong> <a href={`tel:${app.phone}`} style={{ color: '#3498db' }}>{app.phone}</a>

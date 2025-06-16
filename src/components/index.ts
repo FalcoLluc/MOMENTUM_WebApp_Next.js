@@ -22,3 +22,4 @@ export { LocationDetailsOverlay } from './admin/LocationOverlay/LocationDetailsO
 export { NewWorkerOverlay } from './admin/WorkerOverlay/NewWorkerOverlay';
 export { EditWorkerOverlay } from './admin/WorkerOverlay/EditWorkerOverlay';
 export { WorkerChatList } from './chat/WorkerChatList';
+export { MedicalLocationsOverlay } from './shared/MedicalLocationsOverlay';

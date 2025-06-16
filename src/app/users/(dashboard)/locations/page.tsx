@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { LocationsMap } from '@/components';
-import {  Title,  Text,  Stack,  Alert, Container, Card, Loader} from '@mantine/core';
+import {  Title,  Text,  Stack,  Alert, Container, Card, Loader, Button} from '@mantine/core';
 import { IconAlertCircle, IconMapPin } from '@tabler/icons-react';
 import { locationsService } from '@/services/locationsService';
 import { useAuthStore } from '@/stores/authStore';
@@ -9,6 +9,7 @@ import { LocationMarker } from '@/types';
 import { LocationServiceType } from '@/types/enums';
 import classes from './LocationsPage.module.css';
 import LocationsFilter from "@/components/shared/LocationsFilter/LocationsFilter";
+import { MedicalLocationsOverlay } from '@/components';
 
 export default function LocationsPage() {
   const [loading, setLoading] = useState(true);
@@ -16,6 +17,8 @@ export default function LocationsPage() {
   const user = useAuthStore((state) => state.user);
   const [serviceLocations, setServiceLocations] = useState<LocationMarker[]>([]);
   const [serviceType] = useState<LocationServiceType>(LocationServiceType.COACHING);
+
+  const [overlayOpened, setOverlayOpened] = useState(false);
 
   useEffect(() => {
     const fetchServiceLocations = async () => {
@@ -124,6 +127,29 @@ export default function LocationsPage() {
             </div>
           </Card>
         )}
+
+        {/* Emergency Button to open overlay */}
+        <Button
+          onClick={() => setOverlayOpened(true)}
+          color="red"
+          size="lg"
+          radius="xl"
+          style={{
+            backgroundColor: '#e63946', // Bright red for urgency
+            color: 'white',
+            fontWeight: 'bold',
+            boxShadow: '0px 4px 10px rgba(230, 57, 70, 0.5)', // Add shadow for emphasis
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px', // Space between icon and text
+          }}
+        >
+          <IconAlertCircle size={20} />
+          Emergency: Find Nearby Medical Locations
+        </Button>
+
+        {/* Medical Locations Overlay */}
+        <MedicalLocationsOverlay opened={overlayOpened} onClose={() => setOverlayOpened(false)} />
       </Stack>
     </Container>
   );
