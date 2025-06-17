@@ -60,6 +60,54 @@ class CalendarsService {
         }
 
     }
+    async getCommonSlotsUserAndLocation(
+        userId: string,
+        locationId: string,
+        date1: Date,
+        date2: Date
+        ): Promise<[string, [Date, Date][]][] | null> {
+        try {
+            const response = await apiClient.post<{
+            message: string;
+            commonSlots: [string, [Date, Date][]][];
+            }>("/calendars/common-slots/user-location", {
+            userId,
+            locationId,
+            date1,
+            date2,
+            });
+            return response.data.commonSlots;
+        } catch (error) {
+            console.error("Error fetching common slots:", error);
+            return null;
+        }
+    }
+
+    async requestAppointment(calendarId: string, workerId: string, appointment: IAppointment) {
+        try {
+            const response = await apiClient.post("/calendars/appointmentRequest", {
+            calendarId,
+            workerId,
+            appointment,
+            });
+            return response.data; // { message: 'Appointment request set for worker' }
+        } catch (error) {
+            console.error("Error requesting appointment:", error);
+            throw error;
+        }
+    }
+
+    async acceptRequestedAppointment(appointmentId: string) {
+        try {
+            const response = await apiClient.put("/calendars/appointment/accept/requested", {
+            appointmentId,
+            });
+            return response.data; // Podría ser el appointment actualizado
+        } catch (error) {
+            console.error("Error accepting requested appointment:", error);
+            throw error;
+        }
+    }
 }
 
 export const calendarsService = new CalendarsService();
