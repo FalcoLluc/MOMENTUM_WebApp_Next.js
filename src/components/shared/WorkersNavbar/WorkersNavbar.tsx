@@ -12,6 +12,7 @@ import {
   IconUser,
   IconLogout,
   IconMessage,
+  IconCalendar,
 } from '@tabler/icons-react';
 import { useRouter, usePathname } from 'next/navigation';
 import classes from './WorkersNavbar.module.css';
@@ -23,6 +24,7 @@ import { ThemeSwitch } from '@/components/shared/ThemeSwitch';
 const navLinks = [
   { label: 'Account', icon: IconUser, href: '/workers/account' },
   { label: 'Chats', icon: IconMessage, href: '/workers/chats'},
+  { label: 'Calendar', icon: IconCalendar, href: '/workers/calendar' },
 ];
 
 export function WorkersNavbar() {
