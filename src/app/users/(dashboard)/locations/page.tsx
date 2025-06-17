@@ -122,9 +122,7 @@ export default function LocationsPage() {
           </Card>
         ) : (
           <Card withBorder shadow="sm" radius="md" p={0} className={classes.mapCard}>
-            <div className={classes.mapContainer}>
               <LocationsMap locations={serviceLocations} />
-            </div>
           </Card>
         )}
 

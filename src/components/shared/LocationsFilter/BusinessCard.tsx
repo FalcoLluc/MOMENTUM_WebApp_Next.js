@@ -158,7 +158,7 @@ export const BusinessCard: React.FC<BusinessCardProps> = ({ business }) => {
         return;
       }
 
-      const allSlots: { start: Date; end: Date }[] = commonSlots.flatMap(([_, ranges]) =>
+      const allSlots: { start: Date; end: Date }[] = commonSlots.flatMap(([, ranges]) =>
         ranges.map(([start, end]) => ({
           start: new Date(start),
           end: new Date(end),
@@ -166,7 +166,7 @@ export const BusinessCard: React.FC<BusinessCardProps> = ({ business }) => {
       );
 
       setAvailableSlots(allSlots);
-    } catch (error) {
+    } catch {
       notifications.show({
         title: 'Error al obtener horarios',
         message: 'No se pudieron cargar las franjas horarias',
@@ -193,7 +193,7 @@ export const BusinessCard: React.FC<BusinessCardProps> = ({ business }) => {
       await calendarsService.requestAppointment(calendarId, workerId, pendingAppointment);
       notifications.show({ title: 'Cita solicitada', message: 'La cita ha sido enviada correctamente', color: 'green' });
       setPendingAppointment(null);
-    } catch (error) {
+    } catch {
       notifications.show({ title: 'Error', message: 'No se pudo enviar la solicitud', color: 'red' });
     }
   }
