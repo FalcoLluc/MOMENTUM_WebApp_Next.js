@@ -13,7 +13,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { calendarsService } from '@/services/calendarsService';
 import { IAppointment, ICalendar } from '@/types';
-import { BigCalendar, EditCalendarOverlay, NewAppointmentOverlay, AppointmentOverlay } from '@/components';
+import { BigCalendar, NewCalendar, NewAppointmentOverlay, AppointmentOverlay } from '@/components';
 
 export default function WorkerCalendarPage() {
   const [newAppointmentOpened, newAppointmentHandlers] = useDisclosure();
@@ -103,7 +103,7 @@ export default function WorkerCalendarPage() {
         onAppointmentSaved={reloadCalendar}
       />
 
-      <EditCalendarOverlay
+      <NewCalendar
         disclosure={[calendarEditorOpened, calendarEditorHandlers]}
         onCalendarSaved={reloadCalendar}
       />
