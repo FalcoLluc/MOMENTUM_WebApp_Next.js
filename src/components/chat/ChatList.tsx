@@ -1,6 +1,6 @@
 'use client'
 import { ChatListItem } from "@/types"
-import { Button, NavLink, Skeleton, Stack } from "@mantine/core"
+import { NavLink, Skeleton, Stack } from "@mantine/core"
 
 interface ChatListParams {
     chats: ChatListItem[] | null,
@@ -11,7 +11,6 @@ export function ChatList({chats, viewChat}: ChatListParams) {
 
     return (
         <Stack>
-            <Button variant="filled" color="teal">New Chat</Button>
             { chats ? 
                 chats.map((chat: ChatListItem) => (
                     <NavLink

@@ -108,6 +108,12 @@ class CalendarsService {
             throw error;
         }
     }
+
+    async confirmAppointment(appointmentId: string) {
+        await apiClient.put("/calendars/appointment/accept/requested", {
+            appointmentId,
+        })
+    }
 }
 
 export const calendarsService = new CalendarsService();

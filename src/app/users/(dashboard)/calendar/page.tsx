@@ -193,7 +193,7 @@ export default function UserCalendarPage() {
       <AppointmentOverlay
         disclosure={[appointmentOverlay, appointmentOverlayHandlers]}
         appointment={viewingAppointment}
-        onAppointmentDeleted={reloadAppointments}
+        onAppointmentUpdated={reloadAppointments}
       ></AppointmentOverlay>
       <AppointmentAssistantOverlay
           userId={user?._id}

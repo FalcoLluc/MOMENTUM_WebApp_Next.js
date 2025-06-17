@@ -8,6 +8,7 @@ import { calendarsService } from "@/services/calendarsService";
 import { AppointmentState } from "@/types/enums";
 import { useState } from "react";
 import { notifications } from "@mantine/notifications";
+import { useAuthStore } from "@/stores/authStore";
 
 function formatDate(date: Date): string {
     if (!date) return "";
@@ -22,14 +23,14 @@ function formatDate(date: Date): string {
 
 
 export function AppointmentOverlay(
-    { appointment, disclosure: [opened, handlers], onAppointmentDeleted }: 
+    { appointment, disclosure: [opened, handlers], onAppointmentUpdated: onAppointmentDeleted }: 
     { 
         appointment: IAppointment | null,
         disclosure: ReturnType<typeof useDisclosure>,
-        onAppointmentDeleted: () => void,
+        onAppointmentUpdated: () => void,
     }
 ) {
-
+    const worker = useAuthStore((state) => state.worker);
     const theme = useMantineTheme();
     const [deleteConfirmation, setDeleteConfirmation] = useState<boolean>(false);
 
@@ -45,14 +46,14 @@ export function AppointmentOverlay(
                 title: 'Success',
                 message: 'Appointment ' + appointment.title + " deleted successfully.",
                 color: 'green',
-            })
+            });
             handlers.close();
         } catch {
             notifications.show({
                 title: 'Error',
                 message: 'There was an error deleting this appointment.',
                 color: 'red',
-            })
+            });
         }
     }
 
@@ -84,6 +85,24 @@ export function AppointmentOverlay(
                 return theme.colors.red[7];
             default:
                 return theme.colors.gray[7];
+        }
+    }
+
+    async function confirmAppointment(appointment: IAppointment) {
+        if (!appointment) return;
+
+        try {
+            calendarsService.confirmAppointment(appointment._id!);
+            notifications.show({
+                message: "Appointment confirmed",
+                color: "green",
+            });
+            appointment.appointmentState = AppointmentState.ACCEPTED;
+        } catch {
+            notifications.show({
+                message: "Could not confirm appointment",
+                color: "red",
+            });
         }
     }
 
@@ -152,6 +171,10 @@ export function AppointmentOverlay(
             
             <Group justify="flex-end" mt="md">
                 <Menu opened={deleteConfirmation} onChange={setDeleteConfirmation}>
+                    { appointment.appointmentState == AppointmentState.REQUESTED && worker ?
+                        <Button onClick={() => confirmAppointment(appointment)}>Confirm Appointment</Button>
+                        : null
+                    }
                     <Menu.Target><Button variant="filled" color="red">Delete Appointment</Button></Menu.Target>
                     <Menu.Dropdown>
                         <Menu.Label style={{fontSize: "1rem"}}>Are you sure?</Menu.Label>

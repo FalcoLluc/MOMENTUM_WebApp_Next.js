@@ -111,7 +111,7 @@ export default function WorkerCalendarPage() {
       <AppointmentOverlay
         disclosure={[appointmentOverlayOpened, appointmentOverlayHandlers]}
         appointment={viewingAppointment}
-        onAppointmentDeleted={reloadCalendar}
+        onAppointmentUpdated={reloadCalendar}
       />
     </Flex>
   );
