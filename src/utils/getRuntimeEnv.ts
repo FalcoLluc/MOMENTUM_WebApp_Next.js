@@ -4,6 +4,6 @@ export const getRuntimeEnv = (): RuntimeEnv => {
   }
   return {
     API_URL: process.env.API_URL || 'http://localhost:8080',
-    MAPBOX_ACCESS_TOKEN: process.env.MAPBOX_ACCESS_TOKEN || 'pk.eyJ1IjoibW9tZW50dW1lYSIsImEiOiJjbWE1cDRlaHIwaTZ5MmlzNnJpM28xY2trIn0.gnT_7kjr1mBkmop07YdOMQ',
+    MAPBOX_ACCESS_TOKEN: process.env.MAPBOX_ACCESS_TOKEN || '',
   };
 };
