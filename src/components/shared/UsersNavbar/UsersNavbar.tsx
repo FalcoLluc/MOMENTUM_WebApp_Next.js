@@ -17,6 +17,7 @@ import {
   IconSettings,
   IconBuildingStore,
   IconSearch,
+  IconUsers,
 } from '@tabler/icons-react';
 import { useRouter, usePathname } from 'next/navigation';
 import classes from './UsersNavbar.module.css';
@@ -27,6 +28,7 @@ import { useAuthStore } from '@/stores/authStore';
 const navLinks = [
   { label: 'Calendar', icon: IconCalendar, href: '/users/calendar' },
   { label: 'Chats', icon: IconMessage, href: '/users/chats' },
+  { label: 'Friends', icon: IconUsers, href: '/users/friends'},
   { label: 'Map', icon: IconMap, href: '/users/appointments' },
   { label: 'Locations', icon: IconBuildingStore, href: '/users/locations' },
   { label: 'Account', icon: IconUser, href: '/users/account' },

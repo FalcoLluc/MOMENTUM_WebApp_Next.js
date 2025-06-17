@@ -42,6 +42,34 @@ class UsersService {
     }
   }
 
+  async getFriends(userId: string): Promise<{_id: string, mail: string}[]> {
+    const res = await apiClient.get<{friends: {_id: string, mail: string}[]}>(
+      `/users/${userId}/friends`
+    );
+    return res.data.friends;
+  }
+
+  async getFriendRequests(userId: string): Promise<{_id: string, mail: string}[]> {
+    const res = await apiClient.get<{requests: {_id: string, mail: string}[]}>(
+      `/users/${userId}/friend-requests`
+    );
+    return res.data.requests;
+  }
+
+  async sendFriendRequest(fromId: string, toId: string): Promise<void> {
+    await apiClient.post(`/users/${fromId}/friend-request`, {toId});
+  }
+
+  async acceptFriendRequest(fromId: string, toId: string): Promise<void> {
+    await apiClient.post(`/users/${toId}/accept-friend`, {fromId});
+  }
+
+  async searchUserByEmail(query: string): Promise<{_id: string, mail: string}[]> {
+    const res = await apiClient.post<{users: {_id: string, mail: string}[]}>(`/users/search-by-email`, {
+      q: query,
+    });
+    return res.data.users;
+  }
 }
 
 export const usersService = new UsersService();
