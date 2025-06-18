@@ -1,7 +1,7 @@
 import { calendarsService } from "@/services/calendarsService";
 import { AppointmentPlanningResponse, PlannedAppointment } from "@/types";
 import { AppointmentServiceType, AppointmentState } from "@/types/enums";
-import { Button, Card, Drawer, Group, Text, Textarea } from "@mantine/core";
+import { Button, Card, Drawer, Group, Text, Textarea, useMantineTheme } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import { IconSparkles } from "@tabler/icons-react";
@@ -29,7 +29,7 @@ export function AppointmentAssistantOverlay(
     const [response, setResponse] = useState<AppointmentPlanningResponse | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [prompt, setPrompt] = useState<string>('');
-
+    const theme = useMantineTheme();
 
     async function makeRequest() {
         if (!userId) {
@@ -129,8 +129,7 @@ export function AppointmentAssistantOverlay(
                         key={appointment.title}
                         mt={4}
                         style={{
-                            backgroundColor: appointment.colour,
-                            color: "white",
+                            backgroundColor: theme.colors.blue[7],
                         }}
                     >
                         <Text size="1.2em" fw="bold">
