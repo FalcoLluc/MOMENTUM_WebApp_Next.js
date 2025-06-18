@@ -13,15 +13,16 @@ import {
   Title,
   LoadingOverlay,
 } from '@mantine/core';
-import { GoogleButton } from '../providers/GoogleButton';
 import classes from './AuthForm.module.css';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { notifications } from '@mantine/notifications';
 import { authService } from '@/services/authService';
 import { LoginRequestBody } from '@/types';
 import { User } from '@/types';
+import { getRuntimeEnv } from '@/utils/getRuntimeEnv';
+import { IconBrandGoogle } from '@tabler/icons-react';
 
 
 interface AuthFormProps {
@@ -45,10 +46,18 @@ export function AuthForm({ type }: AuthFormProps) {
   const [loading, setLoading] = useState(false);
   const [loginCredentials, setLoginCredentials] = useState<LoginRequestBody>(INITIAL_LOGIN_STATE);
   const [registerCredentials, setRegisterCredentials] = useState<User>(INITIAL_REGISTER_STATE);
+  const [confirmPassword, setConfirmPassword] = useState<string>('');
+  const [passwordValidations, setPasswordValidations] = useState({
+    length: false,
+    uppercase: false,
+    specialChar: false,
+  });
 
   const handleGoogleSignIn = () => {
     // FALTA POSAR LOGICA
     console.log('Google sign in clicked');
+    const GOOGLE_AUTH_URL = `${getRuntimeEnv().API_URL}/auth/google`; // Backend Google OAuth endpoint
+    window.location.href = GOOGLE_AUTH_URL; // Redirect to backend
   };
 
   const handleLoginInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,6 +68,18 @@ export function AuthForm({ type }: AuthFormProps) {
   const handleRegisterInputChange = (name: keyof User, value: string | number) => {
     setRegisterCredentials(prev => ({ ...prev, [name]: value }));
   };
+
+  const validatePassword = (password: string) => {
+    setPasswordValidations({
+      length: password.length >= 8,
+      uppercase: (password.match(/[A-Z]/g) || []).length >= 2,
+      specialChar: /[!@#$%^&*(),.?":{}|<>]/.test(password),
+    });
+  };
+
+  useEffect(() => {
+    validatePassword(registerCredentials.password);
+  }, [registerCredentials.password]);
 
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -71,7 +92,7 @@ export function AuthForm({ type }: AuthFormProps) {
         message: `Welcome back, ${user.name}!`,
         color: 'green',
       });
-      router.push('/users/dashboard');
+      router.push('/users/account');
     } catch (error: unknown) {
       // This will now properly show server error messages
       const errorMessage = error instanceof Error ? error.message : 'Login failed';
@@ -88,6 +109,28 @@ export function AuthForm({ type }: AuthFormProps) {
   const handleRegisterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+
+    const { length, uppercase, specialChar } = passwordValidations;
+
+    if (!length || !uppercase || !specialChar) {
+      notifications.show({
+        title: 'Invalid Password',
+        message: 'Password does not meet all requirements.',
+        color: 'red',
+      });
+      setLoading(false);
+      return;
+    }
+
+    if (registerCredentials.password !== confirmPassword) {
+      notifications.show({
+        title: 'Password mismatch',
+        message: 'Passwords do not match.',
+        color: 'red',
+      });
+      setLoading(false);
+      return;
+    }
   
     try {
       const { success, message } = await authService.registerUser(registerCredentials);
@@ -122,7 +165,16 @@ export function AuthForm({ type }: AuthFormProps) {
             Create an account
           </Title>
 
-          <GoogleButton onClick={handleGoogleSignIn} mb="xl" />
+          <Button
+            onClick={handleGoogleSignIn}
+            variant="outline"
+            color="primary"
+            fullWidth
+            mt="md"
+            leftSection={<IconBrandGoogle size="1rem" />}
+          >
+            Sign in with Google
+          </Button>
 
           <Divider label="Or register with email" labelPosition="center" my="lg" />
 
@@ -134,6 +186,7 @@ export function AuthForm({ type }: AuthFormProps) {
             onChange={(e) => handleRegisterInputChange('name', e.target.value)}
             size="md"
             required
+            color="primary"
           />
 
           <NumberInput
@@ -158,6 +211,7 @@ export function AuthForm({ type }: AuthFormProps) {
             mt="md"
             size="md"
             required
+            color="primary"
           />
 
           <PasswordInput
@@ -169,10 +223,35 @@ export function AuthForm({ type }: AuthFormProps) {
             mt="md"
             size="md"
             required
-            minLength={6}
+            color="primary"
           />
 
-          <Button type="submit" fullWidth mt="xl" size="md" loading={loading}>
+          <PasswordInput
+            label="Confirm Password"
+            name="confirmPassword"
+            placeholder="Retype your password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.currentTarget.value)}
+            mt="md"
+            size="md"
+            required
+            color="primary"
+          />
+
+          <div style={{ fontSize: '0.875rem', marginTop: '10px', color: 'gray' }}>
+            <Text fw={500}>Password must contain:</Text>
+            <Text c={passwordValidations.length ? 'green' : 'red'}>
+              {passwordValidations.length ? '✅' : '❌'} At least 8 characters
+            </Text>
+            <Text c={passwordValidations.uppercase ? 'green' : 'red'}>
+              {passwordValidations.uppercase ? '✅' : '❌'} Two uppercase letters
+            </Text>
+            <Text c={passwordValidations.specialChar ? 'green' : 'red'}>
+              {passwordValidations.specialChar ? '✅' : '❌'} One special character
+            </Text>
+          </div>
+
+          <Button type="submit" fullWidth mt="xl" size="md" loading={loading} color="primary">
             Register
           </Button>
 
@@ -201,9 +280,16 @@ export function AuthForm({ type }: AuthFormProps) {
         <Title order={2} className={classes.title} ta="center" mt="md" mb={50}>
           Welcome back!
         </Title>
-
-        <GoogleButton onClick={handleGoogleSignIn} mb="xl" />
-
+        <Button
+          onClick={handleGoogleSignIn}
+          variant="outline"
+          color="primary"
+          fullWidth
+          mt="md"
+          leftSection={<IconBrandGoogle size="1rem" />}
+        >
+          Sign in with Google
+        </Button>
         <Divider label="Or continue with username/email" labelPosition="center" my="lg" />
 
         <TextInput
@@ -214,6 +300,7 @@ export function AuthForm({ type }: AuthFormProps) {
           onChange={handleLoginInputChange}
           size="md"
           required
+          color="primary"
         />
 
         <PasswordInput
@@ -225,9 +312,10 @@ export function AuthForm({ type }: AuthFormProps) {
           mt="md"
           size="md"
           required
+          color="primary"
         />
 
-        <Button type="submit" fullWidth mt="xl" size="md" loading={loading}>
+        <Button type="submit" fullWidth mt="xl" size="md" loading={loading} color="primary">
           Login
         </Button>
 

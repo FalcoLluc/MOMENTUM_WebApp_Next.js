@@ -1,7 +1,14 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  experimental: {
+    optimizePackageImports: ['@mantine/core', '@mantine/hooks'],
+  }, 
+  output: "standalone",
+  images: {
+    domains: ['tile.openstreetmap.org'],
+  },
+  reactStrictMode: true,
 };
 
 export default nextConfig;
